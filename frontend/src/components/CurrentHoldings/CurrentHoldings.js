@@ -46,6 +46,8 @@ export default reduxConnect(
 
         this.getHoldings = () => {
             
+            console.log("Try to get holdings")
+            
             let query = `query GetHoldings {
                 getHoldings(
                     user: 1

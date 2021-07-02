@@ -15,13 +15,14 @@ const funds = require('./funds')
 const funcs = require("./apiFuncs")
 
 
+const Asset = require('../models/Asset')
+const AssetData = require('../models/AssetData')
 
 
 module.exports.getLastPrice = async function(ticker, baseCurrency) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
     
-    let AssetData = require('./models/AssetData')
 
     try {
 
@@ -41,7 +42,6 @@ module.exports.getDateOfLastPrice = function(ticker, type, baseCurrency, success
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
-    let AssetData = require('./models/AssetData')
 
     console.log("checking date of last price", ticker, type, baseCurrency)
 
@@ -67,7 +67,6 @@ module.exports.getDateOfLastPricePromise = async function(ticker, type, baseCurr
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
-    let AssetData = require('./models/AssetData')
 
     console.log("checking date of last price", ticker, type, baseCurrency)
 
@@ -97,7 +96,6 @@ module.exports.createAsset = function(asset) {
     console.log("Create Asset", asset)
     asset.ticker = asset.ticker.toUpperCase()
 
-    let Asset = require('./models/Asset')
 
     new Asset(asset)
     .save((err, createdAsset) => {
@@ -116,7 +114,6 @@ module.exports.createAsset = function(asset) {
 module.exports.doWeHaveAssetData = function(ticker, success, baseCurrency) {
     ticker = ticker.toUpperCase()
 
-    let AssetData = require('./models/AssetData')
 
     AssetData.findOne({ ticker : ticker }, function (err, assetData) {
         if (err) { console.log(err); return }

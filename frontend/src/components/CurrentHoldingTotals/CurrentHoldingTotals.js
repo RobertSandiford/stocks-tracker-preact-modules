@@ -2,6 +2,7 @@
 import { h, Component } from 'preact'
 import { connect as reduxConnect } from 'react-redux'
 
+import { getPercentageChange, roundDp, formatMoney, formatPercentage } from '../functions'
 import { HoldingStyle } from '../styles'
 
 export default reduxConnect(

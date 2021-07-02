@@ -1,13 +1,21 @@
 
-import { Component } from 'preact'
+import { Component, createRef } from 'preact'
 import { connect as reduxConnect, useSelector, useDispatch } from 'react-redux'
 import { dispatchFunction as reduxDispatchFunction, getStoreItems } from '../../redux/functions'
+import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
+
+LuxonSettings.defaultLocale = "en-GB"
+let stDateFormat = Object.assign(Luxon.DATE_MED, { });
+let luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
+
+import { numToXChars, formatMoney, percentageFormat } from '../functions'
+import { HoldingStyle, EditLineStyles } from '../styles'
 
 import CurrentHoldingOpenForm from '../CurrentHoldingOpenForm/CurrentHoldingOpenForm'
 import CurrentHoldingCloseForm from '../CurrentHoldingCloseForm/CurrentHoldingCloseForm'
 
-let CurrentHolding
-export default CurrentHolding = reduxConnect(
+
+export default reduxConnect(
     getStoreItems(['displayCurrency']),
     reduxDispatchFunction
 )(class CurrentHolding extends Component {
@@ -495,11 +503,11 @@ export default CurrentHolding = reduxConnect(
                     :   <div key="edit" class="holding-line">
                             <span style={HoldingStyle.controls}></span>
                             <span style={HoldingStyle.title}>
-                                <input name="name" style={editLineStyles.inputTitle} defaultValue={holding.name} onChange={this.editChange} />
-                                <input name="ticker" style={editLineStyles.inputTicker} defaultValue={holding.ticker} placeholder="Symbol/Code" onChange={this.editChange} />
+                                <input name="name" style={EditLineStyles.inputTitle} defaultValue={holding.name} onChange={this.editChange} />
+                                <input name="ticker" style={EditLineStyles.inputTicker} defaultValue={holding.ticker} placeholder="Symbol/Code" onChange={this.editChange} />
                             </span>
                             <span style={HoldingStyle.type}>
-                                <select name="type" style={editLineStyles.inputType} onChange={this.editChange}>
+                                <select name="type" style={EditLineStyles.inputType} onChange={this.editChange}>
                                     <option value="stock">Stock</option>
                                     <option value="crypto">Crypto</option>
                                     <option value="currency">Currency</option>
@@ -509,29 +517,29 @@ export default CurrentHolding = reduxConnect(
                                 </select>
                             </span>
                             <span style={HoldingStyle.type}>
-                                <input name="group" style={editLineStyles.input} defaultValue={group} onChange={this.editChange} />
+                                <input name="group" style={EditLineStyles.input} defaultValue={group} onChange={this.editChange} />
                             </span>
                             <span style={HoldingStyle.type}>
-                                <input name="region" style={editLineStyles.input} defaultValue={region} onChange={this.editChange} />
+                                <input name="region" style={EditLineStyles.input} defaultValue={region} onChange={this.editChange} />
                             </span>
                             <span style={HoldingStyle.span} title={quantity}>
-                                <input name="quantity" style={editLineStyles.input} defaultValue={quantity} onChange={this.editChange} />
+                                <input name="quantity" style={EditLineStyles.input} defaultValue={quantity} onChange={this.editChange} />
                             </span>
 
                             <span style={HoldingStyle.span} title={ (fxc) ? buyPriceLocal : '' }>
-                                <input name="buyUnitPrice" style={editLineStyles.input} defaultValue={buyPriceLocal} onChange={this.editChange} />
-                                <input name="buyUnitCurrency" style={editLineStyles.input} defaultValue={buyCurrency} onChange={this.editChange} />
+                                <input name="buyUnitPrice" style={EditLineStyles.input} defaultValue={buyPriceLocal} onChange={this.editChange} />
+                                <input name="buyUnitCurrency" style={EditLineStyles.input} defaultValue={buyCurrency} onChange={this.editChange} />
                             </span>
                             <span style={HoldingStyle.span} title={ (fxc) ? buyValueLocal : '' }>
-                                <input name="buyTotalPrice" style={editLineStyles.input} defaultValue={buyValueLocal} onChange={this.editChange} />
-                                <input name="buyTotalCurrency" style={editLineStyles.input} defaultValue={buyCurrency} onChange={this.editChange} />
+                                <input name="buyTotalPrice" style={EditLineStyles.input} defaultValue={buyValueLocal} onChange={this.editChange} />
+                                <input name="buyTotalCurrency" style={EditLineStyles.input} defaultValue={buyCurrency} onChange={this.editChange} />
                             </span>
                             <span style={HoldingStyle.date}>
-                                <input name="buyDate" type="datetime-local" style={editLineStyles.inputDate} defaultValue={buyDateLocal} onChange={this.editChange} />
+                                <input name="buyDate" type="datetime-local" style={EditLineStyles.inputDate} defaultValue={buyDateLocal} onChange={this.editChange} />
                             </span>
                        
                             <span style={HoldingStyle.fees}>
-                                <input name="fees" style={editLineStyles.inputFees} defaultValue={feesDisplay} onChange={this.editChange} />
+                                <input name="fees" style={EditLineStyles.inputFees} defaultValue={feesDisplay} onChange={this.editChange} />
                             </span>
 
                             {
@@ -546,7 +554,7 @@ export default CurrentHolding = reduxConnect(
                                         </span>
                                     :   <span style={HoldingStyle.span}>
                                             Priced In<br />
-                                            <input name="priceCurrency" style={editLineStyles.input} defaultValue={priceCurrency} onChange={this.editChange} />
+                                            <input name="priceCurrency" style={EditLineStyles.input} defaultValue={priceCurrency} onChange={this.editChange} />
                                         </span>
                             }
             
