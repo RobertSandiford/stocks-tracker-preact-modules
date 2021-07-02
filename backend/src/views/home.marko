@@ -1,0 +1,119 @@
+import Head from "./includes/head"
+import Header from "./includes/header"
+import Nav from "./includes/nav"
+import Footer from "./includes/footer"
+//import LassoBody from "./includes/lasso-body"
+
+import AddStock from "./add-stock"
+
+
+/*
+class {
+    onCreate() {
+        this.state = {
+            thing : 1
+        }
+    }
+}
+
+<input name="thing" bind />
+
+
+
+class {
+    onCreate() {
+        this.state = {
+            thing : 1
+        }
+    }
+    input(event) {
+        this.state[event.target] = event.target.value
+    }
+}
+
+<input name="thing" on-input('input') value=${this.state.thing} />
+*/
+
+
+
+/*class {
+    onCreate() {
+        this.state = {
+            stocks : [],
+            form : {}
+        }
+    }
+    input(event) {
+        this.state.form[event.target.name] = event.target.value
+        console.log("1 " + event.target.name + ": ", this.state.form[event.target.name])
+    }
+    addStock(event) {
+        this.state.stocks.push({
+            ticker : this.getEl('ticker').value,
+            quantity : this.getEl('quantity').value,
+            buyPrice : this.getEl('buy-price').value,
+            buyCurrency : this.getEl('buy-currency').value,
+            buyDate : this.getEl('buy-date').value,
+        })
+        alert('add stock')
+        event.preventDefault()
+    }
+}*/
+
+
+<html>
+
+	<${Head}></>
+
+	<body>
+
+		<${Header}></>
+
+		<${Nav}></>
+
+		<div class="middle">
+
+            <div>
+                Home
+            </div>
+            
+            
+            <${AddStock}></>
+            
+            <!--<div>
+                <form on-submit('addStock')>
+
+                    <div>
+                        <span>Stock:</span>
+                        <input name="ticker" key="ticker" on-input('input')>
+                    </div>
+
+                    <div>
+                        <span>Quantity:</span>
+                        <input type="number" min="1" step="any" name="quantity">
+                    </div>
+
+                    <div>
+                        <span>Buy Time:</span>
+                        <input type="datetime-local" name="buyTime">
+                    </div>
+
+                    <div>
+                        <span>Buy Price:</span>
+                        <input type="number" min="1" step="any" name="buyPrice" />
+                        Currency: <input type="text" name="buyCurrency" />
+                    </div>
+
+
+                    <div>
+                        <input type="submit" name="submit" value="Add" on-click('addStock')>
+                    </div>
+
+                </form>
+            </div>-->
+
+		</div>
+
+		<${Footer}></>
+	</body>
+</html>

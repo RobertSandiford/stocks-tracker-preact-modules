@@ -1,0 +1,587 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-family: arial, sans-serif;
+}
+
+body a {
+	color: #338;
+	text-decoration: none;
+}
+body a:hover {
+	color: #338;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+tr {
+	padding: 0;
+	margin: 0;
+}
+td {
+	padding: 0;
+	margin: 0;
+}
+
+h1,h2,h3,h4,h5,h6,h7 {
+	padding: 0;
+	margin: 0;
+}
+
+.clear {
+	clear: both;
+}
+
+
+.tab {
+	display: inline-block;
+	vertical-align: top;
+}
+.tab+.tab {
+	margin-left: 60px;
+}
+
+.small-tab+.small-tab {
+	margin-left: 20px;
+}
+
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
+
+/* ************** header */
+.header {
+	height: 100px;
+	padding: 20px 100px;
+	background: #444444;
+	color: #FFFFFF;
+}
+.header-inner {
+	width: 1330px;
+	margin: 0 auto;
+}
+h1.title {
+	margin-top: 10px;
+}
+.nav {
+	padding: 15px 100px;
+	background: #33c;
+	color: #FFFFFF;
+}
+.nav-inner {
+	width: 1330px;
+	margin: 0 auto;
+}
+.nav-left {
+	float: left;
+}
+.nav-right {
+	float: right;
+}
+.nav-item+.nav-item {
+	padding-left: 40px;
+}
+.nav-item {
+}
+.nav-item a {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.nav-item a:hover {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+/* **************** footer */
+
+.footer h2 {
+	margin: 30px 0 0;
+}
+
+
+/* *************** Middle */
+
+
+.middle {
+	padding: 30px 100px 30px;
+	width: 90%;
+	margin: 0 auto;
+}
+
+.head {
+	padding: 0 0 20px;
+	overflow: hidden;
+}
+
+
+
+/* ********************** Trade head */
+.balance-table {
+	display: inline-block;
+	border: solid 1px grey;
+	padding: 3px 0;
+}
+.balance-table td {
+	padding: 2px 13px;
+}
+
+/* ********************** Trading */
+
+.offers {
+	box-sizing: border-box;
+	float: left;
+	width: 20%;
+	padding-right: 3%;
+	text-align: center;
+}
+
+.chart {
+	float: left;
+	width: 64%;
+}
+
+.order, .trade-guest {
+	box-sizing: border-box;
+	float: left;
+	width: 16%;
+	min-height: 1px;
+	padding-left: 2%;
+}
+
+.order {
+	width: 16%;
+	border: solid 1px grey;
+	padding: 10px 0 10px 0;
+	text-align: center;
+}
+
+.offers h3, .order h3 {
+	text-align: center;
+}
+
+.offers table {
+	display: inline-block;
+	border: solid 1px grey;
+	padding: 10px;
+}
+
+
+.price-buy, .price-sell {
+	font-size: 90%;
+}
+
+.price-buy {
+	color: #2aaa5f;
+}
+
+.price-sell {
+	color: #dd4444;
+}
+
+.buy-sell-switches {
+
+}
+
+.buy-switch, .sell-switch {
+	cursor: pointer;
+}
+
+.buy-switch {
+	display: inline-block;
+	padding: 10px 20px;
+	background: #2aaa5f;
+	color: white;
+	border: solid 2px #2aaa5f;
+}
+
+.sell-switch {
+	display: inline-block;
+	padding: 10px 20px;
+	background: #dd4444;
+	color: white;
+	border: solid 2px #dd4444;
+}
+
+.w-button {
+	border: solid 2px #aaa;
+	padding: 5px 8px;
+	margin: 2px;
+	cursor: pointer;
+}
+.w-button:hover:not(.active) {
+	border: solid 2px #666;
+}
+.w-button.active {
+	border: solid 2px #444;
+}
+
+.order-type-tooltip-area {
+	display: inline-block;
+	position: relative;
+}
+.order-type-info-image {
+	width: 18px;
+	height: 18px;
+	vertical-align: middle;
+}
+.order-type-tooltip-area .order-type-tooltip {
+	visibility: hidden;
+    width: 210px;
+    background-color: #FFF;
+    color: #000;
+    text-align: left;
+    padding: 5px 5px;
+    border-radius: 6px;
+    border: solid 1px black;
+    right: -30px;
+ 
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+.order-type-tooltip-area .order-type-tooltip h5 {
+	margin: 0;
+
+}
+.order-type-tooltip-area:hover .order-type-tooltip {
+	visibility: visible;
+}
+
+ .order-type-radio {
+ 	display: none;
+ }
+
+.buy-sell-radio {
+	display: none;
+}
+
+.market-quantity, .quantity {
+	width: 25%;
+}
+.max-box {
+	padding-left: 45%;
+}
+#offer-rate {
+	width: 52%;
+}
+
+.confirm-button {
+	cursor: pointer;
+}
+.confirm-button.deactivated {
+	cursor: default;
+}
+
+.buy-button {
+	display: inline-block;
+	/*float: left;*/
+	padding: 10px 20px;
+	background: #2aaa5f;
+	color: white;
+	border: solid 2px #2aaa5f;
+}
+.sell-button {
+	display: inline-block;
+	/*float: left;*/
+	padding: 10px 20px;
+	background: #dd4444;
+	color: white;
+	border: solid 2px #dd4444;
+}
+
+.buy-button.deactivated {
+	/*background: #175f35;*/
+	background: #88c5a1;
+	border-color: #88c5a1;
+	color: lightgrey;
+}
+
+.sell-button.deactivated {
+	background: #dd7e7e;
+	border-color: #dd7e7e;
+	color: lightgrey;
+}
+
+.cost-subscript {
+	font-size: 80%;
+}
+
+.cost-exceeds-balance {
+	color: red;
+	display: none;
+}
+
+.return-estimated {
+	display: none;
+}
+
+.confirm-button:not(.buy-market-button) {
+	display: none;
+}
+
+.working {
+	display: none;
+	/*visibility: hidden;*/
+	width: 77px;
+	height: 63px;
+	margin-left: -12px;
+    margin-top: -11px;
+    z-index: -1;
+    position: relative;
+}
+
+.success {
+	display: none;
+	/*visibility: hidden;*/
+	margin-top: 5px;
+	margin-left: 20px;
+}
+
+
+
+/* *** Active orders */
+
+.open-orders-header {
+	margin: 0 0 5px;
+}
+.order-history-header {
+	margin: 20px 0 5px;
+}
+
+.orders-table {
+	font-size: 80%;
+}
+
+.active-orders th {
+	padding: 4px 15px;
+}
+.active-orders td {
+	padding: 4px 15px;
+}
+.cancel-order {
+	font-size: 80%;
+}
+
+/* *** Offers */
+
+.offers-titles th {
+	font-size: 90%;
+}
+.offers-heading {
+	font-size: 110%;
+}
+.offers-buy-header {
+	color: green;
+}
+.offers-sell-header {
+	color: red;
+}
+.offers-buy {
+	color: green;
+}
+.offers-sell {
+	color: red;
+}
+.offers-none {
+	text-align: center;
+}
+.offer-amount {
+	padding-right: 2px;
+}
+.offer-price {
+	cursor: pointer;
+	padding-left: 2px;
+}
+
+.relative-amount {
+	width: 60px;
+}
+
+/**** Chart */
+.chart-time-periods {
+	float: right;
+	margin: 0 27px 4px 0;
+}
+.chart-time-periods .time-period {
+	cursor: pointer;
+	padding: 0 5px;
+}
+.chart-time-periods .active {
+	font-weight: bold;
+}
+
+
+/****************** Assets/Pairs */
+
+.pairs {
+	overflow: hidden;
+}
+.pair-set {
+	float: left;
+	width: 50%;
+}
+
+
+/****************** Account */
+
+.account {	width: 50%;
+	float: left;
+}
+
+.deposit {
+	padding-top: 20px;
+	width: 50%;
+	float: left;
+	display: none;
+}
+
+.withdraw {
+	padding-top: 20px;
+	width: 50%;
+	float: left;
+	display: none;
+}
+.history {
+	padding: 20px 0;
+	float: left;
+	width: 50%;
+}
+
+.account-table {
+	border-collapse: collapse;
+	border: solid 1px black;
+}
+.account-table tr {
+	padding: 0;
+	margin: 0;
+}
+.account th {
+	padding: 15px;
+}
+.account-table td {
+	padding: 15px;
+	margin: 0;
+}
+.account-coin td {
+	border-top: solid 1px black;
+}
+.account-coin.empty {
+	color: #bbb;
+}
+.account-coin.empty .account-coin-amount {
+	color: #bbb;
+}
+.account-coin.empty .account-coin-withdraw {
+	color: #bbb;
+}
+
+
+.deposit-address-text {
+	padding: 6px;
+	background: #eee;
+	border: solid 1px #ccc;
+}
+
+.deposit-address-hidden-input {
+	position: absolute;
+	top: -99999px;
+	left: -99999px;
+}
+
+.history table {
+	background: #f6f6f6;
+	border: solid 1px #eee;
+}
+.history th {
+	padding: 10px;
+	border-bottom: solid 1px grey;
+}
+.history td {
+	padding: 10px;
+}
+.history td+td {
+	border-top: solid 1px grey;
+}
+
+/* ******************** Settings */
+
+
+.field {
+	margin: 20px 0;
+}
+.field .label {
+	box-sizing: border-box;
+	width: 50%;
+	padding-right: 2%;
+	float: left;
+	text-align: right;
+}
+.field .entry {
+	box-sizing: border-box;
+	width: 50%;
+	padding-left: 2%;
+	float: left;
+}
+
+
+
+/* ********************* Sign up */
+
+#password-strength {
+	font-weight:bold;
+}
+#password-strength.short {
+	color:#FF0000;
+}
+#password-strength.weak {
+	color:orange;
+}
+#password-strength.good {
+	color:#2D98F3;
+}
+#password-strength.strong {
+	color: limegreen;
+}
+
+
+
+/* ******************** footer */
+
+
+.footer {
+	height: 100px;
+	padding: 20px 100px;
+	background: #444444;
+	color: #FFFFFF;
+}
+.footer-inner {
+	width: 1330px;
+	margin: 0 auto;
+}
+.footer-logo {
+	display: inline-block;
+}
+.footer-nav {
+	display: inline-block;
+	float: right;
+	margin: 40px 0 0 0;
+}
+.footer-nav-item {
+	margin-right: 60px;
+}
+.footer a {
+	color: white;
+	text-decoration: none;
+}
+.footer a:hover {
+	color: white;
+	text-decoration: underline;
+}

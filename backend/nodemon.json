@@ -1,0 +1,4 @@
+{   
+    "ext" : "js, json",
+    "ignore" : ["*.marko.js", "marko-static/*", "frontend/*"] 
+}

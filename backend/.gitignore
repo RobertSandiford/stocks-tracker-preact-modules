@@ -1,0 +1,4 @@
+node_modules
+stock-tracker.code-workspace
+mongo-user
+.env

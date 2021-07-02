@@ -1,0 +1,29 @@
+Client  // A user of the system
+
+Asset  // A general note on an asset such as BTC or AAPL, of any kind
+    name
+    ticker
+    exchangeName
+    exchangeTicker
+    dataLoaded : Boolean
+
+AssetData
+    ticker
+    exchangeTicker // the exchange where the asset is traded
+    date // the date of the entry, the price for that date
+    price // price for the given dataLoaded
+
+Holding  // An asset held by a client
+    user // The owner
+    name
+    ticker
+    custom // Whether it's a user's custom asset, and not something we can retrieve prive for
+    exchangeName
+    exchangeTicker
+    quantity
+    buyUnitPrice
+    buyTotalPrice
+    buyCurrency
+    buyTime 
+    currentUnitPrice // for custom holdings
+    currentPriceDate // for custom holdings

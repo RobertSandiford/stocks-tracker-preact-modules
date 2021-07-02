@@ -1,0 +1,103 @@
+<script type="text/javascript">
+
+    var tag = document.createElement("li");
+    tag.innerHTML = '<span class="toggle">Jan</span>';
+
+    function createElement(tagName, attrs = {}, ...children) {
+        const elem = Object.assign(document.createElement(tagName), attrs)
+        for (const child of children) {
+            if (Array.isArray(child)) elem.append(...child)
+            else elem.append(child)
+        }
+        return elem
+    }
+
+    var byId = document.getElementById
+
+    class Holdings {
+        constructor() { 
+            this.holdings = []
+            this.add = {
+                item : {
+                    name : "",
+                    ticker : "",
+                    quantity : 0,
+                    buyTime : "",
+                    buyPrice : 0,
+                },
+                change : (el) => {
+                    this.add.item[el.name] = el.value
+                    console.log(el.name + ": " + el.value)
+                },
+                submit : (el, event) => {
+                    event.preventDefault()
+                    let item = this.add.item
+                    this.holdings.push(item)
+                    console.log(this.holdings)
+
+                    let holding = (
+                        <div class="holding">
+                            <div class="holding-title">item.name ({item.ticker})</div>
+                        </div>
+                    )
+                }
+            }
+            
+        }
+       
+        /*add() {
+            var holding = {
+                name : "",
+                ticker : byId('ticker').value,
+                quantity : byId('quantity').value
+
+            }
+        }*/
+    }
+    var holdings = new Holdings()
+
+    console.log(holdings.add.change)
+</script>
+
+
+<div id="holdings">
+    <div id="show-holdings">
+    </div>
+    <div id="add-holdings">
+        <h3>Add Holdings</h3>
+
+        <form>
+
+            <div>
+                <span>holding:</span>
+                <input id="ticker" name="ticker" key="ticker" onchange="holdings.add.change(this)" />
+            </div>
+
+            <div>
+                <span>Quantity:</span>
+                <input id="number" name="quantity" type="number" min="1" step="any" onchange="holdings.add.change(this)" />
+            </div>
+
+            <div>
+                <span>Buy Time:</span>
+                <input id="buyTime" name="buyTime" type="datetime-local" onchange="holdings.add.change(this)" />
+            </div>
+
+            <div>
+                <span>Buy Price:</span>
+                <input id="buyPrice" name="buyPrice" type="number" min="1" step="any" onchange="holdings.add.change(this)" />
+                Currency: <input type="text" name="buyCurrency" />
+            </div>
+
+
+            <div>
+                <input type="submit" name="submit" value="Add" onClick="holdings.add.submit(this, event)">
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    holdings.init()
+</script>
