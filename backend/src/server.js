@@ -104,6 +104,7 @@ app.use('/', express.static('frontend/build'))
 // Routes
 ///////////////////////////
 
+/*
 function reloadTemplate(view, template, req, res) {
     if (enviro == "local") {
         console.log("reloading template");
@@ -121,12 +122,7 @@ function reloadTemplate(view, template, req, res) {
     }
     return template
 }
-
-//app.use(markoExpress());
-
-//var reactTemplate = require('./views/react.marko')
-
-
+*/
 
 app.get('/', (req, res) => {
 
@@ -135,8 +131,6 @@ app.get('/', (req, res) => {
 })
 
 
-app.get('/graph'), async (req, res) => {
-}
 
 app.get('/holdings/list', async (req, res) => {
 
