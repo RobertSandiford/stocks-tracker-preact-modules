@@ -8,7 +8,7 @@ const Holding = require('../../models/Holding')
 module.exports = {
     holding : {
         query : "(_id : ID!) : Holding!",
-        resolver : (parent, {_id}) => { 
+        resolver : (parentEntity, {_id}) => { 
             const filter = { _id : _id }
             return Holding.findOne(filter)
         },

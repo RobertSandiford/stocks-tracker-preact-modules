@@ -1,16 +1,17 @@
 
 import { h, Component, createRef } from 'preact'
-import { connect as reduxConnect, useSelector, useDispatch } from 'react-redux'
+import { connect as reduxConnect, useSelector, useDispatch, connect } from 'react-redux'
 import { dispatchFunction as reduxDispatchFunction, getStoreItems } from '../../redux/functions'
 import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
+//cloneDeep = require('lodash.clonedeep')
+
+import cloneDeep from 'lodash/cloneDeep'
 
 LuxonSettings.defaultLocale = "en-GB"
 let stDateFormat = Object.assign(Luxon.DATE_MED, { });
 let luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
 
-import CurrentHoldings from '../CurrentHoldings/CurrentHoldings'
-import HoldingsSorter from '../HoldingsSorter/HoldingsSorter'
-import AddHoldingForm from '../AddHoldingForm/AddHoldingForm'
+import { roundDp } from '../functions'
 
 
 const runBindings = function() {
@@ -79,11 +80,7 @@ const runBindings = function() {
 }
 
 
-
 export default reduxConnect(
-    // store => ({
-    //     groups : store.groups
-    // }),
     getStoreItems(['groups']),
     reduxDispatchFunction
 )(class AddHoldingForm extends Component {
@@ -113,7 +110,7 @@ export default reduxConnect(
         fees : ""
     }
 
-    form = this.formDefault
+    form = cloneDeep(this.formDefault)
 
     stockTicker = createRef()
     cryptoTicker = createRef()
@@ -253,9 +250,11 @@ export default reduxConnect(
 
     addHolding = (event) => {
         event.preventDefault()
-        let holding = this.form
+        let holding = cloneDeep(this.form)
         if (holding.type === "") { console.log("setting type to custom"); holding.type = "custom" }
         holding.buyDate += ":00.000+00:00"
+        //holding.buyDate += ":00"
+        console.log(typeof holding.buyDate, holding.buyDate.name)
         if (this.validateHolding(holding)) {
             this.uploadHolding(holding)
             this.setState({
@@ -269,6 +268,7 @@ export default reduxConnect(
     uploadHolding = (holding) => {
         let data = holding
         data.user = 1
+        //data.buyDate += ":00.000+00:00" // fix the date format
 
         this.props.holdingsComponent.post(
             "http://localhost:4000/holdings/add",
@@ -326,6 +326,7 @@ export default reduxConnect(
             //
         }
     }
+
     componentDidUpdate() {
         if (this.state.type != "pot") {
             this.bindings = this.standardBindings

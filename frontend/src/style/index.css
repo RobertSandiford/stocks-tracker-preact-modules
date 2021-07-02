@@ -17,7 +17,7 @@
     align-items: center;*/
     margin: 2vw 3vw;
     justify-content: center;
-    font-size: calc(1.8vmin);
+    font-size: calc(1.8vw);
 }
 
 .App-link {
@@ -37,7 +37,7 @@
 }
 
 input, select, button {
-    font-size: calc(1.8vmin);
+    font-size: calc(1.8vw);
 }
 
 .change-grown {

@@ -2,7 +2,7 @@
 export default function(dispatch) {
 
     return {
-        updateStore: (...args) => {
+        updateStore: (... args) => {
 
             if (args.length === 1) {
 

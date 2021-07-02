@@ -319,22 +319,26 @@ app.post('/holdings/add', async (req, res) => {
 
     let holdingData = req.body
 
-    new Promise( resolve => {
+    new Promise( async resolve => {
 
         console.log( "holdingData", holdingData )
         console.log( "buy date", typeof holdingData.buyDate, holdingData.buyDate )
         if (holdingData.priceCurrency != holdingData.buyCurrency) {
             let buyDate = Luxon.fromISO(holdingData.buyDate)
             console.log( "buy date", holdingData.buyDate, buyDate )
-            assets.getCurrencyExchangeRateUpdateIfNeeded(holdingData.priceCurrency, holdingData.buyCurrency, buyDate, rate => {
+
+            try {
+                let rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(holdingData.priceCurrency, holdingData.buyCurrency, buyDate)
+                
                 console.log( "rate", rate )
                 holdingData.buyUnitPrice = roundDp(holdingData.buyUnitPrice * rate, 2)
                 holdingData.buyTotalPrice = roundDp(holdingData.buyTotalPrice * rate, 2)
    
                 resolve(holdingData)
-            }, err => {
-                console.log("err")
-            })
+            } catch(e) {
+                console.log("err: " + e)
+            }
+
         } else {
             resolve(holdingData)
         }

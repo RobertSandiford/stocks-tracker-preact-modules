@@ -4,6 +4,7 @@
 export function component(c) {
     return `../${c}/${c}`
 }
+
 export function addCurrencySign(num, curr = "USD") {
     num = num.toString()
     let minus;
@@ -119,9 +120,25 @@ export function formatPercentage(p) {
 }
 
 export function objectWithTheseFields(object, fields) {
+    console.log("starting object", object)
+    console.log("desired fields", fields)
     let r = {}
     for (const field of fields) {
         r[field] = object[field]
     }
     return r
+}
+
+
+export function getPercentageChange(start, now) {
+    return ((now / start) - 1) * 100
+}
+
+export function annualisedPercentageChange(start, now, y) {
+    return (Math.pow(now / start, 1 / y) -1) * 100 //// annual rate calculated as exponential
+}
+
+
+export function toPercentage(n) {
+    return ((n * 100).toFixed(6) + '%')
 }

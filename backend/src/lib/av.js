@@ -55,10 +55,13 @@ alpha.forex.dailyExt = (from_symbol, to_symbol, outputsize) => alphafn('FX_DAILY
 
 const { DateTime : Luxon , Settings : LuxonSettings } = require('luxon');
 LuxonSettings.defaultLocale = "en-GB"
-let stDateFormat = Object.assign(Luxon.DATE_MED, { });
+const stDateFormat = Object.assign(Luxon.DATE_MED, { });
 
 const funcs = require("./apiFuncs")
 
+const Asset = require('../models/Asset')
+const AssetData = require('../models/AssetData')
+const CurrencyExchange = require('../models/CurrencyExchange')
 
 
 module.exports.getCurrentPrice = function(ticker, success, failure) {
@@ -78,10 +81,9 @@ module.exports.getCurrentPrice = function(ticker, success, failure) {
 }
 
 
+
 module.exports.getLastAdjustedPrice = async function(ticker) {
     ticker = ticker.toUpperCase()
-
-    let AssetData = require('./models/AssetData')
 
     try {
 
@@ -126,7 +128,6 @@ module.exports.updateAssetDataIfNeeded = function(ticker) {
 module.exports.getDateOfLastPriceData = function(ticker, success, failure) {
     ticker = ticker.toUpperCase()
 
-    let AssetData = require('./models/AssetData')
 
     AssetData.findOne({ ticker : ticker }, null, { sort: { date : "desc" } }, (err, data) => {
         if (err) {
@@ -151,7 +152,6 @@ module.exports.getDateOfLastPriceData = function(ticker, success, failure) {
 module.exports.doWeHaveAssetData = function(ticker, success) {
     ticker = ticker.toUpperCase()
 
-    let AssetData = require('./models/AssetData')
 
     AssetData.findOne({ ticker : ticker }, function (err, assetData) {
         if (err) { console.log(err); return }
@@ -173,7 +173,6 @@ module.exports.createAsset = function(asset) {
     console.log("Create Asset", asset)
     asset.ticker = asset.ticker.toUpperCase()
 
-    let Asset = require('./models/Asset')
 
     new Asset(asset)
     .save((err, createdAsset) => {
@@ -193,7 +192,6 @@ module.exports.createAsset = function(asset) {
 module.exports.assetExists = function(ticker, success) {
     ticker = ticker.toUpperCase()
 
-    let Asset = require('./models/Asset')
 
     Asset.findOne({ ticker : ticker }, function (err, asset) {
         if (err) { console.log(err); return }
@@ -299,7 +297,6 @@ module.exports.loadStockData = function(ticker, baseCurrency, success, failure) 
     .then((data) => {
         let pData = alpha.util.polish(data)
 
-        let AssetData = require('./models/AssetData')
 
         for (const [date, data] of Object.entries(pData.data)) {
             console.log(ticker, date, parseFloat(data.adjusted))
@@ -333,7 +330,6 @@ module.exports.updateStockDataPromise = async function(ticker, baseCurrency, las
     
         let pData = alpha.util.polish(data)
 
-        let AssetData = require('./models/AssetData')
 
         for (const [date, data] of Object.entries(pData.data)) {
             luxonDate = Luxon.fromISO(date)
@@ -388,8 +384,6 @@ module.exports.loadCryptoData = async function(ticker, baseCurrency, success, fa
         let pData = alpha.util.polish(data)
 
         console.log(pData);
-
-        let AssetData = require('./models/AssetData')
     
         for (const [date, data] of Object.entries(pData.data)) {
             console.log(ticker, date, data)
@@ -427,7 +421,6 @@ module.exports.updateCryptoData = function(ticker, baseCurrency, lastDate, succe
 
         let pData = alpha.util.polish(data)
 
-        let AssetData = require('./models/AssetData')
 
         //var i = 0;
 
@@ -460,40 +453,6 @@ module.exports.updateCryptoData = function(ticker, baseCurrency, lastDate, succe
 
 }
 
-/*
-module.exports.getCryptoPrice = async function(ticker, baseCurrency, success, failure) {
-    ticker = ticker.toUpperCase()
-    baseCurr = baseCurr.toUpperCase()
-
-    try {
-        let data = await alpha.forex.rate(ticker, baseCurr)
-
-        let pData = alpha.util.polish(data)
-
-        console.log(pData);
-
-        let AssetData = require('./models/AssetData')
-    
-        for (const [date, data] of Object.entries(pData.data)) {
-            console.log(ticker, date, parseFloat(data.adjusted))
-            new AssetData({
-                ticker : ticker,
-                date : date,
-                price : parseFloat(data.market_close)
-            }).save((err, sd) => {
-                if (err) console.log(err)
-                else console.log(sd.ticker, sd.date, sd.price)
-            })
-        }
-        funcs.callFuncIfExists(success)
-        
-    } catch(err) {
-        console.log(err)
-        funcs.callFuncIfExists(failure, err)
-    }
-
-}
-*/
 
 module.exports.loadCurrencyData = async function(ticker, baseCurrency, success, failure) {
     ticker = ticker.toUpperCase()
@@ -506,7 +465,6 @@ module.exports.loadCurrencyData = async function(ticker, baseCurrency, success, 
 
         console.log(pData);
 
-        let AssetData = require('./models/AssetData')
     
         for (const [date, data] of Object.entries(pData)) {
             //console.log(ticker, date, parseFloat(data.value))
@@ -542,7 +500,6 @@ module.exports.updateCurrencyData = function(ticker, baseCurrency, lastDate, suc
 
         console.log("WWW", pData)
 
-        let AssetData = require('./models/AssetData')
 
         for (const [date, data] of Object.entries(pData)) {
             luxonDate = Luxon.fromISO(date)
@@ -672,7 +629,6 @@ module.exports.doWeHaveCurrencyExchangeData = async function(toCurr, fromCurr, s
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    let CurrencyExchange = require('./models/CurrencyExchange')
 
     CurrencyExchange.findOne({ toCurr : toCurr, fromCurr : fromCurr }, function (err, exchangeData) {
         if (err) { 
@@ -696,7 +652,6 @@ module.exports.doWeHaveRecentCurrencyExchangeDataPromise = async function(toCurr
 
     date = date.toUTC().startOf("day")
 
-    let CurrencyExchange = require('./models/CurrencyExchange')
 
     try {
         let exchangeData = await CurrencyExchange.findOne({ toCurr : toCurr, fromCurr : fromCurr }, null, { sort: { date : "desc" } }).exec()
@@ -738,7 +693,6 @@ module.exports.loadCurrencyExchangeDataPromise = async function(toCurr, fromCurr
         let pData = alpha.util.polish(data)
         console.log(pData);
 
-        let CurrencyExchange = require('./models/CurrencyExchange')
     
         let last = {}
 
@@ -781,7 +735,6 @@ module.exports.updateCurrencyExchangeDataPromise = async function(toCurr, fromCu
         let pData = alpha.util.polish(data)
         console.log(pData);
 
-        let CurrencyExchange = require('./models/CurrencyExchange')
     
         let last = {}
 
@@ -823,7 +776,6 @@ module.exports.loadCurrencyExchangeDataDual = async function(toCurr, fromCurr, s
         let pData = alpha.util.polish(data)
         console.log(pData);
 
-        let CurrencyExchange = require('./models/CurrencyExchange')
     
         for (const [date, data] of Object.entries(pData.data)) {
             //console.log(ticker, date, parseFloat(data.market_close))
@@ -880,7 +832,6 @@ module.exports.getCurrencyExchangeRatePromise = async function(toCurr, fromCurr,
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    let CurrencyExchange = require('./models/CurrencyExchange')
 
     date = date.toUTC().startOf('day')
     try {

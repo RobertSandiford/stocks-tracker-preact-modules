@@ -1,12 +1,12 @@
 // package imports
 import { h, Component } from 'preact'
-import { connect as reduxConnect, useSelector, useDispatch } from 'react-redux'
+import { connect as reduxConnect } from 'react-redux'
 import { dispatchFunction as reduxDispatchFunction, getStoreItems } from '../../redux/functions'
-import { useQuery, gql, ApolloConsumer } from '@apollo/client';
+import { gql } from '@apollo/client';
 
 // project dependencies
 import graph from '../../graph'
-import { component, objectWithTheseFields } from '../functions'
+import { objectWithTheseFields } from '../functions'
 
 // components
 import CurrentHolding from '../CurrentHolding/CurrentHolding'
@@ -59,19 +59,20 @@ export default reduxConnect(
                 }
             }`
 
-            //console.log(query)
 
             // load holdings
-            this.props.apolloClient.query({ query: gql(query)})
+            this.props.apolloClient.query({ query: gql(query) })
             .then( result => {
                 console.log("graphql holdings", result.data)
                 let r = result.data.getHoldings
 
-                let s = objectWithTheseFields(result.data.getHoldings, ["holdings", "groups", "fx"])
+                if ( r !== null ) {
+                    let s = objectWithTheseFields(r, ["holdings", "groups", "fx"])
+                    console.log("update store 1", s)
+                    this.props.updateStore(s)
+                } else {
 
-                console.log("update store 1")
-                this.props.updateStore(s)
-                //this.props.updateStore({ holdings : r.holdings, groups : r.groups, fx : r.fx })
+                }
             });
         }
         
@@ -141,15 +142,9 @@ export default reduxConnect(
 
         this.totals = _.cloneDeep(this.totalsDefault)
 
-        //console.log("current holdings render 1")
-
         if (this.props.holdings.length == 0) return <div id="show-holdings" /> // show nothing until we have holdings
 
         let holdings = this.sort(this.props.holdings)
-
-        //console.log("cc holdings", holdings)
-        //console.log(holdings[6]._id)
-        //console.log("current holdings render", this.state.holdings)
         
         let sort = this.state.sort
 
