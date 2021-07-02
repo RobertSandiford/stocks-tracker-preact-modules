@@ -1,15 +1,7 @@
-/*
-import { combineReducers } from 'redux'
-
-import apolloClientReducer from './apolloClient'
-import holdingsReducer from './holdings'
-import groupsReducer from './groups'
-*/
 
 const baseReducer = (state = {}, {type, payload}) => {
     let s = {...state}
 
-    //console.log("Root reducer", message)
     console.log("Root reducer", type, payload)
 
     
@@ -83,19 +75,9 @@ const baseReducer = (state = {}, {type, payload}) => {
         s.holdings = holdings
     }
 
-
     console.log(s)
 
     return s
 }
-
-/*
-const rootReducer = combineReducers({
-    //baseReducer,
-    apolloClient : apolloClientReducer,
-    holdings : holdingsReducer,
-    groups : groupsReducer,
-})
-*/
 
 export default baseReducer
