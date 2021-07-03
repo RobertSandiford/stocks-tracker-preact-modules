@@ -37,7 +37,7 @@ describe("The holding query", () => {
             }
         }`
         
-        let response = await graphQlRequest(query)
+        const response = await graphQlRequest(query)
 
         expect( response.holding ).not.toBeUndefined()
 

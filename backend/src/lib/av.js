@@ -13,16 +13,16 @@ const alpha = require('alphavantage')({ key: alphaconfig.key });
 alphaconfig.base = `https://www.alphavantage.co/query?apikey=${alphaconfig.key}&`;
 const alphaurl = (params) => {
     params = Object.keys(params || {})
-      .map((type) => {
+        .map((type) => {
             let value = params[type];
             if (value !== undefined) {
                 return `${type}=${value}`;
             }
 
             return undefined;
-      })
-      .filter((value) => value !== undefined)
-      .join('&');
+        })
+        .filter((value) => value !== undefined)
+        .join('&')
 
     return `${alphaconfig.base}${params}`;
 };

@@ -6,11 +6,9 @@
 dotenv = require('dotenv')
 const express = require('express')
 const mongoose = require('mongoose')
-const path = require('path')
 const cors = require('cors')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./graph')
-const { Luxon, LuxonSettings, stDateFormat } = require('./lib/luxon')
 
 const routes = require('./routes')
 
@@ -18,6 +16,7 @@ const routes = require('./routes')
 const createApp = async () => {
 
     dotenv.config()
+
 
     ///////////////////////////
     // Vars/Defines
@@ -41,9 +40,6 @@ const createApp = async () => {
     apolloServer.applyMiddleware({app})
 
     //console.log("graphql path: " + apolloServer.graphqlPath)
-
-
-
 
 
     ///////////////////////////
@@ -112,7 +108,17 @@ const createApp = async () => {
 
     app.use('/', express.static('frontend/build'))
 
+
+    ///////////////////////////
+    // Routes
+    ///////////////////////////
+
     routes(app)
+
+
+    ///////////////////////////
+    // Control Methods
+    ///////////////////////////
 
     let server
 
@@ -125,6 +131,8 @@ const createApp = async () => {
         server.close()
     }
 
+
+    // Return the ready app
     return app
 }
 

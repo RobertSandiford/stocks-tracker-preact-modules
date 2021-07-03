@@ -1,0 +1,24 @@
+{
+    "extends" : "google",
+    "rules" : {
+        "semi" : ["warn", "never"],
+        "object-curly-spacing" : ["error", "always"],
+        "quotes" : "warn",
+        "key-spacing" : "off",
+        "max-len" : "warn",
+        "indent" : ["error", 4],
+        "prefer-const" : "warn",
+        "linebreak-style" : ["error", "windows"],
+        "comma-dangle" : "off",
+        "eol-last" : "warn",
+        "padded-blocks" : "warn",
+    },
+
+    "parserOptions": {
+        "ecmaVersion": 2017
+    },
+
+    "env": {
+        "es6": true
+    }
+}

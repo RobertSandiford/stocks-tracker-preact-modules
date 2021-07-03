@@ -10,7 +10,8 @@
     "docker-watch": "nodemon --legacy-watch src/start.js",
     "both": "(cd frontend && npm run dev) & npm run watch",
     "test": "jest --watch",
-    "testoh": "jest --watch --detectOpenHandles"
+    "testoh": "jest --watch --detectOpenHandles",
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +31,9 @@
   },
   "devDependencies": {
     "@marko/webpack": "^6.2.10",
+    "eslint": "^7.30.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-strongloop": "^2.1.0",
     "graphql": "^15.5.1",
     "graphql-request": "^3.4.0",
     "jest": "^27.0.6",
