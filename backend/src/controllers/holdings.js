@@ -1,5 +1,7 @@
 
 
+const assets = require('../lib/assets')
+
 module.exports.list = async (req, res) => {
 
     let loading = false

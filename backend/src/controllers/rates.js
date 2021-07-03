@@ -1,4 +1,6 @@
 
+const assets = require('../lib/assets')
+
 module.exports.rateGbp = async (req, res) => {
 
     let rateData = await assets.getCurrencyExchangeRateUpdateIfNeededPromise("GBP", "USD", Luxon.local())

@@ -14,12 +14,6 @@ const { DateTime : Luxon , Settings : LuxonSettings } = require('luxon')
 
 const routes = require('./routes')
 
-// assets manager
-const assets = require('./lib/assets')
-// alpha vantage API manager
-//const av = require('./lib/av')
-// funds API manager
-//const funds = require('./lib/funds')
 
 const createApp = async () => {
 

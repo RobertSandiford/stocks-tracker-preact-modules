@@ -1,5 +1,8 @@
+
 _ = {}
 _.cloneDeep = require('lodash.clonedeep')
+
+const assets = require('../lib/assets')
 
 module.exports.getHoldingCurrencyRates = (holding, displayCurrency = "USD") => {
 

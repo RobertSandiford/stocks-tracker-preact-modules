@@ -3,6 +3,8 @@
 //const addHoldingOpenMutation = require('../mutations/addHoldingOpen.js')
 //const addHoldingCloseMutation = require('../mutations/addHoldingClose.js')
 
+const assets = require('../lib/assets')
+
 const Holding = require('../../models/Holding')
 
 const entityName = "Holding"
