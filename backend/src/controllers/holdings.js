@@ -1,139 +1,6 @@
 
-///////////////////////////
-// Deps
-///////////////////////////
 
-require('dotenv').config();
-const express = require('express')
-const mongoose = require('mongoose')
-const path = require('path')
-const cors = require('cors')
-const { ApolloServer } = require('apollo-server-express')
-const { typeDefs, resolvers } = require('./graph')
-const { DateTime : Luxon , Settings : LuxonSettings } = require('luxon');
-
-
-
-// assets manager
-const assets = require('./lib/assets')
-// alpha vantage API manager
-const av = require('./lib/av')
-// funds API manager
-const funds = require('./lib/funds')
-//funds.testFundsApi("GB00B3K73F73")
-
-
-
-///////////////////////////
-// Vars/Defines
-///////////////////////////
-const port = process.env.port || 4000
-const enviro = process.env.enviro
-
-
-
-///////////////////////////
-// Set up
-///////////////////////////
-
-const app = express()
-app.use( cors() )
-app.use(express.json()); // parse JSON input
-
-const apolloServer = new ApolloServer({
-    typeDefs : typeDefs,
-    resolvers : resolvers
-})
-apolloServer.applyMiddleware({app})
-
-console.log("graphql path: " + apolloServer.graphqlPath)
-
-
-// Luxon DateTimes
-LuxonSettings.defaultLocale = "en-GB"
-let stDateFormat = Object.assign(Luxon.DATE_MED, { });
-
-
-///////////////////////////
-// DB
-///////////////////////////
-
-const mongo_url = 'mongodb://<user>:<pass>@<host>:<port>/<db>?retryWrites=true&w=majority'
-    .replace("<host>", process.env.mongo_host)
-    .replace("<port>", process.env.mongo_port)
-    .replace("<user>", process.env.mongo_user)
-    .replace("<pass>", process.env.mongo_pass)
-    .replace("<db>", process.env.mongo_db)
-
-mongoose.connect(
-    mongo_url,
-    { 
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify : false
-    },
-    (err) => {
-        if (err) console.log("Mongoose error? ", err)
-        else console.log("Connected to Mongo DB")
-    },
-)
-
-
-
-///////////////////////////
-// Models
-///////////////////////////
-
-// Load all models
-const models = require('./models')
-
-for (const model in models) {
-    eval(`var ${model} = models[model]`)
-}
-
-
-
-///////////////////////////
-// Static Routes
-///////////////////////////
-
-app.use('/', express.static('frontend/build'))
-
-
-///////////////////////////
-// Routes
-///////////////////////////
-
-/*
-function reloadTemplate(view, template, req, res) {
-    if (enviro == "local") {
-        console.log("reloading template");
-        
-        delete require.cache[require.resolve('./views/includes/head.marko')]
-        delete require.cache[require.resolve('./views/includes/header.marko')]
-        delete require.cache[require.resolve('./views/includes/nav.marko')]
-        delete require.cache[require.resolve('./views/includes/footer.marko')]
-
-        delete require.cache[require.resolve('./views/add-holding.marko')]
-
-        delete require.cache[require.resolve(view)]
-        template = require(view)
-
-    }
-    return template
-}
-*/
-
-app.get('/', (req, res) => {
-
-    res.sendFile('frontend/build/index.html', {root: __dirname })
-    
-})
-
-
-
-app.get('/holdings/list', async (req, res) => {
-
+module.exports.list = async (req, res) => {
 
     let loading = false
     let mainLoading = {}
@@ -294,20 +161,12 @@ app.get('/holdings/list', async (req, res) => {
         }
     );
 
-})
-
-function roundDp(n, m) {
-    let o = Math.pow(10, m)
-    return Math.round( n * o + Number.EPSILON ) / o;
 }
 
 
-function respond(res, response) {
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(response))
-}
 
-app.post('/holdings/add', async (req, res) => {
+/*
+module.exports.holdingsAdd = async (req, res) => {
 
     console.log("adding holding", req.body)
 
@@ -327,7 +186,7 @@ app.post('/holdings/add', async (req, res) => {
                 console.log( "rate", rate )
                 holdingData.buyUnitPrice = roundDp(holdingData.buyUnitPrice * rate, 2)
                 holdingData.buyTotalPrice = roundDp(holdingData.buyTotalPrice * rate, 2)
-   
+
                 resolve(holdingData)
             } catch(e) {
                 console.log("err: " + e)
@@ -380,9 +239,10 @@ app.post('/holdings/add', async (req, res) => {
     })
 
 })
+*/
 
-
-app.post('/holdings/update', (req, res) => {
+/*
+module.exports.holdingsUpdate = (req, res) => {
 
     console.log("updating holding", req.body)
 
@@ -422,11 +282,12 @@ app.post('/holdings/update', (req, res) => {
 
         }
     )
- 
+
 })
+*/
 
-
-app.post('/holdings/remove', (req, res) => {
+/*
+module.exports.holdingsRemove = (req, res) => {
 
     let holding = req.body
     //holding._id = holding.id
@@ -469,136 +330,4 @@ app.post('/holdings/remove', (req, res) => {
     });
 
 })
-
-
-
-app.post('/holdings/open/remove', (req, res) => {
-
-    console.log("removing open", req.body)
-    let data = req.body
-    
-    // save model to database
-    Holding.findOneAndUpdate(
-        { _id : data.holding_id },
-        { '$pull': {
-            opens : { _id : data.open_id }
-        } },
-        { new : true },
-        (err, holding) => {
-            if (err) {
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({
-                    status : "ERROR",
-                    reason : "Could not delete open record"
-                }));
-                return console.error(err);
-            }
-            console.log("Open record deleted Holding: " + data.holding_id + " Open: " + data.open_id);
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status : "OK",
-                holding_id : data.holding_id,
-                open_id : data.open_id,
-                holding : holding
-            }));
-        }
-    );
-
-})
-
-app.post('/holdings/close/save', (req, res) => {
-
-    let holding = req.body
-
-    console.log("saving holding close", holding, holding.close)
-
-    Holding.updateOne(
-        { _id : holding._id },
-        { "$push" : { closes : holding.close } },
-        (err) => {
-
-            if (err) {
-                console.error(err);
-
-                let response = {
-                    status : "ERROR",
-                    reason : "Could not save close info"
-                }
-                respond(res, response)
-
-                return 
-            }
-
-            console.log("Holding updated", holding);
-            
-            //respond
-            let response = {
-                status : "OK",
-                holding : holding
-            }
-            respond(res, response)
-
-        }
-    )
- 
-})
-
-app.post('/holdings/close/remove', (req, res) => {
-
-    console.log("removing close", req.body)
-
-    let data = req.body
-    
-
- 
-    // save model to database
-    Holding.updateOne(
-        { _id : data.holding_id },
-        { '$pull': {
-            closes : { _id : data.close_id }
-        } },
-        (err) => {
-            if (err) {
-                console.error(err);
-
-                let response = {
-                    status : "ERROR",
-                    reason : "Could not delete close record"
-                }
-                respond(res, response)
-
-                return
-            }
-
-            console.log("Close record deleted Holding: " + data.holding_id + " Close: " + data.close_id);
-
-            let response = {
-                status : "OK",
-                holding_id : data.holding_id,
-                close_id : data.close_id,
-            }
-            respond(res, response)
-
-        }
-    );
-
-})
-
-
-
-app.get('/rate/gbp', async (req, res) => {
-
-    let rateData = await assets.getCurrencyExchangeRateUpdateIfNeededPromise("GBP", "USD", Luxon.local())
-
-    let response = {
-        rateData : rateData
-    }
-    respond(res, response)
-    
-})
-
-///////////////////////////
-// Start the Server!
-///////////////////////////
-
-app.listen(port, () => console.log("Listening on port " + port))
+*/
