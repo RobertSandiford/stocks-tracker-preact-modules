@@ -602,23 +602,23 @@ module.exports.updateCurrencyExchangeDataIfNeededPromise = async function(toCurr
             module.exports.loadCurrencyExchangeDataPromise(toCurr, fromCurr)
             .then( () => {
                 console.log("loaded")
+                funcs.callFuncIfExists(success, toCurr + " " + fromCurr + " data loaded")
                 return toCurr + " " + fromCurr + " data loaded"
-                //funcs.callFuncIfExists(success, toCurr + " " + fromCurr + " data loaded")
             })
             .catch( err => {
                 console.log(err)
+                funcs.callFuncIfExists(failure, err)
                 return
-                //funcs.callFuncIfExists(failure, err)
             })
         } else {
             console.log("existed")
+            funcs.callFuncIfExists(success, toCurr + " " + fromCurr + " data existed")
             return toCurr + " " + fromCurr + " data existed"
-            //funcs.callFuncIfExists(success, toCurr + " " + fromCurr + " data existed")
         }
     } catch(err) {
         console.log(err)
+        funcs.callFuncIfExists(failure)
         return
-        //funcs.callFuncIfExists(failure)
     }
 }
 

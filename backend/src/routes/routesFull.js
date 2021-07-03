@@ -64,7 +64,7 @@ module.exports = (app) => {
 
                         // fetch exchange rate data if needed
                         if (holding.buyCurrency != "USD") {
-                            /*assets.updateCurrencyExchangeDataIfNeeded(holding.buyCurrency, "USD", Luxon.local(),
+                            /*assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local(),
                                 () => { console.log("fetched currency exchange data") },
                                 () => { console.log("error fetching currency exchange data") })*/
 
@@ -246,7 +246,7 @@ module.exports = (app) => {
 
                 // fetch exchange rate data if needed
                 if (holding.buyCurrency != "USD") {
-                    assets.updateCurrencyExchangeDataIfNeeded(holding.buyCurrency, "USD", Luxon.local(),
+                    assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local(),
                         () => { console.log("fetched currency exchange data") },
                         () => { console.log("error fetching currency exchange data") })
                 }

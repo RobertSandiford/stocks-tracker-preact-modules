@@ -23,9 +23,9 @@ const mutations = {
             buyUnitPrice : Float!
             buyTotalPrice : Float
             buyDate : Date!
-        ) : HoldingMutationResponse!`,
+        ) : UpdateHoldingResponse!`,
 
-        resolver : async (parentObject, {user, holding_id, quantity, buyUnitPrice, buyTotalPrice, buyDate}) => {
+        mutator : async (parentObject, {user, holding_id, quantity, buyUnitPrice, buyTotalPrice, buyDate}) => {
 
             let open = {
                 quantity,

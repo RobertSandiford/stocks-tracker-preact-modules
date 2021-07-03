@@ -1,4 +1,5 @@
 
+
 _ = {}
 _.cloneDeep = require('lodash.clonedeep')
 
@@ -9,7 +10,7 @@ module.exports.getHoldingCurrencyRates = (holding, displayCurrency = "USD") => {
     let holding = _.cloneDeep(holding)
 
     if (holding.priceCurrency != displayCurrency) {
-        /*assets.updateCurrencyExchangeDataIfNeeded(holding.buyCurrency, "USD", Luxon.local(),
+        /*assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local(),
             () => { console.log("fetched currency exchange data") },
             () => { console.log("error fetching currency exchange data") })*/
 

@@ -6,7 +6,7 @@ const { GraphQLClient : GraphQlClient, request : graphqlRequest, gql } = require
 
 let app
 
-const port = process.env.port || console.log("Error, no port specified in .env")
+const port = (Number(process.env.port) + 1) || console.log("Error, no port specified in .env")
 
 const graphQlEndpoint = `http://localhost:${port}/graphql`
 const graphQlClient = new GraphQlClient(graphQlEndpoint, { headers: {} })
@@ -14,7 +14,7 @@ const graphQlRequest = graphQlClient.request.bind(graphQlClient)
 
 beforeAll( async () => {
     app = await createApp()
-    await app.start()
+    await app.start(port)
 })
 
 /*
@@ -45,14 +45,34 @@ describe("The holding query", () => {
 
 })
 
-/*
+
 describe("The addHolding mutation", () => {
-    test('A holding can be added', () => {
-        supertest(app)
-            .post('/graphql')
+    test('A holding can be added', async () => {
+
+        const query = gql`mutation {
+            addHolding(holdingData: {
+                name: "Test"
+                ticker: "ABC"
+                quantity: 1
+            }) {
+                holding {
+                    _id
+                    name
+                    ticker
+                }
+            }
+        }`
+        
+        let response = await graphQlRequest(query)
+
+        //console.log(response)
+
+        expect( response.addHolding ).not.toBeUndefined()
+        expect( response.addHolding.holding ).not.toBeNull()
+
     })
 })
-*/
+
 
 /*
 describe("The updateHolding mutation", () => {

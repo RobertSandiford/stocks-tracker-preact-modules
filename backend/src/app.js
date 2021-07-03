@@ -10,7 +10,7 @@ const path = require('path')
 const cors = require('cors')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./graph')
-const { DateTime : Luxon , Settings : LuxonSettings } = require('luxon')
+const { Luxon, LuxonSettings, stDateFormat } = require('./lib/luxon')
 
 const routes = require('./routes')
 
@@ -22,7 +22,7 @@ const createApp = async () => {
     ///////////////////////////
     // Vars/Defines
     ///////////////////////////
-    const port = process.env.port || 4000
+    const defaultPort = process.env.port || 4000
     const enviro = process.env.enviro
 
 
@@ -40,12 +40,10 @@ const createApp = async () => {
     })
     apolloServer.applyMiddleware({app})
 
-    console.log("graphql path: " + apolloServer.graphqlPath)
+    //console.log("graphql path: " + apolloServer.graphqlPath)
 
 
-    // Luxon DateTimes
-    LuxonSettings.defaultLocale = "en-GB"
-    let stDateFormat = Object.assign(Luxon.DATE_MED, { });
+
 
 
     ///////////////////////////
@@ -83,7 +81,7 @@ const createApp = async () => {
                 useFindAndModify : false
             }
         )
-        console.log("Connected to Mongo DB")
+        //console.log("Connected to Mongo DB")
         //app.dbConnection = mongoose.connection
     } catch(e) {
         console.log("Mongoose connection error? ", e)
@@ -118,10 +116,10 @@ const createApp = async () => {
 
     let server
 
-    app.start = () => {
+    app.start = (port = defaultPort) => {
         server = app.listen(port, () => console.log("Listening on port " + port))
     }
-
+    
     app.stop = () => {
         app.dbDisconnect()
         server.close()

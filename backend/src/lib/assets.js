@@ -23,7 +23,6 @@ module.exports.getLastPrice = async function(ticker, baseCurrency) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
     
-
     try {
 
         let data = await AssetData.findOne({ ticker : ticker, baseCurrency : baseCurrency }).sort({ date : "desc" }).exec()
@@ -142,72 +141,72 @@ module.exports.loadAssetDataIfNeeded = function(ticker, type, baseCurrency, succ
 module.exports.loadAssetData = function(ticker, baseCurrency, type, success, failure) {
     ticker = ticker.toUpperCase()
 
-    console.log("==look for asset data==")
-    console.log(type)
+    //console.log("==look for asset data==")
+    //console.log(type)
 
     switch(type) {
         case "stock":
-            console.log("==stock==")
+            //console.log("==stock==")
             av.loadStockData(
                 ticker,
                 baseCurrency,
                 () => { // success
-                    console.log("found asset data as stock")
+                    //console.log("found asset data as stock")
                     funcs.callFuncIfExists(success)
                 },
                 () => {
-                    console.log("didn't find asset data as a stock")
+                    //console.log("didn't find asset data as a stock")
                     funcs.callFuncIfExists(failure)
                 }
             )
             break;
         case "crypto":
-            console.log("==crypto==")
+            //console.log("==crypto==")
             av.loadCryptoData(
                 ticker,
                 baseCurrency,
                 () => { // success
-                    console.log("found asset data a a crypto")
+                    //console.log("found asset data a a crypto")
                     funcs.callFuncIfExists(success)
                 },
                 () => {
-                    console.log("didn't find asset data as a crypto")
+                    //console.log("didn't find asset data as a crypto")
                     funcs.callFuncIfExists(failure)
                 }
             )
             break;
         case "currency":
-            console.log("==currency==")
+            //console.log("==currency==")
             av.loadCurrencyData(
                 ticker,
                 baseCurrency,
                 () => { // success
-                    console.log("found asset data a a currency")
+                    //console.log("found asset data a a currency")
                     funcs.callFuncIfExists(success)
                 },
                 () => {
-                    console.log("didn't find asset data as a currency")
+                    //console.log("didn't find asset data as a currency")
                     funcs.callFuncIfExists(failure)
                 }
             )
             break;
         case "fund":
-            console.log("==fund==")
+            //console.log("==fund==")
             funds.loadFundData(
                 ticker,
                 baseCurrency,
                 () => { // success
-                    console.log("found asset data as a fund")
+                    //console.log("found asset data as a fund")
                     funcs.callFuncIfExists(success)
                 },
                 () => {
-                    console.log("didn't find asset data as a fund")
+                    //console.log("didn't find asset data as a fund")
                     funcs.callFuncIfExists(failure)
                 }
             )
             break;
         case "custom":
-            console.log("==custom==")
+            //console.log("==custom==")
             funcs.callFuncIfExists(success)
             break;
     }
@@ -526,8 +525,8 @@ module.exports.updateAssetData = function(ticker, lastDate, success, failure) {
 
 
 module.exports.loadCurrencyExchangeDataIfNeeded = av.loadCurrencyExchangeDataIfNeeded
-module.exports.updateCurrencyExchangeDataIfNeeded = av.updateCurrencyExchangeDataIfNeeded
-module.exports.getCurrencyExchangeRate = av.getCurrencyExchangeRate
-module.exports.getCurrencyExchangeRateUpdateIfNeeded = av.getCurrencyExchangeRateUpdateIfNeeded
-module.exports.getCurrencyExchangeRateUpdateIfNeededAwaitable = av.getCurrencyExchangeRateUpdateIfNeededAwaitable
+module.exports.updateCurrencyExchangeDataIfNeededPromise = av.updateCurrencyExchangeDataIfNeededPromise
+module.exports.getCurrencyExchangeRatePromise = av.getCurrencyExchangeRatePromise
+//module.exports.getCurrencyExchangeRateUpdateIfNeeded = av.getCurrencyExchangeRateUpdateIfNeeded
+//module.exports.getCurrencyExchangeRateUpdateIfNeededAwaitable = av.getCurrencyExchangeRateUpdateIfNeededAwaitable
 module.exports.getCurrencyExchangeRateUpdateIfNeededPromise = av.getCurrencyExchangeRateUpdateIfNeededPromise
