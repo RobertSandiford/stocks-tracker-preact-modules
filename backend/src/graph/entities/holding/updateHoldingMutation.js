@@ -17,7 +17,7 @@ module.exports = {
         format : "(holdingData : HoldingInput!) : UpdateHoldingResponse!",
         mutator : async (parentEntity, updatedHolding) => { 
 
-            console.log("updating holding")
+            console.log("updating holding", updatedHolding)
 
             let currTime = Luxon.local().toISO();
             console.log("currTime", currTime)
@@ -28,8 +28,8 @@ module.exports = {
             try {
 
                 const holdingDocument = await Holding.findOneAndUpdate(
-                    { _id : holding._id },
-                    holding,
+                    { _id : updatedHolding._id },
+                    updatedHolding,
                     { new : true }
                 ).lean()
 

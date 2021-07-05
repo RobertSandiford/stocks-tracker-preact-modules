@@ -2,6 +2,7 @@
 const { Luxon, LuxonSettings, stDateFormat } = require('../../../lib/luxon')
 const assets = require('../../../lib/assets')
 const Holding = require('../../../models/Holding')
+const { roundDp } = require('../../../actions/functions')
 
 
 //addHoldingMutation
@@ -71,7 +72,7 @@ module.exports = {
                     console.log(response)
                     return response
 
-                } catch(e) {
+                } catch (e) {
                     console.log("error:", e)
                     const response = {
                         status : "ERROR",
@@ -81,7 +82,7 @@ module.exports = {
                     return response
                 }
 
-            } catch(e) {
+            } catch (e) {
                 console.log("err: " + e)
             }
 

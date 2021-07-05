@@ -3,7 +3,7 @@
 // Deps
 ///////////////////////////
 
-dotenv = require('dotenv')
+const dotenv = require('dotenv')
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -21,8 +21,8 @@ const createApp = async () => {
     ///////////////////////////
     // Vars/Defines
     ///////////////////////////
-    const defaultPort = process.env.port || 4000
     const enviro = process.env.enviro
+    const defaultPort = process.env.port || 4000
 
 
     ///////////////////////////
@@ -31,11 +31,11 @@ const createApp = async () => {
 
     const app = express()
     app.use( cors() )
-    app.use(express.json()); // parse JSON input
+    app.use(express.json()) // parse JSON input
 
     const apolloServer = new ApolloServer({
-        typeDefs : typeDefs,
-        resolvers : resolvers
+        typeDefs,
+        resolvers
     })
     apolloServer.applyMiddleware({app})
 
@@ -46,46 +46,26 @@ const createApp = async () => {
     // DB
     ///////////////////////////
 
-    const mongo_url = 'mongodb://<user>:<pass>@<host>:<port>/<db>?retryWrites=true&w=majority'
+    const mongoUrl = 'mongodb://<user>:<pass>@<host>:<port>/<db>?retryWrites=true&w=majority'
         .replace("<host>", process.env.mongo_host)
         .replace("<port>", process.env.mongo_port)
         .replace("<user>", process.env.mongo_user)
         .replace("<pass>", process.env.mongo_pass)
         .replace("<db>", process.env.mongo_db)
 
-/*
-    mongoose.connect(
-        mongo_url,
-        { 
+    try {
+        await mongoose.connect(mongoUrl, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useFindAndModify : false
-        },
-        (err) => {
-            if (err) console.log("Mongoose error? ", err)
-            else console.log("Connected to Mongo DB")
-        },
-    )
-*/
-
-    try {
-        let dbResult = await mongoose.connect(
-            mongo_url,
-            { 
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useFindAndModify : false
-            }
-        )
-        //console.log("Connected to Mongo DB")
-        //app.dbConnection = mongoose.connection
-    } catch(e) {
+        })
+        console.log("Connected to Mongo DB")
+    } catch (e) {
         console.log("Mongoose connection error? ", e)
     }
 
     app.dbDisconnect = () => {
         mongoose.connection.close()
-        //app.dbConnection.close()
     }
 
 

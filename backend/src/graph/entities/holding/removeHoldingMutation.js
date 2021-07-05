@@ -10,19 +10,19 @@ module.exports = {
             RemoveHoldingResponse : `{
                 status : String!
                 reason : String
-                _id : ID
+                holdingId : ID
             }`
         },
-        format : "(_id : ID!) : RemoveHoldingResponse!",
-        mutator : async (parentEntity, {_id}) => { 
+        format : "(holdingId : ID!) : RemoveHoldingResponse!",
+        mutator : async (parentEntity, {holdingId}) => { 
         
-            console.log("removing holding with id ", _id)
+            console.log("removing holding with id ", holdingId)
 
-            if ( ! _id ) { console.log("exiting remove holding because _id is not set/valid"); return }
+            if ( ! holdingId ) { console.log("exiting remove holding because _id is not set/valid"); return }
            
             // delete holding
             try {
-                const filter = { _id : _id }
+                const filter = { _id : holdingId }
                 const result = await Holding.deleteOne(filter)
 
                 if (result.deletedCount === 0) {
@@ -34,11 +34,11 @@ module.exports = {
                     return response
                 }
 
-                console.log("Holding deleted with id: " + _id);
+                console.log("Holding deleted with id: " + holdingId);
                 console.log("result: ", result)
                 const response = {
                     status : "OK",
-                    _id : _id
+                    _id : holdingId
                 }
                 console.log("response: ", response)
                 return response
@@ -48,7 +48,7 @@ module.exports = {
                 const response = {
                     status : "ERROR",
                     reason : "Could not delete record",
-                    holdingId : _id
+                    holdingId : holdingId
                 }
                 console.log("response:" + response)
                 return response

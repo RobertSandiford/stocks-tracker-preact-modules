@@ -144,7 +144,7 @@ module.exports.loadAssetData = function(ticker, baseCurrency, type, success, fai
     //console.log("==look for asset data==")
     //console.log(type)
 
-    switch(type) {
+    switch (type) {
         case "stock":
             //console.log("==stock==")
             av.loadStockData(

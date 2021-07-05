@@ -1,8 +1,5 @@
 
-require('dotenv').config();
-
-const port = process.env.port || 4000
-const enviro = process.env.enviro
+require('dotenv').config()
 
 const { createApp } = require('./app')
 

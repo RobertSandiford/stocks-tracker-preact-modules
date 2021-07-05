@@ -1,20 +1,7 @@
 
-const Holding = require('../../models/Holding')
+const Holding = require('../../../models/Holding')
 
-const entityName = "HoldingClose"
-
-const type = `{
-    _id : ID!
-    name : String
-    quantity : Float
-    sellUnitPrice : Float
-    sellTotalPrice : Float
-    sellDate : Date
-    sellRate : Float
-    fees : Float
-}`
-
-const mutations =  {
+module.exports = {
     addHoldingClose : {
         format : `(
             user : Int
@@ -25,9 +12,9 @@ const mutations =  {
             sellDate : Date!
         ) : UpdateHoldingResponse!`,
 
-        mutator : (parentObject, {user, _id, quantity, sellUnitPrice, sellTotalPrice, sellDate}) => { 
+        mutator : (parentObject, { user, _id, quantity, sellUnitPrice, sellTotalPrice, sellDate }) => {
 
-            let close = {
+            const close = {
                 quantity,
                 sellUnitPrice,
                 sellTotalPrice,
@@ -48,7 +35,7 @@ const mutations =  {
                         }
                     }
         
-                    console.log("Holding updated", holding);
+                    console.log("Holding updated", holding)
                     return {
                         status : "OK",
                         holding : holding
@@ -56,12 +43,5 @@ const mutations =  {
                 }
             )
         }
-    }
-}
-
-module.exports = {
-    [entityName] : {
-        type,
-        mutations
     }
 }

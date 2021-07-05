@@ -1,13 +1,13 @@
+const { Luxon } = require('../../lib/luxon')
 
-
-_ = {}
+const _ = {}
 _.cloneDeep = require('lodash.clonedeep')
 
 const assets = require('../lib/assets')
 
-module.exports.getHoldingCurrencyRates = (holding, displayCurrency = "USD") => {
+module.exports.getHoldingCurrencyRates = (tempHolding, displayCurrency = "USD") => {
 
-    let holding = _.cloneDeep(holding)
+    const holding = _.cloneDeep(tempHolding)
 
     if (holding.priceCurrency != displayCurrency) {
         /*assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local(),

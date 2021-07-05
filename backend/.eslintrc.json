@@ -1,23 +1,48 @@
 {
     "extends" : "google",
     "rules" : {
+        "no-undef" : "error",
         "semi" : ["warn", "never"],
-        "object-curly-spacing" : ["error", "always"],
-        "quotes" : "warn",
+        "object-curly-spacing" : ["off", "always"],
+        "quotes" : "off",
         "key-spacing" : "off",
-        "max-len" : "warn",
-        "indent" : ["error", 4],
+        "max-len" : ["warn", 110],
+        "indent" : ["error", 4, {
+            "MemberExpression" : "off"
+        }],
         "prefer-const" : "warn",
         "linebreak-style" : ["error", "windows"],
         "comma-dangle" : "off",
-        "eol-last" : "warn",
-        "padded-blocks" : "warn",
+        "eol-last" : "off",
+        "padded-blocks" : "off",
+        "no-trailing-spaces" : ["warn", { "skipBlankLines": true }],
+        "arrow-parens" : ["off", "as-needed"],
+        "camelcase": "warn",
+        "operator-linebreak" : ["warn", "before"],
+        "no-multiple-empty-lines" : ["warn", { "max" : 3, "maxBOF" : 1, "maxEOF" : 3 }],
+        "no-unused-vars" : "warn",
+        "spaced-comment" : "off",
+        "keyword-spacing": ["error", { "overrides": {} } ],
+        "guard-for-in" : "off",
+        "brace-style" : ["error", "1tbs", { "allowSingleLine": true }],
+        "block-spacing" : ["error", "always"],
+        "object-shorthand" : ["warn", "always"],
+        "prefer-spread" : "warn",
+        "space-before-function-paren" : ["warn", {
+            "anonymous" : "always"
+        }]
     },
-
+    "globals": {
+        "module": "readonly",
+        "require": "readonly",
+        "process": "readonly",
+        "console": "readonly",
+        "__dirname": "readonly",
+        "setTimeout": "readonly"
+    },
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": 2018
     },
-
     "env": {
         "es6": true
     }

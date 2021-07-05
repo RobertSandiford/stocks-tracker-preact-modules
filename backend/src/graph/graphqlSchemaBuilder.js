@@ -1,4 +1,3 @@
-const { gql } = require('apollo-server-express')
 
 module.exports = function (input) {
 
@@ -17,7 +16,6 @@ module.exports = function (input) {
     let schemaQueryResolvers = {}
     let schemaMutations = []
     let schemaMutators = {}
-
 
 
     for ( const scalarName in scalars ) {
@@ -87,7 +85,7 @@ module.exports = function (input) {
     typeDefs += `}\n`
 
 
-    let resolvers = {
+    const resolvers = {
         ...schemaResolvers,
         Query : schemaQueryResolvers,
         Mutation : schemaMutators,
@@ -163,7 +161,6 @@ module.exports = function (input) {
 
     typeDefs = gql(typeDefs)
     ////// end typeDefs
-
 
 
 

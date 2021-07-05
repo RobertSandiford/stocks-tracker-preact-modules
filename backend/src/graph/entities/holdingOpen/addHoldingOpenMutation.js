@@ -1,51 +1,38 @@
 
-const Holding = require('../../models/Holding')
+const Holding = require('../../../models/Holding')
 
-const entityName = "HoldingOpen"
-
-const type = `{
-    _id : ID!
-    name : String
-    quantity : Float
-    buyUnitPrice : Float
-    buyTotalPrice : Float
-    buyDate : Date
-    buyRate : Float
-    fees : Float
-}`
-
-const mutations = {
+module.exports = {
     addHoldingOpen : {
         format : `(
             user : Int
-            holding_id : ID!
+            holdingId : ID!
             quantity : Float!
             buyUnitPrice : Float!
             buyTotalPrice : Float
             buyDate : Date!
         ) : UpdateHoldingResponse!`,
 
-        mutator : async (parentObject, {user, holding_id, quantity, buyUnitPrice, buyTotalPrice, buyDate}) => {
+        mutator : async (parentObject, {user, holdingId, quantity, buyUnitPrice, buyTotalPrice, buyDate}) => {
 
-            let open = {
+            const open = {
                 quantity,
                 buyUnitPrice,
                 buyTotalPrice,
                 buyDate
             }
 
-            console.log("saving holding open graphql", holding_id, open)
+            console.log("saving holding open graphql", holdingId, open)
         
-            let p = Holding.findOneAndUpdate(
-                { _id : holding_id },
+            const p = Holding.findOneAndUpdate(
+                { _id : holdingId },
                 { "$push" : { opens : open } },
                 { new : true }
             )
-            .then( (holding) => {
-                console.log("Holding updated", holding);
+            .then( holding => {
+                console.log("Holding updated", holding)
                 return {
                     status : "OK",
-                    holding : holding
+                    holding
                 }
             })
             .catch( err => {
@@ -59,12 +46,5 @@ const mutations = {
             return p
 
         }
-    }
-}
-
-module.exports = {
-    [entityName] : {
-        type,
-        mutations
     }
 }

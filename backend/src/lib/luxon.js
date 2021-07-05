@@ -1,4 +1,4 @@
-const { DateTime : Luxon , Settings : LuxonSettings } = require('luxon')
+const { DateTime : Luxon, Settings : LuxonSettings } = require('luxon')
 
 // Luxon DateTimes
 LuxonSettings.defaultLocale = "en-GB"

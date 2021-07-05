@@ -1,6 +1,9 @@
 
-
 const assets = require('../lib/assets')
+const { Luxon, LuxonSettings, stDateFormat } = require('../lib/luxon')
+const Holding = require('../models/Holding')
+
+
 
 module.exports.list = async (req, res) => {
 
@@ -25,7 +28,7 @@ module.exports.list = async (req, res) => {
                 mainLoading["currency_" + toCurr] = false
             },
             () => { 
-                console.log("error fetching currency exchange data") 
+                console.log("error fetching currency exchange data")
                 mainLoading["currency_" + toCurr] = false
             })
         loading = true
@@ -148,7 +151,7 @@ module.exports.list = async (req, res) => {
 
             console.log("responding")
 
-            response = {
+            const response = {
                 status : "OK",
                 holdings : holdings,
                 groups : groups
@@ -159,177 +162,8 @@ module.exports.list = async (req, res) => {
             //console.log(response)
 
             res.setHeader('Content-Type', 'application/json');
-            res.send(response);  
-        }
-    );
-
-}
-
-
-
-/*
-module.exports.holdingsAdd = async (req, res) => {
-
-    console.log("adding holding", req.body)
-
-    let holdingData = req.body
-
-    new Promise( async resolve => {
-
-        console.log( "holdingData", holdingData )
-        console.log( "buy date", typeof holdingData.buyDate, holdingData.buyDate )
-        if (holdingData.priceCurrency != holdingData.buyCurrency) {
-            let buyDate = Luxon.fromISO(holdingData.buyDate)
-            console.log( "buy date", holdingData.buyDate, buyDate )
-
-            try {
-                let rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(holdingData.priceCurrency, holdingData.buyCurrency, buyDate)
-                
-                console.log( "rate", rate )
-                holdingData.buyUnitPrice = roundDp(holdingData.buyUnitPrice * rate, 2)
-                holdingData.buyTotalPrice = roundDp(holdingData.buyTotalPrice * rate, 2)
-
-                resolve(holdingData)
-            } catch(e) {
-                console.log("err: " + e)
-            }
-
-        } else {
-            resolve(holdingData)
-        }
-
-    }).then( holdingData => {
-
-        let holding = new Holding(holdingData)
-
-        console.log("adding holding 2", holding, typeof holding.buyUnitPrice, holding.buyUnitPrice)
-
-        // save model to database
-        holding.save(function (err, holding) {
-            if (err) {
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({
-                    status : "ERROR",
-                    reason : "Could not save record"
-                }));
-                return console.error(err);
-            }
-            console.log("Holding saved", holding);
-            holding = holding.toObject()
-            //holding.id = holding._id
-            
-            console.log("Holding id updated", holding);
-
-            // fetch historical holding price data if there is none
-            assets.loadAssetDataIfNeeded(holding.ticker, holding.type)
-
-            // fetch exchange rate data if needed
-            if (holding.buyCurrency != "USD") {
-                assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local(),
-                    () => { console.log("fetched currency exchange data") },
-                    () => { console.log("error fetching currency exchange data") })
-            }
-            
-            //respond
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status : "OK",
-                holding : holding
-            }))
-        })
-
-    })
-
-})
-*/
-
-/*
-module.exports.holdingsUpdate = (req, res) => {
-
-    console.log("updating holding", req.body)
-
-    let holding = req.body
-
-    let currTime = Luxon.local().toISO();
-    console.log("currTime", currTime)
-    holding.currentPriceDate = currTime
-
-    console.log("try update", holding)
-
-    Holding.findOneAndUpdate(
-        { _id : holding._id },
-        holding,
-        { new : true }
-    ).lean().exec(
-        (err, newHolding) => {
-
-            if (err) {
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({
-                    status : "ERROR",
-                    reason : "Could not update record"
-                }));
-                return console.error(err);
-            }
-
-
-            console.log(newHolding)
-            
-            //respond
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status : "OK",
-                holding : newHolding
-            }));
-
+            res.send(response);
         }
     )
 
-})
-*/
-
-/*
-module.exports.holdingsRemove = (req, res) => {
-
-    let holding = req.body
-    //holding._id = holding.id
-
-    console.log("removing holding", holding)
-
-    if ( ! holding._id ) { console.log("exiting remove holding because _id is not set/valid"); return }
-
-    // delete holding
-    Holding.deleteOne(holding, (err, result) => {
-        if (err) {
-            res.setHeader('Content-Type', 'application/json');
-            let response = {
-                status : "ERROR",
-                reason : "Could not delete record"
-            }
-            res.end(JSON.stringify(response));
-            return console.error("error", err, response);
-        }
-
-        if (result.deletedCount === 0) {
-            res.setHeader('Content-Type', 'application/json');
-            let response = {
-                status : "NOOP",
-                reason : "No records deleted"
-            }
-            res.end(JSON.stringify(response));
-            return console.log("response: ", response)
-        }
-
-        console.log("Holding deleted " + holding._id);
-        console.log("result: ", result)
-        res.setHeader('Content-Type', 'application/json');
-        let response = {
-            status : "OK",
-            _id : holding._id
-        }
-        res.end(JSON.stringify(response));
-        return console.log("response: ", response)
-    });
-
-})
-*/
+}

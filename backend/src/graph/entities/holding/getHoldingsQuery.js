@@ -56,7 +56,7 @@ module.exports = {
                 console.log("responding", holdings.length, holdings)
                 console.log(typeof holdings[0].buyDate, holdings[0].buyDate)
         
-                response = {
+                const response = {
                     status : "OK",
                     reason : null,
                     holdings : holdings,
@@ -66,7 +66,7 @@ module.exports = {
         
                 return response
             
-            } catch(error) {
+            } catch (error) {
                 console.log(error)
             }
         
