@@ -65,7 +65,7 @@ module.exports.getDateOfLastPricePromise = async function (ticker, type, baseCur
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
-    console.log("checking date of last price", ticker, type, baseCurrency)
+    //console.log("checking date of last price", ticker, type, baseCurrency)
 
     try {
 

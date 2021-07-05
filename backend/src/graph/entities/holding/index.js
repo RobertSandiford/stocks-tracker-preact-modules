@@ -30,6 +30,13 @@ priceCurrency : String
 currentPriceDate : Date
 currentRate : Float`
 
+const holdingType = `{
+    _id : ID!
+    ${typeCore}
+    opens : [HoldingOpen],
+    closes : [HoldingClose]
+}`
+
 const holdingInput = `{
     ${typeCore}
 }`
@@ -38,10 +45,6 @@ const holdingWithIdInput = `{
     ${typeCore}
 }`
 
-const holdingType = `{
-    _id : ID!
-    ${typeCore}
-}`
 
 module.exports = {
     [entityName] : {
