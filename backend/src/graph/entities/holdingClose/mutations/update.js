@@ -1,5 +1,5 @@
 
-const Holding = require('../../../models/Holding')
+const Holding = require('../../../../models/Holding')
 
 
 module.exports = {
@@ -12,14 +12,14 @@ module.exports = {
                 holdingClose : ID!
             }`
         },
-        format : "(holdingId : ID!, holdingClose : HoldingClose) : UpdateHoldingCloseResponse",
-        mutator : (parentObject, {holdingId, holdingClose}) => {
+        format : "(holdingId : ID!, holdingCloseInput : HoldingCloseInput) : UpdateHoldingCloseResponse",
+        mutator : (parentObject, {holdingId, holdingCloseInput}) => {
         
-            console.log("saving holding close", holdingId, holdingClose)
+            console.log("saving holding close", holdingId, holdingCloseInput)
         
             Holding.updateOne(
                 { _id : holdingId },
-                { "$push" : { closes : holdingClose } },
+                { "$push" : { closes : holdingCloseInput } },
                 (err, holding) => {
         
                     if (err) {

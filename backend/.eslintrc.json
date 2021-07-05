@@ -8,7 +8,8 @@
         "key-spacing" : "off",
         "max-len" : ["warn", 110],
         "indent" : ["error", 4, {
-            "MemberExpression" : "off"
+            "MemberExpression" : "off",
+            "SwitchCase": 1
         }],
         "prefer-const" : "warn",
         "linebreak-style" : ["error", "windows"],
@@ -18,7 +19,7 @@
         "no-trailing-spaces" : ["warn", { "skipBlankLines": true }],
         "arrow-parens" : ["off", "as-needed"],
         "camelcase": "warn",
-        "operator-linebreak" : ["warn", "before"],
+        "operator-linebreak" : ["off", "before"],
         "no-multiple-empty-lines" : ["warn", { "max" : 3, "maxBOF" : 1, "maxEOF" : 3 }],
         "no-unused-vars" : "warn",
         "spaced-comment" : "off",
@@ -32,7 +33,8 @@
             "anonymous" : "always"
         }],
         "require-jsdoc" : "off",
-        "new-cap" : "off"
+        "new-cap" : "off",
+        "curly" : "off"
     },
     "globals": {
         "module": "readonly",

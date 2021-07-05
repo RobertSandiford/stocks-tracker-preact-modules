@@ -1,21 +1,27 @@
 
-const addMutation = require('./addMutation')
-const updateMutation = require('./updateMutation')
-const deleteMutation = require('./deleteMutation')
+const addMutation = require('./mutations/add')
+const updateMutation = require('./mutations/update')
+const deleteMutation = require('./mutations/delete')
 
 const entityName = "HoldingClose"
+
+const typeCore =
+`name : String
+quantity : Float
+sellUnitPrice : Float
+sellTotalPrice : Float
+sellDate : Date
+sellRate : Float
+fees : Float`
 
 module.exports = {
     [entityName] : {
         type : `{
             _id : ID!
-            name : String
-            quantity : Float
-            sellUnitPrice : Float
-            sellTotalPrice : Float
-            sellDate : Date
-            sellRate : Float
-            fees : Float
+            ${typeCore}
+        }`,
+        input : `{
+            ${typeCore}
         }`,
         mutations : {
             ...addMutation,

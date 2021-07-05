@@ -42,7 +42,7 @@ const fillHoldingPrice = async (holding) => {
 
     const p = await assets.getLastPricePromise(holding.ticker, holding.priceCurrency)
 
-    console.log("got price for " + holding.ticker, p)
+    //console.log("got price for " + holding.ticker, p)
 
     if (p != null) {
         holding.currentUnitPrice = p.price
@@ -57,7 +57,7 @@ const fillBuyRate = async (holding, displayCurrency) => {
     const rateData = await goodBadPromise(
         () => assets.getCurrencyExchangeRateUpdateIfNeededPromise(displayCurrency, holding.buyCurrency, date)
     )
-    console.log(rateData)
+    //console.log(rateData)
     if ( ! rateData.error ) holding.buyRate = rateData.value.rate
 }
 
@@ -76,7 +76,7 @@ const fillCurrentRate = async (holding, displayCurrency) => {
 
 const getHolding = async (user, _id, displayCurrency, secondCurrency) => {
     try {
-        console.log("get the holding")
+        //console.log("get the holding")
         const holding = await Holding.findOne({ user, _id }).lean().exec()
 
         return module.exports.populateHolding(holding, displayCurrency, secondCurrency)
@@ -96,10 +96,10 @@ const populateHolding = async (holding, displayCurrency, secondCurrency) => {
         // if it's not a custom holding, see if we can get the price
         if ( holding.type != "custom") {
 
-            console.log("holding 0", holding)
+            //console.log("holding 0", holding)
             // populate the price
             await fillHoldingPrice(holding, displayCurrency, secondCurrency)
-            console.log("holding 1", holding)
+            //console.log("holding 1", holding)
         }
 
         console.log("currs", holding.buyCurrency, holding.priceCurrency, displayCurrency)
@@ -109,7 +109,7 @@ const populateHolding = async (holding, displayCurrency, secondCurrency) => {
         if (holding.buyCurrency != displayCurrency) {
             //let buyDate = Luxon.fromJSDate(holding.buyDate)
 
-            console.log("get buy exchange rate", displayCurrency, holding.buyCurrency)
+            //console.log("get buy exchange rate", displayCurrency, holding.buyCurrency)
             await fillBuyRate(holding, displayCurrency)
         }
 
@@ -117,15 +117,15 @@ const populateHolding = async (holding, displayCurrency, secondCurrency) => {
         if (holding.priceCurrency != displayCurrency) {
             //let buyDate = Luxon.fromJSDate(holding.buyDate)
 
-            console.log("get price exchange rate", displayCurrency, holding.priceCurrency)
+            //console.log("get price exchange rate", displayCurrency, holding.priceCurrency)
             await fillCurrentRate(holding, displayCurrency)
         }
 
-        console.log("now respond", holding)
+        //console.log("now respond", holding)
         return holding
     
     } catch (error) {
-        console.log(error)
+        //console.log(error)
     }
 
 }

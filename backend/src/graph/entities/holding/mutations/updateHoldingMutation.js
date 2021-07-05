@@ -1,7 +1,7 @@
 
-const { Luxon, LuxonSettings, stDateFormat } = require('../../../lib/luxon')
-const assets = require('../../../lib/assets')
-const Holding = require('../../../models/Holding')
+const { Luxon, LuxonSettings, stDateFormat } = require('../../../../lib/luxon')
+const assets = require('../../../../lib/assets')
+const Holding = require('../../../../models/Holding')
 
 // updateHoldingMutation
 
@@ -14,33 +14,37 @@ module.exports = {
                 holding : Holding
             }`
         },
-        format : "(holdingData : HoldingInput!) : UpdateHoldingResponse!",
-        mutator : async (parentEntity, updatedHolding) => {
+        format : "(holdingData : HoldingWithIdInput!) : UpdateHoldingResponse!",
+        mutator : async (parentEntity, {holdingData}) => {
 
-            console.log("updating holding", updatedHolding)
+            const updatedHolding = holdingData
+
+            //console.log("updating holding", updatedHolding)
 
             const currTime = Luxon.local().toISO()
-            console.log("currTime", currTime)
+            //console.log("currTime", currTime)
             updatedHolding.currentPriceDate = currTime
 
-            console.log("try update", updatedHolding)
+            //console.log("try update", updatedHolding)
 
             try {
 
                 const holdingDocument = await Holding.findOneAndUpdate(
                     { _id : updatedHolding._id },
                     updatedHolding,
-                    { new : true }
-                ).lean()
+                    {
+                        returnNewDocument : true,
+                        lean : true
+                    }
+                )
 
-                console.log(holdingDocument)
                     
                 //respond
                 const response = {
                     status : "OK",
                     holding : holdingDocument
                 }
-                console.log(response)
+                //console.log("response", response)
                 return response
 
             } catch (e) {
@@ -49,7 +53,7 @@ module.exports = {
                     status : "ERROR",
                     reason : "Could not update record"
                 }
-                console.log(response)
+                //console.log("response", response)
                 return response
             }
 

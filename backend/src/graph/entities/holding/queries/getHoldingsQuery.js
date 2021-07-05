@@ -1,5 +1,7 @@
 
-const { fillFx, populateHolding } = require('../../../lib/data')
+const { fillFx, populateHolding } = require('../../../../lib/data')
+const Holding = require('../../../../models/Holding')
+
 
 module.exports = {
     getHoldings : {
@@ -21,13 +23,13 @@ module.exports = {
         ) : GetHoldingsResponse`,
 
         resolver : async (parentEntity, {user, displayCurrency, secondCurrency}) => {
-            const Holding = require('../../models/Holding')
+            
         
-            console.log("look for holdings", user)
+            //console.log("look for holdings", user)
         
             try {
                 const holdings = await Holding.find({ user })/*.skip(0)*//*.limit(229)*/.exec()
-                console.log(holdings)
+                //console.log(holdings)
         
         
                 // main currency exchange rates
@@ -53,8 +55,8 @@ module.exports = {
         
         
                 // respond
-                console.log("responding", holdings.length, holdings)
-                console.log(typeof holdings[0].buyDate, holdings[0].buyDate)
+                //console.log("responding", holdings.length, holdings)
+                //console.log(typeof holdings[0].buyDate, holdings[0].buyDate)
         
                 const response = {
                     status : "OK",

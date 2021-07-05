@@ -1,8 +1,6 @@
 const assets = require('../../../lib/assets')
 const { Luxon } = require('../../../lib/luxon')
 
-
-
 const entityName = "ExchangeRate"
 
 module.exports = {
@@ -16,7 +14,7 @@ module.exports = {
         queries : {
             exchangeRate : {
                 format : "(toCurr : String!, fromCurr : String!) : ExchangeRate",
-                query : async (parentObject, {toCurr, fromCurr}) => {
+                resolver : async (parentObject, {toCurr, fromCurr}) => {
                     const rateData = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(
                         toCurr, fromCurr, Luxon.local()
                     )

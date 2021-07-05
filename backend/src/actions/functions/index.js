@@ -1,9 +1,10 @@
 const { Luxon } = require('../../lib/luxon')
+const assets = require('../../lib/assets')
+
 
 const _ = {}
 _.cloneDeep = require('lodash.clonedeep')
 
-const assets = require('../lib/assets')
 
 /*
 module.exports.getHoldingCurrencyRates = (tempHolding, displayCurrency = "USD") => {

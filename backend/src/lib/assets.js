@@ -65,7 +65,6 @@ module.exports.getDateOfLastPricePromise = async function (ticker, type, baseCur
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
-
     console.log("checking date of last price", ticker, type, baseCurrency)
 
     try {
@@ -143,70 +142,70 @@ module.exports.loadAssetData = function (ticker, baseCurrency, type, success, fa
     //console.log(type)
 
     switch (type) {
-    case "stock":
+        case "stock":
         //console.log("==stock==")
-        av.loadStockData(
-            ticker,
-            baseCurrency,
-            () => { // success
+            av.loadStockData(
+                ticker,
+                baseCurrency,
+                () => { // success
                 //console.log("found asset data as stock")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
                 //console.log("didn't find asset data as a stock")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "crypto":
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "crypto":
         //console.log("==crypto==")
-        av.loadCryptoData(
-            ticker,
-            baseCurrency,
-            () => { // success
+            av.loadCryptoData(
+                ticker,
+                baseCurrency,
+                () => { // success
                 //console.log("found asset data a a crypto")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
                 //console.log("didn't find asset data as a crypto")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "currency":
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "currency":
         //console.log("==currency==")
-        av.loadCurrencyData(
-            ticker,
-            baseCurrency,
-            () => { // success
+            av.loadCurrencyData(
+                ticker,
+                baseCurrency,
+                () => { // success
                 //console.log("found asset data a a currency")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
                 //console.log("didn't find asset data as a currency")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "fund":
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "fund":
         //console.log("==fund==")
-        funds.loadFundData(
-            ticker,
-            baseCurrency,
-            () => { // success
+            funds.loadFundData(
+                ticker,
+                baseCurrency,
+                () => { // success
                 //console.log("found asset data as a fund")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
                 //console.log("didn't find asset data as a fund")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "custom":
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "custom":
         //console.log("==custom==")
-        funcs.callFuncIfExists(success)
-        break
+            funcs.callFuncIfExists(success)
+            break
     }
 }
 
@@ -300,6 +299,7 @@ module.exports.updateAssetDataIfNeededPromise = async function (ticker, type, ba
     }
 
 }
+
 /*
 module.exports.updateAssetDataIfNeeded = function(holding) {
     ticker = ticker.toUpperCase()
@@ -328,74 +328,74 @@ module.exports.updateAssetData = function (ticker, type, baseCurrency, lastDate,
     console.log(type)
 
     switch (type) {
-    case "stock":
-        console.log("==stock==")
-        av.updateStockData(
-            ticker,
-            baseCurrency,
-            lastDate,
-            () => { // success
-                console.log("found asset data as stock")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
-                console.log("didn't find asset data as a stock")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "crypto":
-        console.log("==crypto==")
-        av.updateCryptoData(
-            ticker,
-            baseCurrency,
-            lastDate,
-            () => { // success
-                console.log("found asset data a a crypto")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
-                console.log("didn't find asset data as a crypto")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "currency":
-        console.log("==currency==")
-        av.updateCurrencyData(
-            ticker,
-            baseCurrency,
-            lastDate,
-            () => { // success
-                console.log("found asset data a a currency")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
-                console.log("didn't find asset data as a currency")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "fund":
-        console.log("==fund==")
-        funds.updateFundData(
-            ticker,
-            baseCurrency,
-            lastDate,
-            () => { // success
-                console.log("found asset data a a fund")
-                funcs.callFuncIfExists(success)
-            },
-            () => {
-                console.log("didn't find asset data as a fund")
-                funcs.callFuncIfExists(failure)
-            }
-        )
-        break
-    case "custom":
-        console.log("==custom==")
-        funcs.callFuncIfExists(success)
-        break
+        case "stock":
+            //console.log("==stock==")
+            av.updateStockData(
+                ticker,
+                baseCurrency,
+                lastDate,
+                () => { // success
+                    console.log("found asset data as stock")
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
+                    console.log("didn't find asset data as a stock")
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "crypto":
+            //console.log("==crypto==")
+            av.updateCryptoData(
+                ticker,
+                baseCurrency,
+                lastDate,
+                () => { // success
+                    console.log("found asset data a a crypto")
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
+                    console.log("didn't find asset data as a crypto")
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "currency":
+            //console.log("==currency==")
+            av.updateCurrencyData(
+                ticker,
+                baseCurrency,
+                lastDate,
+                () => { // success
+                    console.log("found asset data a a currency")
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
+                    console.log("didn't find asset data as a currency")
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "fund":
+            //console.log("==fund==")
+            funds.updateFundData(
+                ticker,
+                baseCurrency,
+                lastDate,
+                () => { // success
+                    console.log("found asset data a a fund")
+                    funcs.callFuncIfExists(success)
+                },
+                () => {
+                    console.log("didn't find asset data as a fund")
+                    funcs.callFuncIfExists(failure)
+                }
+            )
+            break
+        case "custom":
+            //console.log("==custom==")
+            funcs.callFuncIfExists(success)
+            break
     }
 }
 
@@ -404,65 +404,65 @@ module.exports.updateAssetDataPromise = async function (ticker, type, baseCurren
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
-    console.log("==update asset==")
-    console.log(type)
+    //console.log("==update asset==")
+    //console.log(type)
 
     switch (type) {
-    case "stock":
-        console.log("==stock==")
-        try {
-            const success = await av.updateStockDataPromise(ticker, baseCurrency, lastDate)
-            if (success) {
-                console.log("found asset data as stock", ticker)
-            } else {
-                console.log("didn't find asset data as a stock", ticker)
+        case "stock":
+            //console.log("==stock==")
+            try {
+                const success = await av.updateStockDataPromise(ticker, baseCurrency, lastDate)
+                if (success) {
+                    console.log("found asset data as stock", ticker)
+                } else {
+                    console.log("didn't find asset data as a stock", ticker)
+                }
+            } catch (err) {
+                console.log(err)
             }
-        } catch (err) {
-            console.log(err)
-        }
-        break
-    case "crypto":
-        console.log("==crypto==")
-        try {
-            const success = await av.updateCryptoData(ticker, baseCurrency, lastDate)
-            if (success) {
-                console.log("found asset data a a crypto", ticker)
-            } else {
-                console.log("didn't find asset data as a crypto", ticker)
+            break
+        case "crypto":
+            //console.log("==crypto==")
+            try {
+                const success = await av.updateCryptoData(ticker, baseCurrency, lastDate)
+                if (success) {
+                    console.log("found asset data a a crypto", ticker)
+                } else {
+                    console.log("didn't find asset data as a crypto", ticker)
+                }
+            } catch (err) {
+                console.log(err)
             }
-        } catch (err) {
-            console.log(err)
-        }
-        break
-    case "currency":
-        console.log("==currency==")
-        try {
-            const success = await av.updateCurrencyData(ticker, baseCurrency, lastDate)
-            if (success) {
-                console.log("found asset data as a currency", ticker)
-            } else {
-                console.log("didn't find asset data as a currency", ticker)
+            break
+        case "currency":
+            //console.log("==currency==")
+            try {
+                const success = await av.updateCurrencyData(ticker, baseCurrency, lastDate)
+                if (success) {
+                    console.log("found asset data as a currency", ticker)
+                } else {
+                    console.log("didn't find asset data as a currency", ticker)
+                }
+            } catch (err) {
+                console.log(err)
             }
-        } catch (err) {
-            console.log(err)
-        }
-        break
-    case "fund":
-        console.log("==fund==")
-        try {
-            const success = await funds.updateFundData(ticker, baseCurrency, lastDate)
-            if (success) {
-                console.log("found asset data a a fund")
-            } else {
-                console.log("didn't find asset data as a fund")
+            break
+        case "fund":
+            //console.log("==fund==")
+            try {
+                const success = await funds.updateFundData(ticker, baseCurrency, lastDate)
+                if (success) {
+                    console.log("found asset data a a fund")
+                } else {
+                    console.log("didn't find asset data as a fund")
+                }
+            } catch (err) {
+                console.log(err)
             }
-        } catch (err) {
-            console.log(err)
-        }
-        break
-    case "custom":
-        console.log("==custom==")
-        break
+            break
+        case "custom":
+            //console.log("==custom==")
+            break
     }
 }
 

@@ -1,6 +1,6 @@
 
-const assets = require('../../../lib/assets')
-const Holding = require('../../../models/Holding')
+const assets = require('../../../../lib/assets')
+const Holding = require('../../../../models/Holding')
 
 // removeHoldingMutation
 
@@ -16,7 +16,7 @@ module.exports = {
         format : "(holdingId : ID!) : RemoveHoldingResponse!",
         mutator : async (parentEntity, {holdingId}) => {
         
-            console.log("removing holding with id ", holdingId)
+            //console.log("removing holding with id ", holdingId)
 
             if ( ! holdingId ) { console.log("exiting remove holding because _id is not set/valid"); return }
            
@@ -30,17 +30,17 @@ module.exports = {
                         status : "NOOP",
                         reason : "No records deleted"
                     }
-                    console.log("response: ", response)
+                    //console.log("removeHolding response: ", response)
                     return response
                 }
 
-                console.log("Holding deleted with id: " + holdingId)
-                console.log("result: ", result)
+                //console.log("Holding deleted with id: " + holdingId)
+                //console.log("result: ", result)
                 const response = {
                     status : "OK",
                     _id : holdingId
                 }
-                console.log("response: ", response)
+                //console.log("removeHolding response: ", response)
                 return response
 
             } catch (e) {
@@ -50,7 +50,7 @@ module.exports = {
                     reason : "Could not delete record",
                     holdingId
                 }
-                console.log("response:" + response)
+                //console.log("removeHolding response:" + response)
                 return response
             }
 

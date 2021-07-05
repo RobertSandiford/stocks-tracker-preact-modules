@@ -1,8 +1,8 @@
 
-const { Luxon, LuxonSettings, stDateFormat } = require('../../../lib/luxon')
-const assets = require('../../../lib/assets')
-const Holding = require('../../../models/Holding')
-const { roundDp } = require('../../../actions/functions')
+const { Luxon, LuxonSettings, stDateFormat } = require('../../../../lib/luxon')
+const assets = require('../../../../lib/assets')
+const Holding = require('../../../../models/Holding')
+const { roundDp } = require('../../../../actions/functions')
 
 
 //addHoldingMutation
@@ -16,29 +16,29 @@ module.exports = {
                 holding : Holding
             }`
         },
-        format : "(holdingData : HoldingInput!) : AddHoldingResponse!",
-        mutator : async (parentEntity, { holdingData }) => {
+        format : "(holdingInput : HoldingInput!) : AddHoldingResponse!",
+        mutator : async (parentEntity, { holdingInput }) => {
 
-            console.log("adding holding", holdingData)
+            //console.log("adding holding", holdingInput)
 
-            //console.log( "buy date", typeof holdingData.buyDate, holdingData.buyDate )
+            //console.log( "buy date", typeof holdingInput.buyDate, holdingInput.buyDate )
 
             try {
 
-                if (holdingData.priceCurrency != holdingData.buyCurrency) {
+                if (holdingInput.priceCurrency != holdingInput.buyCurrency) {
                     
                     // get the exchange rate
 
-                    const buyDate = Luxon.fromISO(holdingData.buyDate)
-                    console.log( "buy date", holdingData.buyDate, buyDate )
+                    const buyDate = Luxon.fromISO(holdingInput.buyDate)
+                    //console.log( "buy date", holdingInput.buyDate, buyDate )
 
-                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(holdingData.priceCurrency, holdingData.buyCurrency, buyDate)
-                    console.log( "rate", rate )
-                    holdingData.buyUnitPrice = roundDp(holdingData.buyUnitPrice * rate, 2)
-                    holdingData.buyTotalPrice = roundDp(holdingData.buyTotalPrice * rate, 2)
+                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(holdingInput.priceCurrency, holdingInput.buyCurrency, buyDate)
+                    //console.log( "rate", rate )
+                    holdingInput.buyUnitPrice = roundDp(holdingInput.buyUnitPrice * rate, 2)
+                    holdingInput.buyTotalPrice = roundDp(holdingInput.buyTotalPrice * rate, 2)
                 }
 
-                let holding = new Holding(holdingData)
+                let holding = new Holding(holdingInput)
 
                 //console.log("adding holding 2", holding, typeof holding.buyUnitPrice, holding.buyUnitPrice)
 
@@ -46,7 +46,7 @@ module.exports = {
                 try {
                     const result = await holding.save()
 
-                    console.log("Holding saved", result, holding)
+                    //console.log("Holding saved", result, holding)
                     holding = holding.toObject()
                     //holding.id = holding._id
                     
@@ -59,7 +59,7 @@ module.exports = {
                     if ( holding.buyCurrency !== "USD" && holding.buyCurrency !== undefined ) {
                         try {
                             await assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local())
-                            console.log("fetched currency exchange data")
+                            //console.log("fetched currency exchange data")
                         } catch (e) {
                             console.log("error", e)
                         }
@@ -69,7 +69,7 @@ module.exports = {
                         status : "OK",
                         holding
                     }
-                    console.log(response)
+                    //console.log(response)
                     return response
 
                 } catch (e) {
@@ -78,7 +78,7 @@ module.exports = {
                         status : "ERROR",
                         reason : "Could not save record"
                     }
-                    console.log(response)
+                    //console.log(response)
                     return response
                 }
 

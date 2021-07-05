@@ -1,5 +1,5 @@
 
-const Holding = require('../../../models/Holding')
+const Holding = require('../../../../models/Holding')
 
 module.exports = {
     removeHoldingClose : {

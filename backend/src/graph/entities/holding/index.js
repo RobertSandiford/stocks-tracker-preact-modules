@@ -1,80 +1,78 @@
 
-const getHoldingsQuery = require('./getHoldingsQuery')
+const getHoldingQuery = require('./queries/getHoldingQuery')
+const getHoldingsQuery = require('./queries/getHoldingsQuery')
 
-const addHoldingMutation = require('./addHoldingMutation')
-const updateHoldingMutation = require('./updateHoldingMutation')
-const removeHoldingMutation = require('./removeHoldingMutation')
+const addHoldingMutation = require('./mutations/addHoldingMutation')
+const updateHoldingMutation = require('./mutations/updateHoldingMutation')
+const removeHoldingMutation = require('./mutations/removeHoldingMutation')
 
 const Holding = require('../../../models/Holding')
 
 const entityName = "Holding"
 
+const typeCore = `name : String
+ticker : String
+exchangeName : String
+exchangeTicker : String
+type : String
+group : String
+region : String
+quantity : Float
+buyUnitPrice : Float
+buyTotalPrice : Float
+buyCurrency : String
+buyDate : Date
+buyRate : Float
+fees : Float
+currentUnitPrice : Float
+currentTotalPrice : Float
+priceCurrency : String
+currentPriceDate : Date
+currentRate : Float`
+
 const holdingInput = `{
-    name : String
-    ticker : String
-    exchangeName : String
-    exchangeTicker : String
-    type : String
-    group : String
-    region : String
-    quantity : Float
-    buyUnitPrice : Float
-    buyTotalPrice : Float
-    buyCurrency : String
-    buyDate : Date
-    buyRate : Float
-    fees : Float
-    currentUnitPrice : Float
-    currentTotalPrice : Float
-    priceCurrency : String
-    currentPriceDate : Date
-    currentRate : Float
+    ${typeCore}
+}`
+const holdingWithIdInput = `{
+    _id : ID
+    ${typeCore}
 }`
 
 const holdingType = `{
     _id : ID!
-    name : String
-    ticker : String
-    exchangeName : String
-    exchangeTicker : String
-    type : String
-    group : String
-    region : String
-    quantity : Float
-    buyUnitPrice : Float
-    buyTotalPrice : Float
-    buyCurrency : String
-    buyDate : Date
-    buyRate : Float
-    fees : Float
-    currentUnitPrice : Float
-    currentTotalPrice : Float
-    priceCurrency : String
-    currentPriceDate : Date
-    currentRate : Float
-    opens : [HoldingOpen]
-    closes : [HoldingClose]
+    ${typeCore}
 }`
 
 module.exports = {
     [entityName] : {
         type : holdingType,
-        input : holdingInput,
+        types : {
+            GetHoldingReponse : `{
+                status : String!
+                reason : String
+                holding : Holding
+            }`
+        },
+        inputs : {
+            HoldingInput : holdingInput,
+            HoldingWithIdInput : holdingWithIdInput,
+        },
         queries : {
             holding : {
-                format : "(_id : ID!) : Holding!",
-                resolver : (parentEntity, {_id}) => {
-                    const filter = { _id }
+                format : "(holdingId : ID!) : Holding",
+                resolver : (parentEntity, {holdingId}) => {
+                    const filter = { _id : holdingId }
                     return Holding.findOne(filter)
                 },
             },
             holdings : {
-                format : "(userId : ID!) : Holding!",
+                format : "(userId : ID!) : [Holding]",
                 resolver : (parentEntity, {userId}) => {
                     const filter = { userId }
                     return Holding.findMany(filter)
                 },
             },
+            ...getHoldingQuery,
             ...getHoldingsQuery
         },
         mutations : {
