@@ -1,6 +1,4 @@
 
-const { DateTime : Luxon, Settings : LuxonSettings } = require('luxon')
-const assets = require('../../lib/assets')
 const data = require('../../lib/data')
 
 const { getHolding } = require('../../lib/data')

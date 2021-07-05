@@ -2,9 +2,8 @@
 const mongoose = require('mongoose')
 
 // date-times
-const { DateTime : Luxon, Settings : LuxonSettings } = require('luxon')
-LuxonSettings.defaultLocale = "en-GB"
-const stDateFormat = Object.assign(Luxon.DATE_MED, { })
+
+const { Luxon } = require('./luxon')
 
 // alpha vantage API manager
 const av = require('./av')
