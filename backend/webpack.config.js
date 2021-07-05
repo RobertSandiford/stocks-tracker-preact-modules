@@ -1,18 +1,18 @@
 module.exports = {
     entry: "./server.js",
     output: {
-      path: __dirname,
-      filename: "static/bundle.js"
+        path: __dirname,
+        filename: "static/bundle.js"
     },
     resolve: {
-      extensions: [".js", ".marko"]
+        extensions: [".js", ".marko"]
     },
     module: {
-      rules: [
-        {
-          test: /\.marko$/,
-          loader: "@marko/webpack/loader"
-        }
-      ]
+        rules: [
+            {
+                test: /\.marko$/,
+                loader: "@marko/webpack/loader"
+            }
+        ]
     }
-  };
+}

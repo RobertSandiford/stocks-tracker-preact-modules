@@ -15,11 +15,11 @@ module.exports = {
             }`
         },
         format : "(holdingData : HoldingInput!) : UpdateHoldingResponse!",
-        mutator : async (parentEntity, updatedHolding) => { 
+        mutator : async (parentEntity, updatedHolding) => {
 
             console.log("updating holding", updatedHolding)
 
-            let currTime = Luxon.local().toISO();
+            const currTime = Luxon.local().toISO()
             console.log("currTime", currTime)
             updatedHolding.currentPriceDate = currTime
 

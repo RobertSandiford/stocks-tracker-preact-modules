@@ -17,7 +17,7 @@ module.exports = {
             }`
         },
         format : "(holdingData : HoldingInput!) : AddHoldingResponse!",
-        mutator : async (parentEntity, { holdingData }) => { 
+        mutator : async (parentEntity, { holdingData }) => {
 
             console.log("adding holding", holdingData)
 
@@ -29,10 +29,10 @@ module.exports = {
                     
                     // get the exchange rate
 
-                    let buyDate = Luxon.fromISO(holdingData.buyDate)
+                    const buyDate = Luxon.fromISO(holdingData.buyDate)
                     console.log( "buy date", holdingData.buyDate, buyDate )
 
-                    let rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(holdingData.priceCurrency, holdingData.buyCurrency, buyDate)
+                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(holdingData.priceCurrency, holdingData.buyCurrency, buyDate)
                     console.log( "rate", rate )
                     holdingData.buyUnitPrice = roundDp(holdingData.buyUnitPrice * rate, 2)
                     holdingData.buyTotalPrice = roundDp(holdingData.buyTotalPrice * rate, 2)
@@ -46,7 +46,7 @@ module.exports = {
                 try {
                     const result = await holding.save()
 
-                    console.log("Holding saved", result, holding);
+                    console.log("Holding saved", result, holding)
                     holding = holding.toObject()
                     //holding.id = holding._id
                     
@@ -67,7 +67,7 @@ module.exports = {
                     
                     const response = {
                         status : "OK",
-                        holding : holding
+                        holding
                     }
                     console.log(response)
                     return response

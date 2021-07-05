@@ -63,7 +63,7 @@ describe("The addHolding mutation", () => {
             }
         }`
         
-        let response = await graphQlRequest(query)
+        const response = await graphQlRequest(query)
 
         //console.log(response)
 

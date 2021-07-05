@@ -24,7 +24,7 @@ module.exports = {
             console.log("saving holding close graphql", _id, close)
         
             Holding.updateOne(
-                { _id : _id },
+                { _id },
                 { "$push" : { closes : close } },
                 (err, holding) => {
                     if (err) {
@@ -38,7 +38,7 @@ module.exports = {
                     console.log("Holding updated", holding)
                     return {
                         status : "OK",
-                        holding : holding
+                        holding
                     }
                 }
             )

@@ -8,14 +8,14 @@ module.exports = function (input) {
     const mutations = input.mutations || {}
     const entities = input.entities || {}
 
-    let schemaTypes = []
-    let schemaInputs = []
-    let schemaScalars = []
-    let schemaResolvers = {}
-    let schemaQueries = []
-    let schemaQueryResolvers = {}
-    let schemaMutations = []
-    let schemaMutators = {}
+    const schemaTypes = []
+    const schemaInputs = []
+    const schemaScalars = []
+    const schemaResolvers = {}
+    const schemaQueries = []
+    const schemaQueryResolvers = {}
+    const schemaMutations = []
+    const schemaMutators = {}
 
 
     for ( const scalarName in scalars ) {

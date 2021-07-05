@@ -1,16 +1,16 @@
 
-const { DateTime : Luxon , Settings : LuxonSettings } = require('luxon')
+const { DateTime : Luxon, Settings : LuxonSettings } = require('luxon')
 const assets = require('./assets')
 
 const Holding = require('../models/Holding')
 
 
-function goodBadPromise(f) {
+function goodBadPromise (f) {
     return new Promise( async (resolve, reject) => {
         try {
-            let r = await f()
+            const r = await f()
             resolve({ value : r })
-        } catch(err) {
+        } catch (err) {
             resolve({ error : err })
         }
     })
@@ -20,14 +20,14 @@ function goodBadPromise(f) {
 // changes the passed object
 const fillFx = async (fx, toCurr, fromCurr) => {
     try {
-        let rateData = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(toCurr, fromCurr, Luxon.local())
+        const rateData = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(toCurr, fromCurr, Luxon.local())
        
         fx.toCurr = toCurr
-        fx.fromCurr = fromCurr 
+        fx.fromCurr = fromCurr
         fx.date = Luxon.fromJSDate(rateData.date).toUTC()
         fx.rate = rateData.rate
 
-    } catch(err) {
+    } catch (err) {
         console.log("error fetching currency exchange data", err)
     }
 }
@@ -40,21 +40,21 @@ const fillHoldingPrice = async (holding) => {
     // check if data is outdated, and fetch new data if needed
     await assets.updateAssetDataIfNeededPromise(holding.ticker, holding.type, holding.buyCurrency)
 
-    let p = await assets.getLastPricePromise(holding.ticker, holding.priceCurrency)
+    const p = await assets.getLastPricePromise(holding.ticker, holding.priceCurrency)
 
     console.log("got price for " + holding.ticker, p)
 
     if (p != null) {
         holding.currentUnitPrice = p.price
         holding.currentPriceDate = p.date
-    } 
+    }
 
     if (holding.ticker == "USD") holding.currentUnitPrice = holding.buyUnitPrice
 }
 
 const fillBuyRate = async (holding, displayCurrency) => {
-    let date = Luxon.fromJSDate(holding.buyDate)
-    let rateData = await goodBadPromise(
+    const date = Luxon.fromJSDate(holding.buyDate)
+    const rateData = await goodBadPromise(
         () => assets.getCurrencyExchangeRateUpdateIfNeededPromise(displayCurrency, holding.buyCurrency, date)
     )
     console.log(rateData)
@@ -62,8 +62,8 @@ const fillBuyRate = async (holding, displayCurrency) => {
 }
 
 const fillCurrentRate = async (holding, displayCurrency) => {
-    let date = Luxon.local()
-    let rateData = await goodBadPromise(
+    const date = Luxon.local()
+    const rateData = await goodBadPromise(
         () => assets.getCurrencyExchangeRateUpdateIfNeededPromise(displayCurrency, holding.priceCurrency, date)
     )
     if ( ! rateData.error ) {
@@ -77,10 +77,10 @@ const fillCurrentRate = async (holding, displayCurrency) => {
 const getHolding = async (user, _id, displayCurrency, secondCurrency) => {
     try {
         console.log("get the holding")
-        let holding = await Holding.findOne({ user : user, _id : _id }).lean().exec()
+        const holding = await Holding.findOne({ user, _id }).lean().exec()
 
         return module.exports.populateHolding(holding, displayCurrency, secondCurrency)
-    } catch(error) {
+    } catch (error) {
         console.log(error)
     }
 }
@@ -124,7 +124,7 @@ const populateHolding = async (holding, displayCurrency, secondCurrency) => {
         console.log("now respond", holding)
         return holding
     
-    } catch(error) {
+    } catch (error) {
         console.log(error)
     }
 

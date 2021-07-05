@@ -12,7 +12,7 @@
     "test": "jest --watch",
     "testoh": "jest --watch --detectOpenHandles",
     "lint": "eslint --ignore-path .gitignore .",
-    "fix": "eslint --fix-dry-run --fix-type suggestion --fix-type layout ./src/actions/functions/index.js"
+    "fix": "eslint --fix --fix-type suggestion --fix-type layout ."
   },
   "author": "",
   "license": "ISC",

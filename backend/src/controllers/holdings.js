@@ -8,26 +8,26 @@ const Holding = require('../models/Holding')
 module.exports.list = async (req, res) => {
 
     let loading = false
-    let mainLoading = {}
+    const mainLoading = {}
 
 
-    let currencies = [req.query.displayCurrency, req.query.secondCurrency]
-    let fx = {}
+    const currencies = [req.query.displayCurrency, req.query.secondCurrency]
+    const fx = {}
 
-    let groups = []
+    const groups = []
 
     for (const c of currencies) {
         if (c === "USD") continue // skip USD, which we are using as de-facto base currency
 
-        let toCurr = c
-        let fromCurr = "USD"
+        const toCurr = c
+        const fromCurr = "USD"
         assets.getCurrencyExchangeRateUpdateIfNeeded(toCurr, fromCurr, Luxon.local(),
-            (rate) => { 
+            (rate) => {
                 //console.log("fetched currency exchange data, rate: " + rate)
                 fx[toCurr] = rate
                 mainLoading["currency_" + toCurr] = false
             },
-            () => { 
+            () => {
                 console.log("error fetching currency exchange data")
                 mainLoading["currency_" + toCurr] = false
             })
@@ -59,40 +59,40 @@ module.exports.list = async (req, res) => {
                             () => { console.log("fetched currency exchange data") },
                             () => { console.log("error fetching currency exchange data") })*/
 
-                        let buyDate = Luxon.fromJSDate(holding.buyDate)
+                        const buyDate = Luxon.fromJSDate(holding.buyDate)
                         //console.log("buyDate", buyDate.toISO())
 
-                        let toCurr = "USD"
+                        const toCurr = "USD"
                         //let key = "buyRate"
                         assets.getCurrencyExchangeRateUpdateIfNeeded(toCurr, holding.buyCurrency, buyDate,
-                            (rate) => { 
+                            (rate) => {
                                 //console.log("fetched currency exchange data, rate: " + rate)
                                 
-                                let key = "buyRate"
+                                const key = "buyRate"
                                 console.log("key should be buyRate", key)
                                 holdings[i][key] = {}
                                 holdings[i][key][toCurr] = rate
                                 delete holdings[i].loading[key]
                             },
-                            () => { 
-                                let key = "buyRate"
-                                console.log("error fetching currency exchange data") 
+                            () => {
+                                const key = "buyRate"
+                                console.log("error fetching currency exchange data")
                                 delete holdings[i].loading[key]
                             })
 
                         //key = "currentRate"
                         assets.getCurrencyExchangeRateUpdateIfNeeded(toCurr, holding.buyCurrency, Luxon.local(),
-                            (rate) => { 
+                            (rate) => {
                                 //console.log("fetched currency exchange data, rate: " + rate)
-                                let key = "currentRate"
+                                const key = "currentRate"
                                 console.log("key should be currentRate", key)
                                 holdings[i][key] = {}
                                 holdings[i][key][toCurr] = rate
                                 delete holdings[i].loading[key]
                             },
-                            () => { 
-                                let key = "currentRate"
-                                console.log("error fetching currency exchange data") 
+                            () => {
+                                const key = "currentRate"
+                                console.log("error fetching currency exchange data")
                                 delete holdings[i].loading[key]
                             })
 
@@ -107,17 +107,17 @@ module.exports.list = async (req, res) => {
                         //console.log("next")
                     }
 
-                    let p = await assets.getLastPrice(holding.ticker, holding.buyCurrency)
+                    const p = await assets.getLastPrice(holding.ticker, holding.buyCurrency)
                     //console.log("p", p)
                     if (p != null) {
                         holdings[i].currentUnitPrice = p.price
                         holdings[i].currentPriceDate = p.date
-                    } 
+                    }
                 }
 
             }
 
-            let j = 1;
+            let j = 1
 
             while (loading) {
                 //console.log("see if it has loaded")
@@ -145,7 +145,7 @@ module.exports.list = async (req, res) => {
                 if (loading) {
                     console.log("sleeping while it loads", j)
                     j++
-                    await new Promise(resolve => setTimeout(resolve, 200));
+                    await new Promise(resolve => setTimeout(resolve, 200))
                 }
             }
 
@@ -153,16 +153,16 @@ module.exports.list = async (req, res) => {
 
             const response = {
                 status : "OK",
-                holdings : holdings,
-                groups : groups
+                holdings,
+                groups
             }
             // add currency exchange data
             console.log(Object.keys(fx).length)
             if (Object.keys(fx).length > 0) response.fx = fx
             //console.log(response)
 
-            res.setHeader('Content-Type', 'application/json');
-            res.send(response);
+            res.setHeader('Content-Type', 'application/json')
+            res.send(response)
         }
     )
 

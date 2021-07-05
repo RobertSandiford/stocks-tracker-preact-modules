@@ -14,7 +14,7 @@ module.exports = {
             }`
         },
         format : "(holdingId : ID!) : RemoveHoldingResponse!",
-        mutator : async (parentEntity, {holdingId}) => { 
+        mutator : async (parentEntity, {holdingId}) => {
         
             console.log("removing holding with id ", holdingId)
 
@@ -34,7 +34,7 @@ module.exports = {
                     return response
                 }
 
-                console.log("Holding deleted with id: " + holdingId);
+                console.log("Holding deleted with id: " + holdingId)
                 console.log("result: ", result)
                 const response = {
                     status : "OK",
@@ -48,7 +48,7 @@ module.exports = {
                 const response = {
                     status : "ERROR",
                     reason : "Could not delete record",
-                    holdingId : holdingId
+                    holdingId
                 }
                 console.log("response:" + response)
                 return response

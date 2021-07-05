@@ -1,61 +1,13 @@
-require('dotenv').config();
+require('dotenv').config()
 
-const fetch = require("node-fetch");
+const fetch = require("node-fetch")
 
 const alphaconfig = { key: process.env.av_api_key }
-const alpha = require('alphavantage')({ key: alphaconfig.key });
+const alpha = require('alphavantage')({ key: alphaconfig.key })
 
-//import Util from './util';
-//const Util = require('alphavantage/lib/util')
-//const util = Util(config);
-//alpha.forex.dailyFull = (from_symbol, to_symbol, outputsize) => { util.fn('FX_DAILY')({ from_symbol, to_symbol, outputsize }) }
-
-alphaconfig.base = `https://www.alphavantage.co/query?apikey=${alphaconfig.key}&`;
-const alphaurl = (params) => {
-    params = Object.keys(params || {})
-        .map((type) => {
-            let value = params[type];
-            if (value !== undefined) {
-                return `${type}=${value}`;
-            }
-
-            return undefined;
-        })
-        .filter((value) => value !== undefined)
-        .join('&')
-
-    return `${alphaconfig.base}${params}`;
-};
-
-const alphafn = (type) => (params) =>
-    fetch(alphaurl(Object.assign({}, params, { function: type })))
-        .then((res) => {
-            if (res.status !== 200) {
-                throw `An AlphaVantage error occurred. ${res.status}: ${res.text()}`;
-            }
-
-            return res.json();
-        })
-        .then((data) => {
-            if (
-                data['Meta Data'] === undefined &&
-                data['Realtime Currency Exchange Rate'] === undefined &&
-                data['Global Quote'] === undefined &&
-                data['bestMatches'] === undefined &&
-                data['Symbol'] === undefined &&
-                data['symbol'] === undefined
-            ) {
-                throw `An AlphaVantage error occurred. ${data['Information'] || JSON.stringify(data)}`;
-            }
-
-            return data;
-        });
-
-alpha.forex.dailyExt = (from_symbol, to_symbol, outputsize) => alphafn('FX_DAILY')({ from_symbol, to_symbol, outputsize })
-
-const { DateTime : Luxon , Settings : LuxonSettings } = require('luxon');
+const { DateTime : Luxon, Settings : LuxonSettings } = require('luxon')
 LuxonSettings.defaultLocale = "en-GB"
-const stDateFormat = Object.assign(Luxon.DATE_MED, { });
+const stDateFormat = Object.assign(Luxon.DATE_MED, { })
 
 const funcs = require("./apiFuncs")
 
@@ -63,14 +15,63 @@ const Asset = require('../models/Asset')
 const AssetData = require('../models/AssetData')
 const CurrencyExchange = require('../models/CurrencyExchange')
 
+//import Util from './util';
+//const Util = require('alphavantage/lib/util')
+//const util = Util(config);
+//alpha.forex.dailyFull = (from_symbol, to_symbol, outputsize) => { util.fn('FX_DAILY')({ from_symbol, to_symbol, outputsize }) }
 
-module.exports.getCurrentPrice = function(ticker, success, failure) {
+alphaconfig.base = `https://www.alphavantage.co/query?apikey=${alphaconfig.key}&`
+const alphaurl = (params) => {
+    params = Object.keys(params || {})
+        .map((type) => {
+            const value = params[type]
+            if (value !== undefined) {
+                return `${type}=${value}`
+            }
+
+            return undefined
+        })
+        .filter((value) => value !== undefined)
+        .join('&')
+
+    return `${alphaconfig.base}${params}`
+}
+
+const alphafn = (type) => (params) =>
+    fetch(alphaurl(Object.assign({}, params, { function: type })))
+        .then((res) => {
+            if (res.status !== 200) {
+                throw new Error(`An AlphaVantage error occurred. ${res.status}: ${res.text()}`)
+            }
+
+            return res.json()
+        })
+        .then((data) => {
+            if (
+                data['Meta Data'] === undefined
+                && data['Realtime Currency Exchange Rate'] === undefined
+                && data['Global Quote'] === undefined
+                && data['bestMatches'] === undefined
+                && data['Symbol'] === undefined
+                && data['symbol'] === undefined
+            ) {
+                throw new Error(`An AlphaVantage error occurred. ${data['Information'] || JSON.stringify(data)}`)
+            }
+
+            return data
+        })
+
+alpha.forex.dailyExt = (from_symbol, to_symbol, outputsize) => alphafn('FX_DAILY')({ from_symbol, to_symbol, outputsize })
+
+
+
+module.exports.getCurrentPrice = function (ticker, success, failure) {
     alpha.data.intraday(ticker, "compact", "json")
         .then((data) => {
-            let pData = alpha.util.polish(data)
+            const pData = alpha.util.polish(data)
 
-            let key = Object.keys(pData.data)[0]
-            let entry = pData.data[key]
+            const key = Object.keys(pData.data)[0]
+            const entry = pData.data[key]
 
             success(entry.close)
         })
@@ -82,30 +83,30 @@ module.exports.getCurrentPrice = function(ticker, success, failure) {
 
 
 
-module.exports.getLastAdjustedPrice = async function(ticker) {
+module.exports.getLastAdjustedPrice = async function (ticker) {
     ticker = ticker.toUpperCase()
 
     try {
 
-        let data = await AssetData.findOne({ ticker : ticker }).sort({ date : "desc" }).exec()
+        const data = await AssetData.findOne({ ticker }).sort({ date : "desc" }).exec()
     
         //console.log(ticker, data)
         return data
     
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
 
 }
 
 
-module.exports.updateAssetDataIfNeeded = function(ticker) {
+module.exports.updateAssetDataIfNeeded = function (ticker) {
     ticker = ticker.toUpperCase()
 
     module.exports.getDateOfLastPriceData(ticker, (date) => {
         date = Luxon.fromJSDate(date)
 
-        let now = Luxon.local()
+        const now = Luxon.local()
 
         
         if ( now > date.plus({ days : 1, hours : 21 }) ) {
@@ -119,20 +120,20 @@ module.exports.updateAssetDataIfNeeded = function(ticker) {
             console.log("Let's fetch new price data for " + ticker)
 
             module.exports.updateAssetData(ticker, date)
-        }      
+        }
         //Luxon.local()
     })
 
 }
 
-module.exports.getDateOfLastPriceData = function(ticker, success, failure) {
+module.exports.getDateOfLastPriceData = function (ticker, success, failure) {
     ticker = ticker.toUpperCase()
 
 
-    AssetData.findOne({ ticker : ticker }, null, { sort: { date : "desc" } }, (err, data) => {
+    AssetData.findOne({ ticker }, null, { sort: { date : "desc" } }, (err, data) => {
         if (err) {
             console.log(err)
-            callFuncIfExists(failure, err)
+            funcs.callFuncIfExists(failure, err)
         } else {
 
             //console.log("last data", data)
@@ -149,11 +150,11 @@ module.exports.getDateOfLastPriceData = function(ticker, success, failure) {
 }
 
 
-module.exports.doWeHaveAssetData = function(ticker, success) {
+module.exports.doWeHaveAssetData = function (ticker, success) {
     ticker = ticker.toUpperCase()
 
 
-    AssetData.findOne({ ticker : ticker }, function (err, assetData) {
+    AssetData.findOne({ ticker }, function (err, assetData) {
         if (err) { console.log(err); return }
 
         //console.log(typeof AssetData, AssetData)
@@ -161,14 +162,13 @@ module.exports.doWeHaveAssetData = function(ticker, success) {
         //console.log(assetData)
 
         if (assetData != null) {
-            success(true);
-        }
-        else success(false);
+            success(true)
+        } else success(false)
     })
 }
 
 
-module.exports.createAsset = function(asset) {
+module.exports.createAsset = function (asset, success, failure) {
 
     console.log("Create Asset", asset)
     asset.ticker = asset.ticker.toUpperCase()
@@ -178,33 +178,32 @@ module.exports.createAsset = function(asset) {
     .save((err, createdAsset) => {
         if (err) {
             console.log(err)
-            callFuncIfExists(failure, err)
-        }
-        else {
+            funcs.callFuncIfExists(failure, err)
+        } else {
             console.log("Asset created: ", createdAsset)
-            callFuncIfExists(success, createdAsset)
+            funcs.callFuncIfExists(success, createdAsset)
         }
     })
 
 }
 
 
-module.exports.assetExists = function(ticker, success) {
+module.exports.assetExists = function (ticker, success) {
     ticker = ticker.toUpperCase()
 
 
-    Asset.findOne({ ticker : ticker }, function (err, asset) {
+    Asset.findOne({ ticker }, function (err, asset) {
         if (err) { console.log(err); return }
 
-        if (asset != null) success(true);
-        else success(false);
+        if (asset != null) success(true)
+        else success(false)
     })
 
 }
 
 
 
-module.exports.loadAssetData = function(ticker, success, failure) {
+module.exports.loadAssetData = function (ticker, success, failure) {
     ticker = ticker.toUpperCase()
 
     console.log("==look for asset data==")
@@ -243,7 +242,7 @@ module.exports.loadAssetData = function(ticker, success, failure) {
 
 }
 
-module.exports.updateAssetData = function(ticker, baseCurrency, lastDate, success, failure) {
+module.exports.updateAssetData = function (ticker, baseCurrency, lastDate, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -289,23 +288,23 @@ module.exports.updateAssetData = function(ticker, baseCurrency, lastDate, succes
 
 }
 
-module.exports.loadStockData = function(ticker, baseCurrency, success, failure) {
+module.exports.loadStockData = function (ticker, baseCurrency, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
     alpha.data.daily_adjusted(ticker, "full", "json")
     .then((data) => {
-        let pData = alpha.util.polish(data)
+        const pData = alpha.util.polish(data)
 
 
         for (const [date, data] of Object.entries(pData.data)) {
             console.log(ticker, date, parseFloat(data.adjusted))
             new AssetData({
-                ticker : ticker,
+                ticker,
                 type : "stock",
-                date : date,
+                date,
                 price : parseFloat(data.adjusted),
-                baseCurrency : baseCurrency
+                baseCurrency
             }).save((err, sd) => {
                 if (err) console.log(err)
                 else console.log(sd.ticker, sd.date, sd.price)
@@ -321,26 +320,26 @@ module.exports.loadStockData = function(ticker, baseCurrency, success, failure) 
 }
 
 
-module.exports.updateStockDataPromise = async function(ticker, baseCurrency, lastDate) {
+module.exports.updateStockDataPromise = async function (ticker, baseCurrency, lastDate) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
     try {
-        data = await alpha.data.daily_adjusted(ticker, "compact", "json")
+        const data = await alpha.data.daily_adjusted(ticker, "compact", "json")
     
-        let pData = alpha.util.polish(data)
+        const pData = alpha.util.polish(data)
 
 
         for (const [date, data] of Object.entries(pData.data)) {
-            luxonDate = Luxon.fromISO(date)
+            const luxonDate = Luxon.fromISO(date)
             if (luxonDate > lastDate) {
                 //console.log(ticker, date, parseFloat(data.adjusted))
                 await new AssetData({
-                    ticker : ticker,
+                    ticker,
                     type : "stock",
-                    date : date,
+                    date,
                     price : parseFloat(data.adjusted),
-                    baseCurrency : baseCurrency
+                    baseCurrency
                 }).save(/*(err, sd) => {
                     if (err) console.log(err)
                     else console.log(sd.ticker, sd.date, sd.price)
@@ -348,7 +347,7 @@ module.exports.updateStockDataPromise = async function(ticker, baseCurrency, las
             }
         }
         return
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
 
@@ -356,12 +355,12 @@ module.exports.updateStockDataPromise = async function(ticker, baseCurrency, las
 
 
 
-module.exports.loadAssetDataIfNeeded = function(ticker, success, failure) {
+module.exports.loadAssetDataIfNeeded = function (ticker, success, failure) {
     ticker = ticker.toUpperCase()
 
     module.exports.doWeHaveAssetData(ticker, (have) => {
-        if (have) { 
-            if (typeof success == "function") success();
+        if (have) {
+            if (typeof success == "function") success()
             return
         }
         module.exports.loadAssetData(ticker, success, failure)
@@ -371,28 +370,26 @@ module.exports.loadAssetDataIfNeeded = function(ticker, success, failure) {
 
 
 
-
-
-module.exports.loadCryptoData = async function(ticker, baseCurrency, success, failure) {
+module.exports.loadCryptoData = async function (ticker, baseCurrency, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
     try {
 
-        let data = await alpha.crypto.daily(ticker, baseCurrency)
+        const data = await alpha.crypto.daily(ticker, baseCurrency)
 
-        let pData = alpha.util.polish(data)
+        const pData = alpha.util.polish(data)
 
-        console.log(pData);
+        console.log(pData)
     
         for (const [date, data] of Object.entries(pData.data)) {
             console.log(ticker, date, data)
             new AssetData({
-                ticker : ticker,
+                ticker,
                 type : "crypto",
-                date : date,
+                date,
                 price : parseFloat(data.market_close),
-                baseCurrency : baseCurrency
+                baseCurrency
             }).save((err, savedAssetData) => {
                 if (err) console.log(err)
                 else console.log(savedAssetData.ticker, savedAssetData.date, savedAssetData.price)
@@ -400,7 +397,7 @@ module.exports.loadCryptoData = async function(ticker, baseCurrency, success, fa
         }
         funcs.callFuncIfExists(success)
         
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         funcs.callFuncIfExists(failure, err)
     }
@@ -408,7 +405,7 @@ module.exports.loadCryptoData = async function(ticker, baseCurrency, success, fa
 }
 
 
-module.exports.updateCryptoData = function(ticker, baseCurrency, lastDate, success, failure) {
+module.exports.updateCryptoData = function (ticker, baseCurrency, lastDate, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -419,24 +416,24 @@ module.exports.updateCryptoData = function(ticker, baseCurrency, lastDate, succe
 
         console.log("got data")
 
-        let pData = alpha.util.polish(data)
+        const pData = alpha.util.polish(data)
 
 
         //var i = 0;
 
         for (const [date, data] of Object.entries(pData.data)) {
-            luxonDate = Luxon.fromISO(date)
+            const luxonDate = Luxon.fromISO(date)
 
         
 
             if (luxonDate > lastDate) {
                 console.log(ticker, date, parseFloat(data.market_close))
                 new AssetData({
-                    ticker : ticker,
+                    ticker,
                     type : "crypto",
-                    date : date,
+                    date,
                     price : parseFloat(data.market_close),
-                    baseCurrency : baseCurrency
+                    baseCurrency
                 }).save((err, savedData) => {
                     if (err) console.log(err)
                     else console.log(savedData.ticker, savedData.date, savedData.price)
@@ -454,26 +451,26 @@ module.exports.updateCryptoData = function(ticker, baseCurrency, lastDate, succe
 }
 
 
-module.exports.loadCurrencyData = async function(ticker, baseCurrency, success, failure) {
+module.exports.loadCurrencyData = async function (ticker, baseCurrency, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
     try {
-        let data = await alpha.forex.rate(ticker, baseCurrency)
+        const data = await alpha.forex.rate(ticker, baseCurrency)
 
-        let pData = alpha.util.polish(data)
+        const pData = alpha.util.polish(data)
 
-        console.log(pData);
+        console.log(pData)
 
     
         for (const [date, data] of Object.entries(pData)) {
             //console.log(ticker, date, parseFloat(data.value))
             new AssetData({
-                ticker : ticker,
+                ticker,
                 type : "currency",
                 date : data.updated,
                 price : parseFloat(data.value),
-                baseCurrency : baseCurrency
+                baseCurrency
             }).save((err, ad) => {
                 if (err) console.log(err)
                 else console.log(ad.ticker, ad.date, ad.price)
@@ -481,14 +478,14 @@ module.exports.loadCurrencyData = async function(ticker, baseCurrency, success, 
         }
         funcs.callFuncIfExists(success)
         
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         funcs.callFuncIfExists(failure, err)
     }
 
 }
 
-module.exports.updateCurrencyData = function(ticker, baseCurrency, lastDate, success, failure) {
+module.exports.updateCurrencyData = function (ticker, baseCurrency, lastDate, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -496,21 +493,21 @@ module.exports.updateCurrencyData = function(ticker, baseCurrency, lastDate, suc
     
     alpha.forex.rate(ticker, baseCurrency)
     .then((data) => {
-        let pData = alpha.util.polish(data)
+        const pData = alpha.util.polish(data)
 
         console.log("WWW", pData)
 
 
         for (const [date, data] of Object.entries(pData)) {
-            luxonDate = Luxon.fromISO(date)
+            const luxonDate = Luxon.fromISO(date)
             if (luxonDate > lastDate) {
                 console.log(ticker, date, parseFloat(data.value))
                 new AssetData({
-                    ticker : ticker,
+                    ticker,
                     type : "currency",
                     date : data.updated,
                     price : parseFloat(data.value),
-                    baseCurrency : baseCurrency
+                    baseCurrency
                 }).save((err, savedData) => {
                     if (err) console.log(err)
                     else console.log(savedData)
@@ -546,14 +543,10 @@ module.exports.getCurrencyPrice = async function(ticker, baseCurrency, success, 
 
 
 
-
-
-
-
-module.exports.loadCurrencyExchangeDataIfNeeded = async function(toCurr, fromCurr, success, failure) {
+module.exports.loadCurrencyExchangeDataIfNeeded = async function (toCurr, fromCurr, success, failure) {
     toCurr = toCurr.toUpperCase()
     console.log("load currency exchange data if needed.")
-    if (typeof fromCurr == "undefined") baseCurr = "USD"
+    if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
     console.log(module.exports.doWeHaveCurrencyExchangeData)
@@ -581,21 +574,20 @@ module.exports.loadCurrencyExchangeDataIfNeeded = async function(toCurr, fromCur
 
 
 
-
-module.exports.updateCurrencyExchangeDataIfNeededPromise = async function(toCurr, fromCurr, date, success, failure) {
+module.exports.updateCurrencyExchangeDataIfNeededPromise = async function (toCurr, fromCurr, date, success, failure) {
     toCurr = toCurr.toUpperCase()
     console.log("update currency exchange data if needed promise")
-    if (typeof fromCurr == "undefined") baseCurr = "USD"
+    if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
     //if (date == null) date = Luxon.local()
     date = Luxon.local()
 
-    let gbx = toCurr === "GBX"
+    const gbx = toCurr === "GBX"
     if (gbx) toCurr = "GBP"
 
     try {
-        let have = await module.exports.doWeHaveRecentCurrencyExchangeDataPromise(toCurr, fromCurr, date)
+        const have = await module.exports.doWeHaveRecentCurrencyExchangeDataPromise(toCurr, fromCurr, date)
     
         if ( ! have ) {
             console.log("loading curr data because we don't have recent")
@@ -615,7 +607,7 @@ module.exports.updateCurrencyExchangeDataIfNeededPromise = async function(toCurr
             funcs.callFuncIfExists(success, toCurr + " " + fromCurr + " data existed")
             return toCurr + " " + fromCurr + " data existed"
         }
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         funcs.callFuncIfExists(failure)
         return
@@ -623,18 +615,18 @@ module.exports.updateCurrencyExchangeDataIfNeededPromise = async function(toCurr
 }
 
 
-module.exports.doWeHaveCurrencyExchangeData = async function(toCurr, fromCurr, success, failure) {
+module.exports.doWeHaveCurrencyExchangeData = async function (toCurr, fromCurr, success, failure) {
     toCurr = toCurr.toUpperCase()
     console.log("do we have curr ex data")
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
 
-    CurrencyExchange.findOne({ toCurr : toCurr, fromCurr : fromCurr }, function (err, exchangeData) {
-        if (err) { 
-            console.log(err);
-            funcs.callFuncIfExists(failure, err) 
-            return 
+    CurrencyExchange.findOne({ toCurr, fromCurr }, function (err, exchangeData) {
+        if (err) {
+            console.log(err)
+            funcs.callFuncIfExists(failure, err)
+            return
         }
 
         if (exchangeData != null) success(true)
@@ -642,7 +634,7 @@ module.exports.doWeHaveCurrencyExchangeData = async function(toCurr, fromCurr, s
     })
 }
 
-module.exports.doWeHaveRecentCurrencyExchangeDataPromise = async function(toCurr, fromCurr, date) {
+module.exports.doWeHaveRecentCurrencyExchangeDataPromise = async function (toCurr, fromCurr, date) {
     toCurr = toCurr.toUpperCase()
 
     console.log("do we have recent curr ex data?")
@@ -654,44 +646,43 @@ module.exports.doWeHaveRecentCurrencyExchangeDataPromise = async function(toCurr
 
 
     try {
-        let exchangeData = await CurrencyExchange.findOne({ toCurr : toCurr, fromCurr : fromCurr }, null, { sort: { date : "desc" } }).exec()
+        const exchangeData = await CurrencyExchange.findOne({ toCurr, fromCurr }, null, { sort: { date : "desc" } }).exec()
 
         if (exchangeData != null) {
-            let lastDate = Luxon.fromJSDate(exchangeData.date)
-            ////// Improve the precise date check to avoid unnecessary fetching, e.g. checking discrete days not hours, mins, secs
-            if (lastDate >= date.minus({ days : 2})) { 
-                console.log("recent fx data exists for " + toCurr + " + " + fromCurr);
+            const lastDate = Luxon.fromJSDate(exchangeData.date)
+            ////// Improve the precise date check to avoid unnecessary fetching,
+            ////// e.g. checking discrete days not hours, mins, secs
+            if (lastDate >= date.minus({ days : 2})) {
+                console.log("recent fx data exists for " + toCurr + " + " + fromCurr)
                 return true
-            }
-            else {
-                console.log("fx data outdated for " + toCurr + " + " + fromCurr, lastDate.toISO()); 
+            } else {
+                console.log("fx data outdated for " + toCurr + " + " + fromCurr, lastDate.toISO())
                 return false
             }
-        }
-        else { 
-            console.log("no fx data for " + toCurr + " + " + fromCurr);
+        } else {
+            console.log("no fx data for " + toCurr + " + " + fromCurr)
             return false
         }
 
-    } catch(err) {
-        console.log(err);
+    } catch (err) {
+        console.log(err)
     }
 }
 
 
-module.exports.loadCurrencyExchangeDataPromise = async function(toCurr, fromCurr) {
+module.exports.loadCurrencyExchangeDataPromise = async function (toCurr, fromCurr) {
     toCurr = toCurr.toUpperCase()
     //console.log("load currency exchange data. typeof fromCurr", typeof fromCurr)
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    try {                                     //// Alpha Vantage is weird
+    try { //// Alpha Vantage is weird
         //let getCurr = fromCurr
         //let inCurr = toCurr
-        let data = await alpha.forex.dailyExt(fromCurr, toCurr, "full")
+        const data = await alpha.forex.dailyExt(fromCurr, toCurr, "full")
 
-        let pData = alpha.util.polish(data)
-        console.log(pData);
+        const pData = alpha.util.polish(data)
+        console.log(pData)
 
     
         let last = {}
@@ -699,9 +690,9 @@ module.exports.loadCurrencyExchangeDataPromise = async function(toCurr, fromCurr
         for (const [date, data] of Object.entries(pData.data)) {
             //console.log(ticker, date, parseFloat(data.market_close))
             new CurrencyExchange({
-                toCurr : toCurr,
-                fromCurr : fromCurr,
-                date : date,
+                toCurr,
+                fromCurr,
+                date,
                 rate : parseFloat(data.close)
             }).save((err, sd) => {
                 if (err) console.log(err)
@@ -714,26 +705,26 @@ module.exports.loadCurrencyExchangeDataPromise = async function(toCurr, fromCurr
 
         return last
         
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
 
 }
 
 
-module.exports.updateCurrencyExchangeDataPromise = async function(toCurr, fromCurr) {
+module.exports.updateCurrencyExchangeDataPromise = async function (toCurr, fromCurr) {
     toCurr = toCurr.toUpperCase()
     //console.log("load currency exchange data. typeof fromCurr", typeof fromCurr)
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    try {                                     //// Alpha Vantage is weird
+    try { //// Alpha Vantage is weird
         //let getCurr = fromCurr
         //let inCurr = toCurr
-        let data = await alpha.forex.dailyExt(fromCurr, toCurr, "compact")
+        const data = await alpha.forex.dailyExt(fromCurr, toCurr, "compact")
 
-        let pData = alpha.util.polish(data)
-        console.log(pData);
+        const pData = alpha.util.polish(data)
+        console.log(pData)
 
     
         let last = {}
@@ -741,9 +732,9 @@ module.exports.updateCurrencyExchangeDataPromise = async function(toCurr, fromCu
         for (const [date, data] of Object.entries(pData.data)) {
             //console.log(ticker, date, parseFloat(data.market_close))
             new CurrencyExchange({
-                toCurr : toCurr,
-                fromCurr : fromCurr,
-                date : date,
+                toCurr,
+                fromCurr,
+                date,
                 rate : parseFloat(data.close)
             }).save((err, sd) => {
                 if (err) console.log(err)
@@ -756,33 +747,33 @@ module.exports.updateCurrencyExchangeDataPromise = async function(toCurr, fromCu
 
         return last
         
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
 
 }
 
-module.exports.loadCurrencyExchangeDataDual = async function(toCurr, fromCurr, success, failure) {
+module.exports.loadCurrencyExchangeDataDual = async function (toCurr, fromCurr, success, failure) {
     toCurr = toCurr.toUpperCase()
     //console.log("load currency exchange data. typeof fromCurr", typeof fromCurr)
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    try {                                     //// Alpha Vantage is weird
+    try { //// Alpha Vantage is weird
         //let getCurr = fromCurr
         //let inCurr = toCurr
-        let data = await alpha.forex.dailyExt(fromCurr, toCurr, "full")
+        const data = await alpha.forex.dailyExt(fromCurr, toCurr, "full")
 
-        let pData = alpha.util.polish(data)
-        console.log(pData);
+        const pData = alpha.util.polish(data)
+        console.log(pData)
 
     
         for (const [date, data] of Object.entries(pData.data)) {
             //console.log(ticker, date, parseFloat(data.market_close))
             new CurrencyExchange({
-                toCurr : toCurr,
-                fromCurr : fromCurr,
-                date : date,
+                toCurr,
+                fromCurr,
+                date,
                 rate : parseFloat(data.close)
             }).save((err, sd) => {
                 if (err) console.log(err)
@@ -792,7 +783,7 @@ module.exports.loadCurrencyExchangeDataDual = async function(toCurr, fromCurr, s
         funcs.callFuncIfExists(success)
         return
         
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         funcs.callFuncIfExists(failure, err)
     }
@@ -800,16 +791,16 @@ module.exports.loadCurrencyExchangeDataDual = async function(toCurr, fromCurr, s
 }
 
 
-module.exports.getCurrencyExchangeRateUpdateIfNeededPromise = async function(toCurr, fromCurr, date) {
+module.exports.getCurrencyExchangeRateUpdateIfNeededPromise = async function (toCurr, fromCurr, date) {
     toCurr = toCurr.toUpperCase()
     //console.log("load currency exchange data. typeof fromCurr", typeof fromCurr)
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    let toGbx = (toCurr === "GBX")
+    const toGbx = (toCurr === "GBX")
     if (toGbx) toCurr = "GBP"
 
-    let fromGbx = (fromCurr === "GBX")
+    const fromGbx = (fromCurr === "GBX")
     if (fromGbx) fromCurr = "GBP"
 
     //console.log("update if needed")
@@ -818,15 +809,16 @@ module.exports.getCurrencyExchangeRateUpdateIfNeededPromise = async function(toC
 
     await module.exports.updateCurrencyExchangeDataIfNeededPromise(toCurr, fromCurr, date)
 
-    let rateData = await module.exports.getCurrencyExchangeRatePromise(toCurr, fromCurr, date)
+    const rateData = await module.exports.getCurrencyExchangeRatePromise(toCurr, fromCurr, date)
     
-    console.log( "getCurrencyExchangeRateUpdateIfNeededPromise", toCurr, fromCurr, date, rateData, toGbx, fromGbx )
+    console.log( "getCurrencyExchangeRateUpdateIfNeededPromise", toCurr, fromCurr,
+        date, rateData, toGbx, fromGbx )
     if (toGbx) rateData.rate *= 100
     if (fromGbx) rateData.rate /= 100
-    return rateData    
+    return rateData
 }
 
-module.exports.getCurrencyExchangeRatePromise = async function(toCurr, fromCurr, date) {
+module.exports.getCurrencyExchangeRatePromise = async function (toCurr, fromCurr, date) {
     toCurr = toCurr.toUpperCase()
     //console.log("get currency exchange rate", toCurr, fromCurr, date.toISO())
     if (typeof fromCurr == "undefined") fromCurr = "USD"
@@ -835,8 +827,8 @@ module.exports.getCurrencyExchangeRatePromise = async function(toCurr, fromCurr,
 
     date = date.toUTC().startOf('day')
     try {
-                                                            //// Alpha Vantage is weird.
-        let exchangeData = await CurrencyExchange.findOne({ toCurr : toCurr, fromCurr : fromCurr, date : date.toISO() }).exec()
+        //// Alpha Vantage is weird.
+        const exchangeData = await CurrencyExchange.findOne({ toCurr, fromCurr, date : date.toISO() }).exec()
         
         if (exchangeData != null) {
             return exchangeData
@@ -845,8 +837,10 @@ module.exports.getCurrencyExchangeRatePromise = async function(toCurr, fromCurr,
             console.log("fx going back one day")
             date = date.minus({days : 1})
             
-                                                                //// Alpha Vantage is weird.
-            let exchangeData = await CurrencyExchange.findOne({ toCurr : toCurr, fromCurr : fromCurr, date : date.toISO() }).exec()
+            //// Alpha Vantage is weird.
+            const exchangeData = await CurrencyExchange
+                .findOne({ toCurr, fromCurr, date : date.toISO() })
+                .exec()
             
             if (exchangeData != null) {
                 return exchangeData
@@ -856,14 +850,14 @@ module.exports.getCurrencyExchangeRatePromise = async function(toCurr, fromCurr,
                 date = date.minus({days : 1})
                 //console.log("find fx 2", { toCurr : toCurr, fromCurr : fromCurr, date : date.toISO() })
                 
-                                                                    //// Alpha Vantage is weird.
-                let exchangeData = await CurrencyExchange.findOne({ toCurr : toCurr, fromCurr : fromCurr, date : date.toISO() })
+                //// Alpha Vantage is weird.
+                const exchangeData = await CurrencyExchange.findOne({ toCurr, fromCurr, date : date.toISO() })
                 
                 if (exchangeData != null) {
                     return exchangeData
                 } else {
                     console.log("loading curr data because we couldn't find any when getting rate")
-                    let last = await module.exports.updateCurrencyExchangeDataPromise(toCurr, fromCurr)
+                    const last = await module.exports.updateCurrencyExchangeDataPromise(toCurr, fromCurr)
                         
                     return last
                     // recurse, to try to retreive the new rate. Let's hope we don't get infinite loops
@@ -875,6 +869,6 @@ module.exports.getCurrencyExchangeRatePromise = async function(toCurr, fromCurr,
 
         }
     } catch (err) {
-        console.log(err);
+        console.log(err)
     }
 }

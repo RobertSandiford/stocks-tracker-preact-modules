@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-let name = "currency_exchange"
-let collection = "currency_exchanges"
+const name = "currency_exchange"
+const collection = "currency_exchanges"
 
 const schema = mongoose.Schema({
     toCurr : {

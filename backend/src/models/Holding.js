@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-let name = "holding"
-let collection = "holdings"
+const name = "holding"
+const collection = "holdings"
 
 const openSchema = mongoose.Schema({
     name : {
@@ -22,9 +22,9 @@ const openSchema = mongoose.Schema({
     fees : {
         type : Number
     }
-});
+})
 
-const closeSchema = mongoose.Schema({ 
+const closeSchema = mongoose.Schema({
     name : {
         type : 'string',
     },

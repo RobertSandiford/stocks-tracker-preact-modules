@@ -63,15 +63,15 @@ module.exports = {
         queries : {
             holding : {
                 format : "(_id : ID!) : Holding!",
-                resolver : (parentEntity, {_id}) => { 
-                    const filter = { _id : _id }
+                resolver : (parentEntity, {_id}) => {
+                    const filter = { _id }
                     return Holding.findOne(filter)
                 },
             },
             holdings : {
                 format : "(userId : ID!) : Holding!",
-                resolver : (parentEntity, {userId}) => { 
-                    const filter = { userId : userId }
+                resolver : (parentEntity, {userId}) => {
+                    const filter = { userId }
                     return Holding.findMany(filter)
                 },
             },

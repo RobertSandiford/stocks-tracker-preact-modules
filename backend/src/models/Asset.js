@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-let name = "asset"
-let collection = "assets"
+const name = "asset"
+const collection = "assets"
 
 const schema = mongoose.Schema({
     name : {

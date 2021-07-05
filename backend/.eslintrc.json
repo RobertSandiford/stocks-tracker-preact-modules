@@ -30,7 +30,9 @@
         "prefer-spread" : "warn",
         "space-before-function-paren" : ["warn", {
             "anonymous" : "always"
-        }]
+        }],
+        "require-jsdoc" : "off",
+        "new-cap" : "off"
     },
     "globals": {
         "module": "readonly",
@@ -38,7 +40,13 @@
         "process": "readonly",
         "console": "readonly",
         "__dirname": "readonly",
-        "setTimeout": "readonly"
+        "setTimeout": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "describe": "readonly",
+        "test": "readonly",
+        "it": "readonly",
+        "expect": "readonly"
     },
     "parserOptions": {
         "ecmaVersion": 2018
