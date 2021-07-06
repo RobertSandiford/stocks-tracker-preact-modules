@@ -60,6 +60,32 @@ const DeleteHoldingResponseType = `{
 //     lala
 // }
 
+function makeRequestFunction (type, name, defaultOutput) {
+    return async (input, requestedData = defaultOutput) => {
+        input = formatInputData(input)
+        const query = gql`${type} {
+            ${name}(${input}) ${requestedData}
+        }`
+        const response = await graphQlRequest(query)
+        return response[name]
+    }
+}
+const testFunc1 = makeRequestFunction('query', 'getHolding', GetHoldingResponseType)
+
+
+function makeSingleInputRequestFunction (type, name, inputFormat, defaultOutput) {
+    return async (input, requestedData = defaultOutput) => {
+        input = formatSingleInputData(input)
+        const query = gql`${type} {
+            ${name}(${inputFormat} ${input}) ${requestedData}
+        }`
+        const response = await graphQlRequest(query)
+        return response[name]
+    }
+}
+const testFunc2 = makeSingleInputRequestFunction('query', 'getHolding', 'holdingId:', GetHoldingResponseType)
+
+
 module.exports.getHolding = async (holdingId, requestedData = GetHoldingResponseType) => {
     
     const queryName = 'getHolding'
@@ -70,6 +96,8 @@ module.exports.getHolding = async (holdingId, requestedData = GetHoldingResponse
     const query = gql`query {
         ${queryName}(holdingId: ${holdingId}) ${requestedData}
     }`
+
+    //console.log('getHolding query', query)
     const response = await graphQlRequest(query)
     return response[queryName]
 }

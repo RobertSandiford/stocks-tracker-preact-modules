@@ -9,7 +9,7 @@ module.exports = function (input) {
     const entities = input.entities || {}
 
     const schemaTypes = []
-    //const schemaTypesRegistry = {}
+    const schemaTypesRegistry = {}
     const schemaInputs = []
     const schemaScalars = []
     const schemaResolvers = {}
@@ -29,12 +29,13 @@ module.exports = function (input) {
 
         if ( entityData.type !== undefined ) {
             schemaTypes.push(`type ${entityName} ${entityData.type}`)
-            //schemaTypesObject[entityName] = entityData.type
+            schemaTypesRegistry[entityName] = entityData.type
         }
 
         if ( entityData.types !== undefined ) {
             for ( const [typeName, type] of Object.entries(entityData.types) ) {
                 schemaTypes.push(`type ${typeName} ${type}`)
+                schemaTypesRegistry[typeName] = type
             }
         }
 
@@ -56,6 +57,7 @@ module.exports = function (input) {
                 if ( query.types !== undefined ) {
                     for ( const [typeName, type] of Object.entries(query.types) ) {
                         schemaTypes.push(`type ${typeName} ${type}`)
+                        schemaTypesRegistry[typeName] = type
                     }
                 }
             }
@@ -69,6 +71,7 @@ module.exports = function (input) {
                 if ( mutation.types !== undefined ) {
                     for ( const [typeName, type] of Object.entries(mutation.types) ) {
                         schemaTypes.push(`type ${typeName} ${type}`)
+                        schemaTypesRegistry[typeName] = type
                     }
                 }
             }
@@ -106,7 +109,7 @@ module.exports = function (input) {
 
     const graphObjects = {
         types : schemaTypes,
-        //typesRegistry : schemaTypesRegistry,
+        typesRegistry : schemaTypesRegistry,
         inputs : schemaInputs,
         scalars : schemaScalars,
         resolvers : schemaResolvers,

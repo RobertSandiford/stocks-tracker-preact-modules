@@ -1,12 +1,15 @@
-const express = require('express')
-const supertest = require('supertest')
 const { createApp } = require('../src/app')
+const setup = require('./setup')
+const teardown = require('./teardown')
 
 let app
 
+
 beforeAll( async () => {
     app = await createApp()
+    app.start()
 })
+
 
 describe("The application", () => {
     test('was created', () => {
@@ -14,6 +17,7 @@ describe("The application", () => {
     })
 })
 
+
 afterAll( async () => {
-    app.dbDisconnect()
+    app.stop()
 })

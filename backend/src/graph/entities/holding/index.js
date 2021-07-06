@@ -34,7 +34,7 @@ currentRate : Float`
 const holdingType = `{
     _id : ID!
     ${typeCore}
-    opens : [HoldingOpen],
+    opens : [HoldingOpen]
     closes : [HoldingClose]
 }`
 
@@ -46,17 +46,9 @@ const holdingWithIdInput = `{
     ${typeCore}
 }`
 
-
 module.exports = {
     [entityName] : {
         type : holdingType,
-        types : {
-            GetHoldingReponse : `{
-                status : String!
-                reason : String
-                holding : Holding
-            }`
-        },
         inputs : {
             HoldingInput : holdingInput,
             HoldingWithIdInput : holdingWithIdInput,

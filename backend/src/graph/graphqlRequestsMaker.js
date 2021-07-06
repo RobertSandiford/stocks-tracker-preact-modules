@@ -7,7 +7,110 @@ const graphQlEndpoint = `http://localhost:${port}/graphql`
 const graphQlClient = new GraphQlClient(graphQlEndpoint, { headers: {} })
 const graphQlRequest = graphQlClient.request.bind(graphQlClient)
 
-function generateFunction (objects, type, name, format) {
+function parseTypeToRequest(typesRegistry, type) {
+    let lines = type.split('\n')
+    lines = lines.map( line => {
+        //console.log("line", line)
+        if ( line.includes('{') || line.includes('}') )
+            return line.trim()
+
+        let newLine
+        const parts = line.split(":")
+        //console.log("parts len", parts.length)
+        const name = parts[0].trim()
+        const type = parts[1]
+            .replace('!', '').replace('[', '')
+            .replace(']', '').replace(',', '').trim()
+        //console.log("type", type)
+        if ( type in typesRegistry ) {
+            //console.log("in registry: ", type)
+            newLine = name + ' '
+                + parseTypeToRequest(typesRegistry, typesRegistry[type])
+        } else {
+            newLine = name
+        }
+        //console.log("newLine", newLine)
+        return newLine
+    } )
+    const output = lines.join('\n')
+    //console.log("parseTypeToRequest", output)
+    return output
+}
+
+
+// do a char by char parse instead
+function parseTypeToRequest2(typesRegistry, type) {
+
+    const symbolFindingRegex = /(?<={.*?)([a-zA-Z_]+\s*:\s*[a-zA-Z_\[\]!]+)(?=.*?})/sg
+    
+    const output = type.replace(symbolFindingRegex, x => {
+        
+        const parts = x.split(":")
+        //console.log("parts len", parts.length)
+        const name = parts[0].trim()
+        const type = parts[1]
+            .replace('[', '').replace(']', '')
+            .replace('!', '').trim()
+
+        if ( type in typesRegistry ) {
+            return name + ' ' + parseTypeToRequest2(
+                typesRegistry, typesRegistry[type])
+        } else {
+            return name
+        }
+    })
+
+    return output
+
+    /*
+    
+    let char
+    const output = []
+    let word = ""
+    let expected = "name"
+    for (let i = 0; i < type.length; i++) {
+        char = type.charAt(i)
+        if (char === "{") output.push(char)
+        if (char === "}") output.push(char)
+        // build words
+        // if white space
+        if ( char.match(/[_a-zA-Z/]/) ) {
+            word += char
+        } else {
+            if ( word.length > 0 ) {
+                //console.log("word found: ", word, expected)
+                // process word
+                switch (expected) {
+                    case "name":
+                        //console.log("outputting: ", word)
+                        output.push(word)
+                        expected = "type"
+                        break
+                    case "type":
+                        if ( word in typesRegistry ) {
+                            output[output.length-1]
+                                += ' ' + parseTypeToRequest2(
+                                    typesRegistry,
+                                    typesRegistry[word]
+                                )
+                        }
+                        expected = "name"
+                        break
+                }
+                word = ""
+            }
+        }
+    }
+
+    const outputString = output.join('\n')
+
+    return outputString
+    */
+}
+
+
+//// Unfinished project
+function generateFunction(requests, objects, type, name, format) {
     
     const r = async (input, requestedData = '') => {
         
@@ -17,22 +120,24 @@ function generateFunction (objects, type, name, format) {
         if (requestedData === '') {
             let returnType = format.split(":").slice(-1).pop().trim()
 
-            //// somewhere here the !s need to be stripped from
-            //// multi return type queries
-            if ( returnType.slice(-1) == '!' )
-                returnType = returnType.slice(0, -1)
+            returnType = returnType.replace('!', '')
 
-            if ( returnType in objects.types )
-                requestedData = objects.types[returnType]
-            else
+            if ( returnType in objects.typesRegistry ) {
+                requestedData = parseTypeToRequest2(
+                    objects.typesRegistry,
+                    objects.typesRegistry[returnType])
+            } else {
                 requestedData = returnType
+            }
         }
 
         const query = gql`${type} {
             ${name}(${input}) ${requestedData}
         }`
+        
+        //console.log('getHolding auto query', query)
 
-        const response = await graphQlRequest(query)
+        const response = await requests.graphQlRequest(query)
         return response[name]
     }
 
@@ -44,12 +149,19 @@ module.exports = function (objects) {
 
     const requests = {}
 
+    requests.config = (url) => {
+        const graphQlClient = new GraphQlClient(url, { headers: {} })
+        const graphQlRequest = graphQlClient.request.bind(graphQlClient)
+        //requests.graphQlClient = graphQlClient
+        requests.graphQlRequest = graphQlRequest
+    }
+
     for ( const queryFormat of objects.queries ) {
 
         const queryName = queryFormat.split(' ').splice(0, 1).pop()
         const queryResolver = objects.queryResolvers[queryName]
 
-        const r = generateFunction(objects, 'query', queryName, queryFormat)
+        const r = generateFunction(requests, objects, 'query', queryName, queryFormat)
 
         requests[queryName] = r
     }
@@ -59,9 +171,15 @@ module.exports = function (objects) {
         const mutationName = mutationFormat.split(' ').splice(0, 1).pop()
         const mutator = objects.mutators[mutationName]
 
-        const r = generateFunction(objects, 'mutation', mutationName, mutationFormat)
+        const r = generateFunction(requests, objects, 'mutation', mutationName, mutationFormat)
 
         requests[mutationName] = r
     }
 
+    return requests
 }
+
+
+module.exports.parseTypeToRequest = parseTypeToRequest
+module.exports.parseTypeToRequest2 = parseTypeToRequest2
+module.exports.generateFunction = generateFunction

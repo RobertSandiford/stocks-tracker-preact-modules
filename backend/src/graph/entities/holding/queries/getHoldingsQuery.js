@@ -17,8 +17,8 @@ module.exports = {
         },
 
         format : `(
-            user : Int!,
-            displayCurrency : String!,
+            user : Int!
+            displayCurrency : String!
             secondCurrency : String
         ) : GetHoldingsResponse`,
 

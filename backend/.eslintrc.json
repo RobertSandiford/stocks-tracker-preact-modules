@@ -7,9 +7,10 @@
         "quotes" : "off",
         "key-spacing" : "off",
         "max-len" : ["warn", 110],
-        "indent" : ["error", 4, {
+        "indent" : ["warn", 4, {
             "MemberExpression" : "off",
-            "SwitchCase": 1
+            "SwitchCase": 1,
+            "ignoreComments" : "true"
         }],
         "prefer-const" : "warn",
         "linebreak-style" : ["error", "windows"],
@@ -30,11 +31,15 @@
         "object-shorthand" : ["warn", "always"],
         "prefer-spread" : "warn",
         "space-before-function-paren" : ["warn", {
-            "anonymous" : "always"
+            "anonymous": "always",
+            "named": "never",
+            "asyncArrow": "always"
         }],
         "require-jsdoc" : "off",
         "new-cap" : "off",
-        "curly" : "off"
+        "curly" : "off",
+        "no-const-assign" : "error"
+
     },
     "globals": {
         "Object": "readonly",

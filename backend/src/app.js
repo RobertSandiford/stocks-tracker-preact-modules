@@ -53,6 +53,7 @@ const createApp = async () => {
         .replace("<pass>", process.env.mongo_pass)
         .replace("<db>", process.env.mongo_db)
 
+    
     try {
         await mongoose.connect(mongoUrl, {
             useNewUrlParser: true,
@@ -67,7 +68,7 @@ const createApp = async () => {
     app.dbDisconnect = () => {
         mongoose.connection.close()
     }
-
+    
 
     ///////////////////////////
     // Models
@@ -106,8 +107,12 @@ const createApp = async () => {
     }
     
     app.stop = () => {
-        app.dbDisconnect()
         server.close()
+        app.dbDisconnect()
+    }
+    
+    app.destroy = () => {
+        app.dbDisconnect()
     }
 
 

@@ -38,11 +38,10 @@ export default reduxConnect(
     
     }
 
-    getDerivedStateFromProps(newPops) {
-        console.log("get Derived state +++ ")
+    //getDerivedStateFromProps(newPops) {
+        //console.log("get Derived state +++ ")
         //return newState
-    }
-
+    //}
 
     init = props => {
         this.holding = {...props.holding}

@@ -1,3 +1,7 @@
+const { load } = require('../lib')
+module.exports = load(__dirname)
+
+/*
 const fs = require("fs")
 
 let entities = {}
@@ -10,3 +14,4 @@ for ( const file of files ) {
 }
 
 module.exports = entities
+*/

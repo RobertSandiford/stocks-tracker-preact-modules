@@ -1,25 +1,18 @@
 require('dotenv').config()
-const { GraphQLClient : GraphqlClient, gql } = require('graphql-request')
-const supertest = require('supertest')
-
-const graphqlRequests = require('../../src/graph/requests')
-const setup = require('../setup')
-const teardown = require('../teardown')
 const { createApp } = require('../../src/app')
 
+const { requests } = require("../../src/graph/index")
+port = 4001
+requests.config(`http://localhost:${port}/graphql`)
+
+const setup = require('../setup')
+const teardown = require('../teardown')
 
 let app
 
-const port = (Number(process.env.port) + 1) || console.log("Error, no port specified in .env")
-
-const graphqlEndpoint = `http://localhost:${port}/graphql`
-const graphqlClient = new GraphqlClient(graphqlEndpoint, { headers: {} })
-const graphqlRequest = graphqlClient.request.bind(graphqlClient)
-
-
 beforeAll( async () => {
     app = await createApp()
-    //app.start()
+    app.start()
 })
 
 
@@ -30,58 +23,21 @@ describe("The application", () => {
 })
 
 
-/*
-describe("The holding query", () => {
 
-    test('can retrieve holding with id "60decb7ad4c2c861dcc9dd6d" via holding', async () => {
-        const query = gql`{
-            holding(holdingId: "60decb7ad4c2c861dcc9dd6d") {
-                _id
-                name
-                ticker
-            }
-        }`
-        const response = await graphqlRequest(query)
-        expect( response.holding ).not.toBeUndefined()
+describe("The GetCurrencyExchange query", () => {
+    test('can retrieve fx data', async () => {
+       
+        const response = await requests.getExchangeRate({
+            fromCurr : "USD",
+            toCurr : "GBP",
+        })
+        console.log(response)
+        expect( response.date ).not.toBeUndefined()
 
     })
 })
-*/
 
 
-describe("The getHolding query", () => {
-
-    /*
-    test('can retrieve holding with id "60decb7ad4c2c861dcc9dd6d" via getHolding', async () => {
-        
-        const response = await graphqlRequests.getHolding(
-            "60decb7ad4c2c861dcc9dd6d"
-        )
-        expect( response.holding ).not.toBeUndefined()
-    })
-*/
-
-    test('with supertest, can retrieve holding with id "60decb7ad4c2c861dcc9dd6d" via getHolding', async () => {
-        
-        const query = gql`{
-            getHolding(holdingId: "60decb7ad4c2c861dcc9dd6d") {
-                _id
-                name
-                ticker
-            }
-        }`
-
-        let response = await supertest(app)
-            .post('/graphql')
-            .send(query)
-
-        expect( response.holding ).not.toBeUndefined()
-    })
-
-    
-
-
-})
 
 
 /*
@@ -172,6 +128,5 @@ describe("The removeHolding mutation", () => {
 
 
 afterAll( async () => {
-    //app.stop()
-    app.destroy()
+    app.stop()
 })
