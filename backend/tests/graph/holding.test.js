@@ -17,13 +17,14 @@ beforeAll( async () => {
     await app.start(port)
 })
 
-/*
+
 describe("The application", () => {
     test('was created', () => {
         expect(app.name).toBe('app')
     })
 })
-*/
+
+
 
 describe("The holding query", () => {
     test('can retrieve holding with id "60decb7ad4c2c861dcc9dd6d" via holding', async () => {
@@ -39,6 +40,8 @@ describe("The holding query", () => {
 
     })
 })
+
+
 
 describe("The getHolding query", () => {
     test('can retrieve holding with id "60decb7ad4c2c861dcc9dd6d" via getHolding', async () => {
@@ -131,6 +134,7 @@ describe("The removeHolding mutation", () => {
 
     })
 })
+
 
 
 afterAll( async () => {

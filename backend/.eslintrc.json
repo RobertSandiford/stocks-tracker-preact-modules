@@ -37,6 +37,8 @@
         "curly" : "off"
     },
     "globals": {
+        "Object": "readonly",
+        "Array": "readonly",
         "module": "readonly",
         "require": "readonly",
         "process": "readonly",

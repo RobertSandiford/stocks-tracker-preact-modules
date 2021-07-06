@@ -1,8 +1,8 @@
 
-const { Luxon, LuxonSettings, stDateFormat } = require('../../../../lib/luxon')
+const { Luxon } = require('../../../../lib/luxon')
 const assets = require('../../../../lib/assets')
+const { roundDp } = require('../../../../lib/functions')
 const Holding = require('../../../../models/Holding')
-const { roundDp } = require('../../../../actions/functions')
 
 
 //addHoldingMutation
@@ -32,7 +32,8 @@ module.exports = {
                     const buyDate = Luxon.fromISO(holdingInput.buyDate)
                     //console.log( "buy date", holdingInput.buyDate, buyDate )
 
-                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(holdingInput.priceCurrency, holdingInput.buyCurrency, buyDate)
+                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(
+                        holdingInput.priceCurrency, holdingInput.buyCurrency, buyDate)
                     //console.log( "rate", rate )
                     holdingInput.buyUnitPrice = roundDp(holdingInput.buyUnitPrice * rate, 2)
                     holdingInput.buyTotalPrice = roundDp(holdingInput.buyTotalPrice * rate, 2)
@@ -58,7 +59,8 @@ module.exports = {
                     // fetch exchange rate data if needed
                     if ( holding.buyCurrency !== "USD" && holding.buyCurrency !== undefined ) {
                         try {
-                            await assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local())
+                            await assets.updateCurrencyExchangeDataIfNeededPromise(
+                                holding.buyCurrency, "USD", Luxon.local())
                             //console.log("fetched currency exchange data")
                         } catch (e) {
                             console.log("error", e)

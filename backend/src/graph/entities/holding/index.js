@@ -1,5 +1,6 @@
 
 const getHoldingQuery = require('./queries/getHoldingQuery')
+const getHoldingAdvancedQuery = require('./queries/getHoldingAdvancedQuery')
 const getHoldingsQuery = require('./queries/getHoldingsQuery')
 
 const addHoldingMutation = require('./mutations/addHoldingMutation')
@@ -76,6 +77,7 @@ module.exports = {
                 },
             },
             ...getHoldingQuery,
+            ...getHoldingAdvancedQuery,
             ...getHoldingsQuery
         },
         mutations : {
