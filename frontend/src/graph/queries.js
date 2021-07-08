@@ -15,7 +15,7 @@ export default {
                 status
                 holdings ${types.Holding}
                 groups
-                fx ${types.Fx}
+                exchangeRates ${types.ExchangeRate}
             }
         }`
     }
@@ -30,6 +30,6 @@ HoldingsPackage : `{
     reason : String
     holdings : [Holding]
     groups : [String]
-    fx : Fx
+    exchangeRates : [ExchangeRate]
 }`,
 */

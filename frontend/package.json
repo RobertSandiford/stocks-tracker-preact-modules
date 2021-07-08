@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "stock_tracker",
+  "name": "stocks-tracker-frontend",
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
@@ -8,7 +8,7 @@
     "serve": "sirv build --port 8080 --cors --single",
     "dev": "preact watch",
     "lint": "eslint src",
-    "test": "jest"
+    "test": "npx mocha tests --recursive --watch"
   },
   "eslintConfig": {
     "extends": "preact",
@@ -29,21 +29,19 @@
     "redux": "^4.0.5"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
+    "colors": "^1.4.0",
+    "cross-fetch": "^3.1.4",
     "enzyme": "^3.10.0",
     "enzyme-adapter-preact-pure": "^2.0.0",
     "eslint": "^6.0.1",
     "eslint-config-preact": "^1.1.0",
+    "esm": "^3.2.25",
     "fs": "0.0.1-security",
-    "jest": "^24.9.0",
     "jest-preset-preact": "^1.0.0",
+    "mocha": "^9.0.2",
     "preact-cli": "^3.0.0",
+    "react": "^17.0.2",
     "sirv-cli": "1.0.3"
-  },
-  "jest": {
-    "preset": "jest-preset-preact",
-    "setupFiles": [
-      "<rootDir>/tests/__mocks__/browserMocks.js",
-      "<rootDir>/tests/__mocks__/setupTests.js"
-    ]
   }
 }

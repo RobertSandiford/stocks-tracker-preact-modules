@@ -8,11 +8,12 @@ import { HoldingStyle } from '../styles'
 export default reduxConnect(
     state => ({
         holdings : state.holdings,
-        fx : state.fx
+        exchangeRates : state.exchangeRates
     })
 )
 (class CurrentHoldingTotals extends Component {
     render() {
+        console.log("rendering Current Holdings Totals")
         let totals = this.props.totals
 
         if (totals.buyValue === 0) return // exit if no totals to show
@@ -25,7 +26,7 @@ export default reduxConnect(
         //this.props.holdings)
 
         //let secondCurrencyFx = this.props.holdingsComponent.state.fx[secondCurrency]
-        let secondCurrencyFx = this.props.fx.rate
+        let secondCurrencyFx = this.props.exchangeRates[secondCurrency].rate
         //console.log(secondCurrencyFx)
 
         let buyValue = totals.buyValue

@@ -4,7 +4,7 @@ const { Luxon } = require('../lib/luxon')
 const Holding = require('../models/Holding')
 
 
-
+/*
 module.exports.list = async (req, res) => {
 
     let loading = false
@@ -37,7 +37,7 @@ module.exports.list = async (req, res) => {
 
 
 
-    Holding.find({ user : req.query.user })/*.limit(999)*/.lean().exec(
+    Holding.find({ user : req.query.user }).lean().exec(
         async (err, holdings) => {
 
 
@@ -55,9 +55,9 @@ module.exports.list = async (req, res) => {
 
                     // fetch exchange rate data if needed
                     if (holding.buyCurrency != "USD") {
-                        /*assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local(),
-                            () => { console.log("fetched currency exchange data") },
-                            () => { console.log("error fetching currency exchange data") })*/
+                        //assets.updateCurrencyExchangeDataIfNeededPromise(holding.buyCurrency, "USD", Luxon.local(),
+                        //    () => { console.log("fetched currency exchange data") },
+                        //    () => { console.log("error fetching currency exchange data") })
 
                         const buyDate = Luxon.fromJSDate(holding.buyDate)
                         //console.log("buyDate", buyDate.toISO())
@@ -167,3 +167,4 @@ module.exports.list = async (req, res) => {
     )
 
 }
+*/

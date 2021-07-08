@@ -607,7 +607,7 @@ module.exports.updateCurrencyExchangeDataIfNeededPromise = async function (toCur
             try {
                 await module.exports.loadCurrencyExchangeDataPromise(toCurr, fromCurr)
                 .then( () => {
-                    console.log("loaded")
+                    //console.log("loaded")
                     const result = toCurr + " " + fromCurr + " data loaded"
                     funcs.callFuncIfExists(success, result)
                     return result
@@ -618,7 +618,7 @@ module.exports.updateCurrencyExchangeDataIfNeededPromise = async function (toCur
                 return
             }
         } else {
-            console.log("existed")
+            //console.log("existed")
             const result = toCurr + " " + fromCurr + " data existed"
             funcs.callFuncIfExists(success, result)
             return result

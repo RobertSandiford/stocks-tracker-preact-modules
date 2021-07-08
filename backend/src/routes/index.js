@@ -11,10 +11,10 @@ module.exports = (app) => {
 
     app.get('/', main.index)
 
-    app.get('/holdings/list', holdings.list)
+    //app.get('/holdings/list', holdings.list)
     
-    app.get('/rate/gbp', rates.rateGbp)
+    //app.get('/rate/gbp', rates.rateGbp)
 
-    app.get('/rate', rates.rate)
+    //app.get('/rate', rates.rate)
 
 }

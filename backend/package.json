@@ -1,6 +1,6 @@
 {
-  "name": "stock-tracker",
-  "version": "1.0.0",
+  "name": "stocks-tracker-backend",
+  "version": "0.0.1",
   "description": "",
   "main": "server.js",
   "scripts": {

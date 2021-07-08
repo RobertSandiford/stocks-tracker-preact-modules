@@ -57,7 +57,7 @@ export default reduxConnect(
                     status
                     holdings ${graph.Holding}
                     groups
-                    fx ${graph.Fx}
+                    exchangeRates ${graph.ExchangeRate}
                 }
             }`
 
@@ -69,13 +69,31 @@ export default reduxConnect(
                 let r = result.data.getHoldings
 
                 if ( r !== null ) {
-                    let s = objectWithTheseFields(r, ["holdings", "groups", "fx"])
+                    let s = objectWithTheseFields(r, ["holdings", "groups"])
+                    let exchangeRates = {}
+                    for ( const exchangeRate of r.exchangeRates ) {
+                        exchangeRates[exchangeRate.fromCurr] = exchangeRate
+                    }
+                    s.exchangeRates = exchangeRates
                     console.log("update store 1", s)
                     this.props.updateStore(s)
                 } else {
 
                 }
-            });
+            })
+            .catch( error => {
+                console.log("error")
+                for ( const x in error ) {
+                    console.log(x)
+                }
+                console.log(error)
+                console.log('error.graphQLErrors:', error.graphQLErrors)
+                console.log('error.networkError:', error.networkError)
+                console.log('error.message:', error.message)
+                console.log('error.extraInfo:', error.extraInfo)
+                console.log('query:', query)
+            })
+
         }
         
         this.sort = function(holdings) {
@@ -150,8 +168,7 @@ export default reduxConnect(
         
         let sort = this.state.sort
 
-        let lastSortValue = {
-        }
+        let lastSortValue = {}
         
         let identity = {}
         let title = {}

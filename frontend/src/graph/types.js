@@ -3,7 +3,6 @@ let types = {}
 
 types.Open = `{
     _id
-    name
     quantity
     buyUnitPrice
     buyTotalPrice
@@ -14,7 +13,6 @@ types.Open = `{
 
 types.Close = `{
     _id
-    name
     quantity
     sellUnitPrice
     sellTotalPrice
@@ -46,7 +44,7 @@ types.Holding = `{
     closes ${types.Close}
 }`
 
-types.Fx = `{
+types.ExchangeRate = `{
     toCurr
     fromCurr
     date

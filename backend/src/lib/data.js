@@ -44,7 +44,8 @@ const getExchangeRate = async (toCurr, fromCurr) => {
         const fx = {
             toCurr,
             fromCurr,
-            date : Luxon.fromJSDate(rateData.date).toUTC(),
+            //date : Luxon.fromJSDate(rateData.date).toUTC(),
+            date : rateData.date,
             rate : rateData.rate
         }
 

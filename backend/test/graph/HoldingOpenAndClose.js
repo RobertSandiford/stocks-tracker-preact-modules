@@ -183,7 +183,7 @@ describe("Retrieving Holdings with opens and closes", () => {
 
             expect(getHoldingResult.holding._id).to.not.be.undefined
 
-            log(getHoldingResult)
+            //log(getHoldingResult)
 
 
         } catch(e) {

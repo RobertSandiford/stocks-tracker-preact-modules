@@ -104,7 +104,7 @@ describe("The getHolding<s> query", () => {
                 displayCurrency : "USD",
                 secondCurrency : "GBP"
             })
-            //console.log("getHoldings response", response)
+            //log("getHoldings response", response)
             expect( response.holdings ).to.not.be.undefined
         } catch(e) {
             requestError(e)

@@ -4,7 +4,7 @@ const respond = require('./respond')
 const { Luxon } = require('../lib/luxon')
 
 
-
+/*
 module.exports.rateGbp = async (req, res) => {
 
     const rateData = await assets.getCurrencyExchangeRateUpdateIfNeededPromise("GBP", "USD", Luxon.local())
@@ -27,3 +27,4 @@ module.exports.rate = async (req, res) => {
     respond(res, response)
     
 }
+*/

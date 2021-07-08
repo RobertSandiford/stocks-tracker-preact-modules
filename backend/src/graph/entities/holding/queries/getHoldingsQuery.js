@@ -34,14 +34,14 @@ module.exports = {
         
                 // main currency exchange rates
                 const currencies = [displayCurrency, secondCurrency]
-                const fx = {}
+                const exchangeRates = {}
                 for (const currency of currencies) {
                     // skip USD, which we are using as de-facto base currency
                     if ( currency === undefined || currency === "USD" ) continue
             
                     //console.log("filling FX", c)
                     try {
-                        fx[currency] = await getExchangeRate(displayCurrency, currency)
+                        exchangeRates[currency] = await getExchangeRate(displayCurrency, currency)
                     } catch(e) {
                         console.log(e)
                         return
@@ -67,8 +67,12 @@ module.exports = {
                     reason : null,
                     holdings,
                     groups,
-                    fx : (Object.keys(fx).length > 0) ? Object.values(fx) : null
+                    exchangeRates : (Object.keys(exchangeRates).length > 0)
+                        ? Object.values(exchangeRates)
+                        : null
                 }
+
+                //console.log(response)
         
                 return response
             
