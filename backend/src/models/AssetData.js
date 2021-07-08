@@ -28,6 +28,6 @@ const schema = mongoose.Schema({
     }
 })
 
-const model = mongoose.model(name, schema, collection)
+const model = mongoose.connection.model(name, schema, collection)
 
 module.exports = model

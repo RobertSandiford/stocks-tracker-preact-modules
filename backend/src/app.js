@@ -8,20 +8,18 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const { ApolloServer } = require('apollo-server-express')
-const { typeDefs, resolvers } = require('./graph')
+require('./globals')
 
-const routes = require('./routes')
-
+global.globaltest2 = "abcd"
 
 const createApp = async () => {
 
     dotenv.config()
 
-
     ///////////////////////////
     // Vars/Defines
     ///////////////////////////
-    const enviro = process.env.enviro
+    //const enviro = process.env.enviro
     const defaultPort = process.env.port || 4000
 
 
@@ -33,13 +31,6 @@ const createApp = async () => {
     app.use( cors() )
     app.use(express.json()) // parse JSON input
 
-    const apolloServer = new ApolloServer({
-        typeDefs,
-        resolvers
-    })
-    apolloServer.applyMiddleware({app})
-
-    //console.log("graphql path: " + apolloServer.graphqlPath)
 
 
     ///////////////////////////
@@ -53,7 +44,6 @@ const createApp = async () => {
         .replace("<pass>", process.env.mongo_pass)
         .replace("<db>", process.env.mongo_db)
 
-    
     try {
         await mongoose.connect(mongoUrl, {
             useNewUrlParser: true,
@@ -61,14 +51,15 @@ const createApp = async () => {
             useFindAndModify : false
         })
         console.log("Connected to Mongo DB")
-    } catch (e) {
+    } catch(e) {
         console.log("Mongoose connection error? ", e)
     }
 
-    app.dbDisconnect = () => {
-        mongoose.connection.close()
+    app.dbDisconnect = async () => {
+        await mongoose.connection.close()
     }
     
+
 
     ///////////////////////////
     // Models
@@ -82,6 +73,22 @@ const createApp = async () => {
     }
 
 
+
+    ///////////////////////////
+    // Setup graph server
+    ///////////////////////////
+    const { typeDefs, resolvers } = require('./graph')
+    
+    const apolloServer = new ApolloServer({
+        typeDefs,
+        resolvers
+    })
+    apolloServer.applyMiddleware({app})
+
+    //console.log("graphql path: " + apolloServer.graphqlPath)
+
+
+
     ///////////////////////////
     // Static Routes
     ///////////////////////////
@@ -89,11 +96,15 @@ const createApp = async () => {
     app.use('/', express.static('frontend/build'))
 
 
+
     ///////////////////////////
     // Routes
     ///////////////////////////
 
+    const routes = require('./routes')
+
     routes(app)
+
 
 
     ///////////////////////////
@@ -103,7 +114,14 @@ const createApp = async () => {
     let server
 
     app.start = (port = defaultPort) => {
-        server = app.listen(port, () => console.log("Listening on port " + port))
+        return new Promise( (resolve, reject) => {
+            console.log("Starting server on port " + port)
+            server = app.listen(port, () => {
+                const listeningPort = server.address().port
+                console.log("Listening on port " + listeningPort)
+                resolve(listeningPort)
+            })
+        })
     }
     
     app.stop = () => {

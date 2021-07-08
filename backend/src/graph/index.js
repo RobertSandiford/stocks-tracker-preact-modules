@@ -1,5 +1,5 @@
 
-const scalars = require('./scalars')
+const scalars = require('./scalars/scalars')
 const entities = require('./entities')
 
 //const lib = require('./lib')

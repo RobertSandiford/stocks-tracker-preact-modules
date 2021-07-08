@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { GraphQLClient : GraphQlClient, gql } = require('graphql-request')
-const { formatInputData, formatInnerInputData, formatSingleInputData } = require('./funcs')
+const { formatInputData, formatInnerInputData, formatSingleInputData } = require('../funcs')
 
 const port = (Number(process.env.port) + 1) || console.log("Error, no port specified in .env")
 
@@ -60,7 +60,7 @@ const DeleteHoldingResponseType = `{
 //     lala
 // }
 
-function makeRequestFunction (type, name, defaultOutput) {
+function makeRequestFunction(type, name, defaultOutput) {
     return async (input, requestedData = defaultOutput) => {
         input = formatInputData(input)
         const query = gql`${type} {
@@ -73,7 +73,7 @@ function makeRequestFunction (type, name, defaultOutput) {
 const testFunc1 = makeRequestFunction('query', 'getHolding', GetHoldingResponseType)
 
 
-function makeSingleInputRequestFunction (type, name, inputFormat, defaultOutput) {
+function makeSingleInputRequestFunction(type, name, inputFormat, defaultOutput) {
     return async (input, requestedData = defaultOutput) => {
         input = formatSingleInputData(input)
         const query = gql`${type} {

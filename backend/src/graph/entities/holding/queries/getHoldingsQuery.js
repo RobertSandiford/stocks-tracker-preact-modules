@@ -1,5 +1,5 @@
 
-const { fillFx, populateHolding } = require('../../../../lib/data')
+const { getExchangeRate, populateHolding } = require('../../../../lib/data')
 const Holding = require('../../../../models/Holding')
 
 
@@ -12,7 +12,7 @@ module.exports = {
                 reason : String
                 holdings : [Holding]
                 groups : [String]
-                fx : Fx
+                exchangeRates : [ExchangeRate]
             }`,
         },
 
@@ -35,11 +35,17 @@ module.exports = {
                 // main currency exchange rates
                 const currencies = [displayCurrency, secondCurrency]
                 const fx = {}
-                for (const c of currencies) {
-                    if ( !c || c === "USD") continue // skip USD, which we are using as de-facto base currency
+                for (const currency of currencies) {
+                    // skip USD, which we are using as de-facto base currency
+                    if ( currency === undefined || currency === "USD" ) continue
             
-                    console.log("filling FX", c)
-                    await fillFx(fx, displayCurrency, c)
+                    //console.log("filling FX", c)
+                    try {
+                        fx[currency] = await getExchangeRate(displayCurrency, currency)
+                    } catch(e) {
+                        console.log(e)
+                        return
+                    }
                 }
             
         
@@ -55,20 +61,18 @@ module.exports = {
         
         
                 // respond
-                //console.log("responding", holdings.length, holdings)
-                //console.log(typeof holdings[0].buyDate, holdings[0].buyDate)
-        
+
                 const response = {
                     status : "OK",
                     reason : null,
                     holdings,
                     groups,
-                    fx : (Object.keys(fx).length > 0) ? fx : null
+                    fx : (Object.keys(fx).length > 0) ? Object.values(fx) : null
                 }
         
                 return response
             
-            } catch (error) {
+            } catch(error) {
                 console.log(error)
             }
         

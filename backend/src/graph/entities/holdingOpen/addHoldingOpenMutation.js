@@ -3,16 +3,24 @@ const Holding = require('../../../models/Holding')
 
 module.exports = {
     addHoldingOpen : {
+        types : {
+            AddHoldingOpenResponse : `{
+                status : String!
+                reason : String
+                holdingId : ID!
+                holdingOpen : HoldingOpen
+            }`
+        },
         format : `(
-            user : Int
+            user : ID
             holdingId : ID!
-            quantity : Float!
-            buyUnitPrice : Float!
-            buyTotalPrice : Float
-            buyDate : Date!
-        ) : UpdateHoldingResponse!`,
+            holdingOpenInput : HoldingOpenInput
+        ) : AddHoldingOpenResponse!`,
 
-        mutator : async (parentObject, {user, holdingId, quantity, buyUnitPrice, buyTotalPrice, buyDate}) => {
+        mutator : async (parentObject, { user, holdingId, holdingOpenInput }) => {
+
+            const { quantity, buyUnitPrice, buyTotalPrice, buyDate, buyRate, fees }
+                = holdingOpenInput
 
             const open = {
                 quantity,
@@ -21,29 +29,27 @@ module.exports = {
                 buyDate
             }
 
-            console.log("saving holding open graphql", holdingId, open)
+            //console.log("saving holding open graphql", holdingId, open)
         
-            const p = Holding.findOneAndUpdate(
-                { _id : holdingId },
-                { "$push" : { opens : open } },
-                { new : true }
-            )
-            .then( holding => {
-                console.log("Holding updated", holding)
+            try {
+                const updatedHolding = await Holding.findOneAndUpdate(
+                    { _id : holdingId },
+                    { "$push" : { opens : open } },
+                    { new : true }
+                )
+                //console.log("Holding updated", holding)
                 return {
                     status : "OK",
-                    holding
+                    holdingId,
+                    holdingOpen : updatedHolding.opens.pop()
                 }
-            })
-            .catch( err => {
+            } catch(err) {
                 console.log(err)
                 return {
                     status : "ERROR",
                     reason : "Could not save open info"
                 }
-            })
-
-            return p
+            }
 
         }
     }

@@ -3,45 +3,55 @@ const Holding = require('../../../../models/Holding')
 
 module.exports = {
     addHoldingClose : {
+        types : {
+            AddHoldingCloseResponse : `{
+                status : String!
+                reason : String
+                holdingId : ID!
+                holdingClose : HoldingClose
+            }`
+        },
         format : `(
             user : Int
-            holding_id : ID!
-            quantity : Float!
-            sellUnitPrice : Float!
-            sellTotalPrice : Float
-            sellDate : Date!
-        ) : UpdateHoldingResponse!`,
+            holdingId : ID!
+            holdingCloseInput : HoldingCloseInput!
+        ) : AddHoldingCloseResponse!`,
+        mutator : async (_, { user, holdingId, holdingCloseInput }) => {
+            
+            const { quantity, sellUnitPrice, sellTotalPrice, sellDate }
+                = holdingCloseInput
 
-        mutator : (parentObject, { user, _id, quantity, sellUnitPrice, sellTotalPrice, sellDate }) => {
-
-            const close = {
+            const holdingClose = {
                 quantity,
                 sellUnitPrice,
                 sellTotalPrice,
                 sellDate
             }
 
-            console.log("saving holding close graphql", _id, close)
+            //console.log("saving holding close graphql", holdingId, holdingClose)
         
-            Holding.updateOne(
-                { _id },
-                { "$push" : { closes : close } },
-                (err, holding) => {
-                    if (err) {
-                        console.log(err)
-                        return {
-                            status : "ERROR",
-                            reason : "Could not save close info"
-                        }
-                    }
+            try {
+                const updatedHolding = await Holding.findOneAndUpdate(
+                    { _id : holdingId },
+                    { "$push" : { closes : holdingClose } },
+                    { new: true }
+                )
         
-                    console.log("Holding updated", holding)
-                    return {
-                        status : "OK",
-                        holding
-                    }
+                const newHoldingClose = updatedHolding.closes.pop()
+
+                //console.log("Holding updated", updatedHolding)
+                return {
+                    status : "OK",
+                    holdingId,
+                    holdingClose : newHoldingClose
                 }
-            )
+            } catch(e) {
+                //console.log(3)
+                return {
+                    status : "ERROR",
+                    reason : "Could not save close info"
+                }
+            }
         }
     }
 }

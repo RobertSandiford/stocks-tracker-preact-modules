@@ -1,12 +1,12 @@
 
-const { Luxon, LuxonSettings, stDateFormat } = require('../../../../lib/luxon')
-const assets = require('../../../../lib/assets')
+const { Luxon } = require('../../../../lib/luxon')
 const Holding = require('../../../../models/Holding')
 
 // updateHoldingMutation
 
 module.exports = {
     updateHolding : {
+
         types : {
             UpdateHoldingResponse : `{
                 status : String!
@@ -14,10 +14,12 @@ module.exports = {
                 holding : Holding
             }`
         },
-        format : "(holdingData : HoldingWithIdInput!) : UpdateHoldingResponse!",
-        mutator : async (parentEntity, {holdingData}) => {
 
-            const updatedHolding = holdingData
+        format : "(holdingWithIdInput : HoldingWithIdInput!) : UpdateHoldingResponse!",
+
+        mutator : async (parentEntity, {holdingWithIdInput}) => {
+
+            const updatedHolding = holdingWithIdInput
 
             //console.log("updating holding", updatedHolding)
 
@@ -47,7 +49,7 @@ module.exports = {
                 //console.log("response", response)
                 return response
 
-            } catch (e) {
+            } catch(e) {
                 console.log("error: ", e)
                 const response = {
                     status : "ERROR",
@@ -58,5 +60,6 @@ module.exports = {
             }
 
         },
+        
     }
 }

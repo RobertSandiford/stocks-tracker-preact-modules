@@ -1,12 +1,22 @@
 require('dotenv').config()
 const { GraphQLClient : GraphQlClient, gql } = require('graphql-request')
-const { formatInputData } = require('./requests/funcs')
+const { formatInputData } = require('./funcs')
+const supertest = require('supertest')
 
 const port = (Number(process.env.port) + 1) || console.log("Error, no port specified in .env")
 const graphQlEndpoint = `http://localhost:${port}/graphql`
 const graphQlClient = new GraphQlClient(graphQlEndpoint, { headers: {} })
 const graphQlRequest = graphQlClient.request.bind(graphQlClient)
 
+async function testRequest(test, url, query) {
+    const res = await supertest(test.app)
+        .post(url)
+        .set({contentType: 'application/graphql'})
+        .send(query)
+    return res
+}
+
+/*
 function parseTypeToRequest(typesRegistry, type) {
     let lines = type.split('\n')
     lines = lines.map( line => {
@@ -36,10 +46,10 @@ function parseTypeToRequest(typesRegistry, type) {
     //console.log("parseTypeToRequest", output)
     return output
 }
+*/
 
-
-// do a char by char parse instead
-function parseTypeToRequest2(typesRegistry, type) {
+// do a regex replace
+function parseTypeToRequest(typesRegistry, type) {
 
     const symbolFindingRegex = /(?<={.*?)([a-zA-Z_]+\s*:\s*[a-zA-Z_\[\]!]+)(?=.*?})/sg
     
@@ -53,7 +63,7 @@ function parseTypeToRequest2(typesRegistry, type) {
             .replace('!', '').trim()
 
         if ( type in typesRegistry ) {
-            return name + ' ' + parseTypeToRequest2(
+            return name + ' ' + parseTypeToRequest(
                 typesRegistry, typesRegistry[type])
         } else {
             return name
@@ -89,7 +99,7 @@ function parseTypeToRequest2(typesRegistry, type) {
                     case "type":
                         if ( word in typesRegistry ) {
                             output[output.length-1]
-                                += ' ' + parseTypeToRequest2(
+                                += ' ' + parseTypeToRequest(
                                     typesRegistry,
                                     typesRegistry[word]
                                 )
@@ -123,7 +133,7 @@ function generateFunction(requests, objects, type, name, format) {
             returnType = returnType.replace('!', '')
 
             if ( returnType in objects.typesRegistry ) {
-                requestedData = parseTypeToRequest2(
+                requestedData = parseTypeToRequest(
                     objects.typesRegistry,
                     objects.typesRegistry[returnType])
             } else {
@@ -149,11 +159,16 @@ module.exports = function (objects) {
 
     const requests = {}
 
-    requests.config = (url) => {
+    requests.configure = (url) => {
         const graphQlClient = new GraphQlClient(url, { headers: {} })
         const graphQlRequest = graphQlClient.request.bind(graphQlClient)
         //requests.graphQlClient = graphQlClient
         requests.graphQlRequest = graphQlRequest
+    }
+
+    requests.test = {}
+    requests.test.configure = (app) => {
+        requests.test.app = app
     }
 
     for ( const queryFormat of objects.queries ) {
@@ -164,6 +179,7 @@ module.exports = function (objects) {
         const r = generateFunction(requests, objects, 'query', queryName, queryFormat)
 
         requests[queryName] = r
+        requests.test[queryName] = r
     }
 
     for ( const mutationFormat of objects.mutations ) {
@@ -174,6 +190,7 @@ module.exports = function (objects) {
         const r = generateFunction(requests, objects, 'mutation', mutationName, mutationFormat)
 
         requests[mutationName] = r
+        requests.test[mutationName] = r
     }
 
     return requests
@@ -181,5 +198,5 @@ module.exports = function (objects) {
 
 
 module.exports.parseTypeToRequest = parseTypeToRequest
-module.exports.parseTypeToRequest2 = parseTypeToRequest2
+//module.exports.parseTypeToRequest2 = parseTypeToRequest2
 module.exports.generateFunction = generateFunction

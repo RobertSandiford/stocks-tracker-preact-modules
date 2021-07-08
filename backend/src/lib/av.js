@@ -65,38 +65,34 @@ alpha.forex.dailyExt = (from_symbol, to_symbol, outputsize) => alphafn('FX_DAILY
 
 
 
-module.exports.getCurrentPrice = function (ticker, success, failure) {
-    alpha.data.intraday(ticker, "compact", "json")
-        .then((data) => {
-            const pData = alpha.util.polish(data)
+module.exports.getCurrentPrice = async function (ticker, success, failure) {
+    
+    try {
+        const data = await alpha.data.intraday(ticker, "compact", "json")
+        
+        const pData = alpha.util.polish(data)
 
-            const key = Object.keys(pData.data)[0]
-            const entry = pData.data[key]
+        const key = Object.keys(pData.data)[0]
+        const entry = pData.data[key]
 
-            success(entry.close)
-        })
-        .catch((error) => {
-            console.log(error)
-            failure(error)
-        })
+        success(entry.close)
+        return entry.close
+    } catch(error) {
+        console.log(error)
+        failure(error)
+    }
 }
-
 
 
 module.exports.getLastAdjustedPrice = async function (ticker) {
     ticker = ticker.toUpperCase()
 
     try {
-
         const data = await AssetData.findOne({ ticker }).sort({ date : "desc" }).exec()
-    
-        //console.log(ticker, data)
         return data
-    
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
-
 }
 
 
@@ -108,7 +104,6 @@ module.exports.updateAssetDataIfNeeded = function (ticker) {
 
         const now = Luxon.local()
 
-        
         if ( now > date.plus({ days : 1, hours : 21 }) ) {
 
             // Today is at least 2 days after the last price
@@ -126,27 +121,28 @@ module.exports.updateAssetDataIfNeeded = function (ticker) {
 
 }
 
-module.exports.getDateOfLastPriceData = function (ticker, success, failure) {
+module.exports.getDateOfLastPriceData = async function (ticker, success, failure) {
     ticker = ticker.toUpperCase()
 
-
-    AssetData.findOne({ ticker }, null, { sort: { date : "desc" } }, (err, data) => {
-        if (err) {
-            console.log(err)
-            funcs.callFuncIfExists(failure, err)
+    try {
+        const data = await AssetData.findOne({ ticker }, null, { sort: { date : "desc" } })
+    
+        //console.log(ticker, "lastdate: find one data", data)
+        let returnDate
+        if (data != null) {
+            returnDate = data.date
         } else {
-
-            //console.log("last data", data)
-            
-            //console.log(ticker, "lastdate: find one data", data)
-            if (data != null) {
-                success(data.date)
-            } else {
-                success(new Date("1970-01-01T00:00:00Z"))
-            }
-            
+            returnDate = new Date("1970-01-01T00:00:00Z")
         }
-    })
+
+        funcs.callFuncIfExists(success, returnDate)
+        return returnDate
+
+    } catch(e) {
+        console.log(e)
+        funcs.callFuncIfExists(failure, e)
+    }
+
 }
 
 
@@ -347,7 +343,7 @@ module.exports.updateStockDataPromise = async function (ticker, baseCurrency, la
             }
         }
         return
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 
@@ -384,24 +380,28 @@ module.exports.loadCryptoData = async function (ticker, baseCurrency, success, f
     
         for (const [date, data] of Object.entries(pData.data)) {
             console.log(ticker, date, data)
-            new AssetData({
-                ticker,
-                type : "crypto",
-                date,
-                price : parseFloat(data.market_close),
-                baseCurrency
-            }).save((err, savedAssetData) => {
-                if (err) console.log(err)
-                else console.log(savedAssetData.ticker, savedAssetData.date, savedAssetData.price)
-            })
+
+            try {
+                const savedAssetData = await new AssetData({
+                    ticker,
+                    type : "crypto",
+                    date,
+                    price : parseFloat(data.market_close),
+                    baseCurrency
+                }).save()
+                console.log(savedAssetData.ticker, savedAssetData.date, savedAssetData.price)
+                funcs.callFuncIfExists(success)
+                return true
+            } catch(e) {
+                console.log(e)
+            }
         }
-        funcs.callFuncIfExists(success)
         
-    } catch (err) {
+    } catch(err) {
         console.log(err)
         funcs.callFuncIfExists(failure, err)
     }
-
+    return false
 }
 
 
@@ -423,8 +423,6 @@ module.exports.updateCryptoData = function (ticker, baseCurrency, lastDate, succ
 
         for (const [date, data] of Object.entries(pData.data)) {
             const luxonDate = Luxon.fromISO(date)
-
-        
 
             if (luxonDate > lastDate) {
                 console.log(ticker, date, parseFloat(data.market_close))
@@ -459,28 +457,32 @@ module.exports.loadCurrencyData = async function (ticker, baseCurrency, success,
         const data = await alpha.forex.rate(ticker, baseCurrency)
 
         const pData = alpha.util.polish(data)
-
         console.log(pData)
 
-    
         for (const [date, data] of Object.entries(pData)) {
             //console.log(ticker, date, parseFloat(data.value))
-            new AssetData({
+            const assetData = new AssetData({
                 ticker,
                 type : "currency",
                 date : data.updated,
                 price : parseFloat(data.value),
                 baseCurrency
-            }).save((err, ad) => {
-                if (err) console.log(err)
-                else console.log(ad.ticker, ad.date, ad.price)
             })
+            
+            try {
+                const ad = await assetData.save()
+                console.log(ad.ticker, ad.date, ad.price)
+            } catch(err) {
+                console.log(err)
+            }
         }
         funcs.callFuncIfExists(success)
+        return true
         
-    } catch (err) {
+    } catch(err) {
         console.log(err)
         funcs.callFuncIfExists(failure, err)
+        return false
     }
 
 }
@@ -545,38 +547,49 @@ module.exports.getCurrencyPrice = async function(ticker, baseCurrency, success, 
 
 module.exports.loadCurrencyExchangeDataIfNeeded = async function (toCurr, fromCurr, success, failure) {
     toCurr = toCurr.toUpperCase()
-    console.log("load currency exchange data if needed.")
+    //console.log("load currency exchange data if needed.")
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    console.log(module.exports.doWeHaveCurrencyExchangeData)
+    //console.log(module.exports.doWeHaveCurrencyExchangeData)
 
-    module.exports.doWeHaveCurrencyExchangeData(toCurr, fromCurr, have => {
+    try {
+        const have = await module.exports.doWeHaveCurrencyExchangeData(toCurr, fromCurr)
+    
         if ( ! have ) {
             module.exports.loadCurrencyExchangeData(toCurr, fromCurr)
             .then( () => {
-                console.log("loaded")
-                funcs.callFuncIfExists(success, "loaded")
+                console.log("exchange rate data loaded")
+                const reponse = "loaded"
+                funcs.callFuncIfExists(success, reponse)
+                return reponse
             })
-            .catch( err => {
-                console.log(err)
-                funcs.callFuncIfExists(failure, err)
+            .catch( e => {
+                console.log(e)
+                const reponse = e
+                funcs.callFuncIfExists(failure, reponse)
+                return reponse
             })
         } else {
-            console.log("existed")
-            funcs.callFuncIfExists(success, "existed")
+            console.log("exchange rate data existed")
+            const reponse = "existed"
+            funcs.callFuncIfExists(success, reponse)
+            return reponse
         }
-    }, err => {
-        console.log(err)
-        funcs.callFuncIfExists(failure)
-    })
+    } catch(e) {
+        console.log(e)
+        const reponse = e
+        funcs.callFuncIfExists(failure, reponse)
+        return reponse
+    }
+    
 }
 
 
 
 module.exports.updateCurrencyExchangeDataIfNeededPromise = async function (toCurr, fromCurr, date, success, failure) {
     toCurr = toCurr.toUpperCase()
-    console.log("update currency exchange data if needed promise")
+    //console.log("update currency exchange data if needed promise")
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
@@ -591,23 +604,26 @@ module.exports.updateCurrencyExchangeDataIfNeededPromise = async function (toCur
     
         if ( ! have ) {
             console.log("loading curr data because we don't have recent")
-            module.exports.loadCurrencyExchangeDataPromise(toCurr, fromCurr)
-            .then( () => {
-                console.log("loaded")
-                funcs.callFuncIfExists(success, toCurr + " " + fromCurr + " data loaded")
-                return toCurr + " " + fromCurr + " data loaded"
-            })
-            .catch( err => {
+            try {
+                await module.exports.loadCurrencyExchangeDataPromise(toCurr, fromCurr)
+                .then( () => {
+                    console.log("loaded")
+                    const result = toCurr + " " + fromCurr + " data loaded"
+                    funcs.callFuncIfExists(success, result)
+                    return result
+                })
+            } catch(err) {
                 console.log(err)
                 funcs.callFuncIfExists(failure, err)
                 return
-            })
+            }
         } else {
             console.log("existed")
-            funcs.callFuncIfExists(success, toCurr + " " + fromCurr + " data existed")
-            return toCurr + " " + fromCurr + " data existed"
+            const result = toCurr + " " + fromCurr + " data existed"
+            funcs.callFuncIfExists(success, result)
+            return result
         }
-    } catch (err) {
+    } catch(err) {
         console.log(err)
         funcs.callFuncIfExists(failure)
         return
@@ -617,10 +633,9 @@ module.exports.updateCurrencyExchangeDataIfNeededPromise = async function (toCur
 
 module.exports.doWeHaveCurrencyExchangeData = async function (toCurr, fromCurr, success, failure) {
     toCurr = toCurr.toUpperCase()
-    console.log("do we have curr ex data")
+    //console.log("do we have curr ex data")
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
-
 
     CurrencyExchange.findOne({ toCurr, fromCurr }, function (err, exchangeData) {
         if (err) {
@@ -637,7 +652,7 @@ module.exports.doWeHaveCurrencyExchangeData = async function (toCurr, fromCurr, 
 module.exports.doWeHaveRecentCurrencyExchangeDataPromise = async function (toCurr, fromCurr, date) {
     toCurr = toCurr.toUpperCase()
 
-    console.log("do we have recent curr ex data?")
+    //console.log("do we have recent curr ex data?")
 
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
@@ -653,18 +668,18 @@ module.exports.doWeHaveRecentCurrencyExchangeDataPromise = async function (toCur
             ////// Improve the precise date check to avoid unnecessary fetching,
             ////// e.g. checking discrete days not hours, mins, secs
             if (lastDate >= date.minus({ days : 2})) {
-                console.log("recent fx data exists for " + toCurr + " + " + fromCurr)
+                //console.log("recent fx data exists for " + toCurr + " + " + fromCurr)
                 return true
             } else {
-                console.log("fx data outdated for " + toCurr + " + " + fromCurr, lastDate.toISO())
+                //console.log("fx data outdated for " + toCurr + " + " + fromCurr, lastDate.toISO())
                 return false
             }
         } else {
-            console.log("no fx data for " + toCurr + " + " + fromCurr)
+            //console.log("no fx data for " + toCurr + " + " + fromCurr)
             return false
         }
 
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 }
@@ -676,7 +691,8 @@ module.exports.loadCurrencyExchangeDataPromise = async function (toCurr, fromCur
     if (typeof fromCurr == "undefined") fromCurr = "USD"
     fromCurr = fromCurr.toUpperCase()
 
-    try { //// Alpha Vantage is weird
+    try {
+        //// Alpha Vantage is weird
         //let getCurr = fromCurr
         //let inCurr = toCurr
         const data = await alpha.forex.dailyExt(fromCurr, toCurr, "full")
@@ -705,7 +721,7 @@ module.exports.loadCurrencyExchangeDataPromise = async function (toCurr, fromCur
 
         return last
         
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 
@@ -747,7 +763,7 @@ module.exports.updateCurrencyExchangeDataPromise = async function (toCurr, fromC
 
         return last
         
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 
@@ -783,7 +799,7 @@ module.exports.loadCurrencyExchangeDataDual = async function (toCurr, fromCurr, 
         funcs.callFuncIfExists(success)
         return
         
-    } catch (err) {
+    } catch(err) {
         console.log(err)
         funcs.callFuncIfExists(failure, err)
     }
@@ -805,14 +821,14 @@ module.exports.getCurrencyExchangeRateUpdateIfNeededPromise = async function (to
 
     //console.log("update if needed")
 
-    console.log( "getting curr data", toCurr, fromCurr, date, toGbx, fromGbx )
+    //console.log( "getting currency data", toCurr, fromCurr, date, toGbx, fromGbx )
 
     await module.exports.updateCurrencyExchangeDataIfNeededPromise(toCurr, fromCurr, date)
 
     const rateData = await module.exports.getCurrencyExchangeRatePromise(toCurr, fromCurr, date)
     
-    console.log( "getCurrencyExchangeRateUpdateIfNeededPromise", toCurr, fromCurr,
-        date, rateData, toGbx, fromGbx )
+    //console.log( "getCurrencyExchangeRateUpdateIfNeededPromise", toCurr, fromCurr,
+    //    date, rateData, toGbx, fromGbx )
     if (toGbx) rateData.rate *= 100
     if (fromGbx) rateData.rate /= 100
     return rateData
@@ -868,7 +884,7 @@ module.exports.getCurrencyExchangeRatePromise = async function (toCurr, fromCurr
             }
 
         }
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 }

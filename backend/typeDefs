@@ -1,0 +1,198 @@
+scalar Date
+type ExchangeRate {
+            toCurr : String!
+            fromCurr : String!
+            date : Date!
+            rate : Float!
+        }
+type Fx {
+            toCurr : String!
+            fromCurr : String!
+            date : String
+            rate : Float
+        }
+type Holding {
+    _id : ID!
+    name : String
+ticker : String
+exchangeName : String
+exchangeTicker : String
+type : String
+group : String
+region : String
+quantity : Float
+buyUnitPrice : Float
+buyTotalPrice : Float
+buyCurrency : String
+buyDate : Date
+buyRate : Float
+fees : Float
+currentUnitPrice : Float
+currentTotalPrice : Float
+priceCurrency : String
+currentPriceDate : Date
+currentRate : Float
+    opens : [HoldingOpen]
+    closes : [HoldingClose]
+}
+type GetHoldingReponse {
+                status : String!
+                reason : String
+                holding : Holding
+            }
+type GetHoldingsResponse {
+                status : String
+                reason : String
+                holdings : [Holding]
+                groups : [String]
+                exchangeRates : [ExchangeRate]
+            }
+type AddHoldingResponse {
+                status : String!
+                reason : String
+                holding : Holding
+            }
+type UpdateHoldingResponse {
+                status : String!
+                reason : String
+                holding : Holding
+            }
+type RemoveHoldingResponse {
+                status : String!
+                reason : String
+                holdingId : ID
+            }
+type HoldingClose {
+            _id : ID!
+            name : String
+quantity : Float
+sellUnitPrice : Float
+sellTotalPrice : Float
+sellDate : Date
+sellRate : Float
+fees : Float
+        }
+type AddHoldingCloseResponse {
+                status : String!
+                reason : String
+                holdingId : ID!
+                holdingClose : HoldingClose
+            }
+type UpdateHoldingCloseResponse {
+                status : String!
+                reason : String
+                holdingId : ID!
+                holdingClose : ID!
+            }
+type RemoveHoldingCloseResponse {
+                status : String!
+                reason : String
+                holdingId : ID!
+                holdingCloseId : ID!
+            }
+type HoldingOpen {
+            _id : ID!
+            quantity : Float!
+buyUnitPrice : Float!
+buyTotalPrice : Float!
+buyDate : Date!
+buyRate : Float
+fees : Float
+        }
+type RemoveHoldingIdResponse {
+                status : String!
+                reason : String
+                holdingId : ID!
+                holdingOpenId : ID!
+            }
+input HoldingInput {
+    name : String
+ticker : String
+exchangeName : String
+exchangeTicker : String
+type : String
+group : String
+region : String
+quantity : Float
+buyUnitPrice : Float
+buyTotalPrice : Float
+buyCurrency : String
+buyDate : Date
+buyRate : Float
+fees : Float
+currentUnitPrice : Float
+currentTotalPrice : Float
+priceCurrency : String
+currentPriceDate : Date
+currentRate : Float
+}
+input HoldingWithIdInput {
+    _id : ID
+    name : String
+ticker : String
+exchangeName : String
+exchangeTicker : String
+type : String
+group : String
+region : String
+quantity : Float
+buyUnitPrice : Float
+buyTotalPrice : Float
+buyCurrency : String
+buyDate : Date
+buyRate : Float
+fees : Float
+currentUnitPrice : Float
+currentTotalPrice : Float
+priceCurrency : String
+currentPriceDate : Date
+currentRate : Float
+}
+input HoldingCloseInput {
+            name : String
+quantity : Float
+sellUnitPrice : Float
+sellTotalPrice : Float
+sellDate : Date
+sellRate : Float
+fees : Float
+        }
+input HoldingOpenInput {
+            quantity : Float!
+buyUnitPrice : Float!
+buyTotalPrice : Float!
+buyDate : Date!
+buyRate : Float
+fees : Float
+        }
+type Query {
+    getExchangeRate (toCurr : String!, fromCurr : String!) : ExchangeRate
+    holding (holdingId : ID!) : Holding
+    holdings (userId : ID!) : [Holding]
+    getHolding (holdingId : ID!) : GetHoldingReponse!
+    getHoldingAdvanced (user : Int!, _id : ID!, displayCurrency : String!, secondCurrency : String) : Holding
+    getHoldings (
+            user : Int!
+            displayCurrency : String!
+            secondCurrency : String
+        ) : GetHoldingsResponse
+}
+type Mutation {
+    addHolding (holdingInput : HoldingInput!) : AddHoldingResponse!
+    updateHolding (holdingWithIdInput : HoldingWithIdInput!) : UpdateHoldingResponse!
+    removeHolding (holdingId : ID!) : RemoveHoldingResponse!
+    addHoldingClose (
+            user : Int
+            holdingId : ID!
+            holdingCloseInput : HoldingCloseInput!
+        ) : AddHoldingCloseResponse!
+    updateHoldingClose (holdingId : ID!, holdingCloseInput : HoldingCloseInput) : UpdateHoldingCloseResponse
+    removeHoldingClose (holdingId : ID!, holdingCloseId : ID!) : RemoveHoldingCloseResponse
+    addHoldingOpen (
+            user : ID
+            holdingId : ID!
+            holdingOpenInput : HoldingOpenInput
+        )
+                  : UpdateHoldingResponse!
+    removeHoldingOpen (holdingId : ID!, holdingOpenId : ID!) : RemoveHoldingIdResponse!
+}

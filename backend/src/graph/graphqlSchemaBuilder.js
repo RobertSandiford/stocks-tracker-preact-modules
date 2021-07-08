@@ -1,4 +1,25 @@
 
+function formatTypeDefs(typeDefs) {
+    let lines = typeDefs.split('\n')
+    const spacesPerIndent = 4
+    const tabsPerIndent = 0
+    let indentation = 0
+    lines = lines.map( line => {
+        const opens = (line.match(/[({]/g)||[]).length
+        const closes = (line.match(/[)}]/g)||[]).length
+        const excessCloses = Math.max(0, closes-opens)
+        indentation -= excessCloses
+        const newLine = ' '.repeat(spacesPerIndent * indentation)
+            + '\t'.repeat(tabsPerIndent * indentation)
+            + line.trim()
+        indentation += excessCloses
+        indentation += opens
+        indentation -= closes
+        return newLine
+    })
+    return lines.join('\n')
+}
+
 module.exports = function (input) {
 
     const scalars = input.scalars || {}
@@ -120,6 +141,13 @@ module.exports = function (input) {
     }
 
     const requests = require('./graphqlRequestsMaker')(graphObjects)
+
+    const fs = require('fs')
+
+    typeDefs = formatTypeDefs(typeDefs)
+
+
+    fs.writeFileSync(__dirname + '/typeDefs', typeDefs)
 
     return { typeDefs, resolvers, requests }
 

@@ -29,7 +29,7 @@ module.exports.getLastPrice = async function (ticker, baseCurrency) {
         //console.log(ticker, data)
         return data
     
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 
@@ -72,14 +72,14 @@ module.exports.getDateOfLastPricePromise = async function (ticker, type, baseCur
         const data = await AssetData.findOne({ ticker, type, baseCurrency }, null, { sort: { date : "desc" } }).exec()
     
         if (data != null) {
-            console.log(ticker, "last price date: ", data.date)
+            //console.log(ticker, "last price date: ", data.date)
             return data.date
         } else {
-            console.log(ticker, "last price date: ", null)
+            //console.log(ticker, "last price date: ", null)
             return new Date("1970-01-01T00:00:00Z")
         }
 
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 }
@@ -294,7 +294,7 @@ module.exports.updateAssetDataIfNeededPromise = async function (ticker, type, ba
 
             return module.exports.updateAssetDataPromise(ticker, type, baseCurrency, date)
         }
-    } catch (err) {
+    } catch(err) {
         console.log(err)
     }
 
@@ -417,7 +417,7 @@ module.exports.updateAssetDataPromise = async function (ticker, type, baseCurren
                 } else {
                     console.log("didn't find asset data as a stock", ticker)
                 }
-            } catch (err) {
+            } catch(err) {
                 console.log(err)
             }
             break
@@ -430,7 +430,7 @@ module.exports.updateAssetDataPromise = async function (ticker, type, baseCurren
                 } else {
                     console.log("didn't find asset data as a crypto", ticker)
                 }
-            } catch (err) {
+            } catch(err) {
                 console.log(err)
             }
             break
@@ -443,7 +443,7 @@ module.exports.updateAssetDataPromise = async function (ticker, type, baseCurren
                 } else {
                     console.log("didn't find asset data as a currency", ticker)
                 }
-            } catch (err) {
+            } catch(err) {
                 console.log(err)
             }
             break
@@ -456,7 +456,7 @@ module.exports.updateAssetDataPromise = async function (ticker, type, baseCurren
                 } else {
                     console.log("didn't find asset data as a fund")
                 }
-            } catch (err) {
+            } catch(err) {
                 console.log(err)
             }
             break

@@ -6,11 +6,11 @@
         "object-curly-spacing" : ["off", "always"],
         "quotes" : "off",
         "key-spacing" : "off",
-        "max-len" : ["warn", 110],
+        "max-len" : ["warn", 120],
         "indent" : ["warn", 4, {
             "MemberExpression" : "off",
             "SwitchCase": 1,
-            "ignoreComments" : "true"
+            "ignoreComments" : true
         }],
         "prefer-const" : "warn",
         "linebreak-style" : ["error", "windows"],
@@ -24,7 +24,9 @@
         "no-multiple-empty-lines" : ["warn", { "max" : 3, "maxBOF" : 1, "maxEOF" : 3 }],
         "no-unused-vars" : "warn",
         "spaced-comment" : "off",
-        "keyword-spacing": ["error", { "overrides": {} } ],
+        "keyword-spacing": ["warn", { "overrides": {
+            "catch": { "after": false }
+        } }],
         "guard-for-in" : "off",
         "brace-style" : ["error", "1tbs", { "allowSingleLine": true }],
         "block-spacing" : ["error", "always"],
@@ -42,6 +44,13 @@
 
     },
     "globals": {
+        "global": "readonly",
+        
+        "log": "readonly",
+        "error": "readonly",
+
+        "requestError": "readonly",
+
         "Object": "readonly",
         "Array": "readonly",
         "module": "readonly",
@@ -50,6 +59,8 @@
         "console": "readonly",
         "__dirname": "readonly",
         "setTimeout": "readonly",
+        "before": "readonly",
+        "after": "readonly",
         "beforeAll": "readonly",
         "afterAll": "readonly",
         "describe": "readonly",

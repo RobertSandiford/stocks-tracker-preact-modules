@@ -4,9 +4,6 @@ const name = "holding"
 const collection = "holdings"
 
 const openSchema = mongoose.Schema({
-    name : {
-        type : 'string',
-    },
     quantity : {
         type : Number,
     },
@@ -25,9 +22,6 @@ const openSchema = mongoose.Schema({
 })
 
 const closeSchema = mongoose.Schema({
-    name : {
-        type : 'string',
-    },
     quantity : {
         type : Number,
     },
@@ -105,6 +99,6 @@ const schema = mongoose.Schema({
     closes : [closeSchema]
 })
 
-const model = mongoose.model(name, schema, collection)
+const model = mongoose.connection.model(name, schema, collection)
 
 module.exports = model
