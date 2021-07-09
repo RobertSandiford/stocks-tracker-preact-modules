@@ -57,7 +57,7 @@
         "babel/no-invalid-this" : "warn",
 
         "react/prefer-stateless-function" : "off",
-        "react/self-closing-comp" : "warn"
+        "react/self-closing-comp" : "off"
     },
     "globals": {
         "global": "readonly",

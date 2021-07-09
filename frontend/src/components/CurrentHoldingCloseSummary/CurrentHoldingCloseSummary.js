@@ -187,14 +187,16 @@ export default class CurrentHoldingCloseSummary extends Component {
                     </span>
                 }
 
-                { (holding.fees !== 0) // check this
+                { /* not sure about this block?
+                (holding.fees !== 0) // check this
                     ? <span style={HoldingStyle.percentAnnumWidth} className={changeType} title={d.lastClosedDate}>
                         { (dateDiff > 0.1) ? d.percentageChangeAnnumAfterFees : <span>-</span> }
                     </span>
                     : <span style={HoldingStyle.percentAnnumWidth} className={changeType} title={d.lastClosedDate}>
                         { (dateDiff > 0.1) ? d.percentageChangeAnnum : <span>-</span> }
                     </span>
-                }
+                */ }
+                <span style={HoldingStyle.percentAnnumWidth}></span>
 
                 <span style={HoldingStyle.timeHeld} />
                 

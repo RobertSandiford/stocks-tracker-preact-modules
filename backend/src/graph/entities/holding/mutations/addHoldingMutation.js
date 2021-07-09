@@ -45,7 +45,7 @@ export default {
 
                 // save model to database
                 try {
-                    const result = await holding.save()
+                    await holding.save()
 
                     //console.log("Holding saved", result, holding)
                     holding = holding.toObject()
