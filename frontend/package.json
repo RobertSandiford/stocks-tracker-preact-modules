@@ -8,16 +8,11 @@
     "serve": "sirv build --port 8080 --cors --single",
     "dev": "preact watch",
     "lint": "eslint src",
-    "test": "npx mocha tests --recursive --watch"
-  },
-  "eslintConfig": {
-    "extends": "preact",
-    "ignorePatterns": [
-      "build/"
-    ]
+    "fix": "eslint src --fix --fix-type suggestion --fix-type layout",
+    "test": "npx mocha tests --recursive --watch --es-module-specifier-resolution=node"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.7",
+    "@apollo/client": "^3.3.21",
     "graphql": "^15.4.0",
     "lodash": "^4.17.20",
     "lodash.clonedeep": "^4.5.0",
@@ -29,19 +24,22 @@
     "redux": "^4.0.5"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
     "colors": "^1.4.0",
     "cross-fetch": "^3.1.4",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-preact-pure": "^2.0.0",
-    "eslint": "^6.0.1",
-    "eslint-config-preact": "^1.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-preact-pure": "^2.3.0",
+    "eslint": "^7.30.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-preact": "^1.1.4",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-import": "^2.23.4",
     "esm": "^3.2.25",
     "fs": "0.0.1-security",
     "jest-preset-preact": "^1.0.0",
-    "mocha": "^9.0.2",
+    "node-fetch": "^2.6.1",
     "preact-cli": "^3.0.0",
     "react": "^17.0.2",
     "sirv-cli": "1.0.3"
-  }
+  },
+  "type": "module"
 }

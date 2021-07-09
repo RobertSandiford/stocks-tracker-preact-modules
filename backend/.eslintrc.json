@@ -1,5 +1,5 @@
 {
-    "extends" : "google",
+    "extends" : ["google"],
     "rules" : {
         "no-undef" : "error",
         "semi" : ["warn", "never"],
@@ -40,21 +40,29 @@
         "require-jsdoc" : "off",
         "new-cap" : "off",
         "curly" : "off",
-        "no-const-assign" : "error"
+        "no-const-assign" : "error",
+        "rest-spread-spacing" : "off",
+        "no-case-declarations" : "warn",
+        "no-multi-spaces" : ["warn", { "exceptions": { 
+            "VariableDeclarator": true,
+            "ImportDeclaration": true 
+        } }],
+        "one-var" : "off",
+        "prefer-arrow-callback" : "warn"
 
     },
     "globals": {
         "global": "readonly",
         "Object": "readonly",
         "Array": "readonly",
-        "module": "readonly",
-        "require": "readonly",
         "process": "readonly",
         "console": "readonly",
         "__dirname": "readonly",
         "setTimeout": "readonly",
         "before": "readonly",
         "after": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
         "describe": "readonly",
         "it": "readonly",
         "expect": "readonly",
@@ -65,7 +73,8 @@
         "test": "readonly"
     },
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2020,
+        "sourceType": "module"
     },
     "env": {
         "es6": true

@@ -7,25 +7,25 @@ export function component(c) {
 
 export function addCurrencySign(num, curr = "USD") {
     num = num.toString()
-    let minus;
-    if (minus = (num.charAt(0) == "-") ) num = num.substring(1)
+    const minus = (num.charAt(0) == "-")
+    if (minus) num = num.substring(1)
     switch (curr) {
         case "USD":
-            num = "$" + num
+            num = `$${ num}`
             break
         case "GBP":
-            num = "£" + num
+            num = `£${ num}`
             break
         default:
             break
     }
-    if (minus) num = "-" + num
+    if (minus) num = `-${ num}`
     return num
 }
 
 export function roundDp(n, m) {
-    let o = Math.pow(10, m)
-    return Math.round( n * o + Number.EPSILON ) / o;
+    const o = Math.pow(10, m)
+    return Math.round( n * o + Number.EPSILON ) / o
 }
 
 /*
@@ -34,7 +34,7 @@ function addZeros(n, m) {
     let after = n.split(".")[1]
     let toAdd = m - after.length
     if (toAdd > 0) {
-        n += 
+        n +=
     }
 }
 */
@@ -43,7 +43,7 @@ function addZeros(n, m) {
 
 const currencySignList = ["$", "£"]
 export function getPriceWithoutCurrency(n) {
-    let f = n.charAt(0)
+    const f = n.charAt(0)
     if (currencySignList.includes(f)) return n.substring(1)
     return n
 }
@@ -61,7 +61,7 @@ export function numToXChars(n, m) {
     n = n.toString().substring(0, m+1)
     if (n.length === m+1) {
         if (n.indexOf(".") !== -1) {
-            let l = n.split(".")[1]
+            const l = n.split(".")[1]
             n = Number(n).toFixed(l.toString().length -1)
         }
     }
@@ -69,15 +69,15 @@ export function numToXChars(n, m) {
 }
 
 export function addCommasToNum(num) {
-    var num_parts = num.toString().split(".");
-    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return num_parts.join(".");
+    const num_parts = num.toString().split(".")
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    return num_parts.join(".")
 }
 
 export function limitToXDp(n, m) {
     //console.log(typeof n, n)
     if ( (n % 0) !== 0 ) return n.toFixed(m)
-    else return n
+    return n
 }
 
 export function formatMoney(n, currency = "USD") {
@@ -100,14 +100,14 @@ export function percentageFormat(p, changeSign) {
     if ( p.toString().length >= 6 ) p = parseFloat(p).toFixed(0)
     p = addCommasToNum(p)
     p += "%"
-    if (changeSign === "+") p = '+' + p
+    if (changeSign === "+") p = `+${ p}`
     return p
 }
 
 export function formatPercentage(p) {
     if (p === "") return p
 
-    let changeSign = (p > 0) ? '+' : ''
+    const changeSign = (p > 0) ? '+' : ''
 
     //console.log(p)
 
@@ -115,14 +115,14 @@ export function formatPercentage(p) {
     if ( p.toString().length >= 6 ) p = parseFloat(p).toFixed(0)
     p = addCommasToNum(p)
     p += "%"
-    if (changeSign === "+") p = '+' + p
+    if (changeSign === "+") p = `+${ p}`
     return p
 }
 
 export function objectWithTheseFields(object, fields) {
     console.log("starting object", object)
     console.log("desired fields", fields)
-    let r = {}
+    const r = {}
     for (const field of fields) {
         r[field] = object[field]
     }
@@ -140,5 +140,5 @@ export function annualisedPercentageChange(start, now, y) {
 
 
 export function toPercentage(n) {
-    return ((n * 100).toFixed(6) + '%')
+    return (`${(n * 100).toFixed(6) }%`)
 }

@@ -1,11 +1,6 @@
-const { DateTime : Luxon, Settings : LuxonSettings } = require('luxon')
-
 // Luxon DateTimes
+import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
 LuxonSettings.defaultLocale = "en-GB"
 const stDateFormat = Object.assign(Luxon.DATE_MED, { })
 
-module.exports = {
-    Luxon,
-    LuxonSettings,
-    stDateFormat
-}
+export { Luxon, LuxonSettings, stDateFormat }

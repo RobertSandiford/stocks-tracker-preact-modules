@@ -1,9 +1,9 @@
 
-const getExchangeRateQuery = require('./queries/getExchangeRate')
+import getExchangeRateQuery from './queries/getExchangeRate'
 
 const entityName = "ExchangeRate"
 
-module.exports = {
+export default {
     [entityName] : {
         type : `{
             toCurr : String!

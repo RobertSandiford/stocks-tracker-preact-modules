@@ -1,5 +1,19 @@
-const { load } = require('../lib')
-module.exports = load(__dirname)
+import { load } from '../lib'
+
+//export default load(__dirname)
+
+
+import ExchangeRate from './ExchangeRate/ExchangeRate'
+import Holding from './Holding/Holding'
+import HoldingOpen from './HoldingOpen/HoldingOpen'
+import HoldingClose from './HoldingClose/HoldingClose'
+
+export default {
+    ...ExchangeRate,
+    ...Holding,
+    ...HoldingOpen,
+    ...HoldingClose,
+}
 
 /*
 const fs = require("fs")

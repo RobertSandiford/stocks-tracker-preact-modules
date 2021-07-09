@@ -1,7 +1,17 @@
 
-import { h, Component } from 'preact'
+import { h, Component, createRef } from 'preact'
 import { connect as reduxConnect, useSelector, useDispatch } from 'react-redux'
+import { gql } from '@apollo/client'
+import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
+
+import { runBindings } from '../bindings'
 import { dispatchFunction as reduxDispatchFunction, getStoreItems } from '../../redux/functions'
+import graph from '../../graph'
+import { roundDp } from '../functions'
+
+LuxonSettings.defaultLocale = "en-GB"
+const stDateFormat = Object.assign(Luxon.DATE_MED, { })
+const luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
 
 export default reduxConnect(
     state => ({
@@ -67,25 +77,25 @@ export default reduxConnect(
         
         this.quantityChanged = (event) => {
             //console.log("quantity changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = Number(el.value)
             //console.log(this.form)
         }
         this.buyUnitPriceChanged = (event) => {
             //console.log("buy unit price changed changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = Number(el.value)
             //console.log(this.form)
         }
         this.buyTotalPriceChanged = (event) => {
             //console.log("buy total price changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = Number(el.value)
             //console.log(this.form)
         }
         this.buyDateChanged = (event) => {
             //console.log("buy total price changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = el.value
             //console.log(this.form)
         }
@@ -95,14 +105,14 @@ export default reduxConnect(
             this.upload()
         }
         this.upload = function() {
-            let data = {
+            const data = {
                 _id : this.holding._id,
                 ticker : this.holding.ticker,
                 close : this.form
             }
             //console.log(data)
 
-            let mutation =`mutation AddHoldingOpen {
+            const mutation =`mutation AddHoldingOpen {
                 addHoldingOpen(
                     user: 1
                     holding_id : "${this.holding._id}"
@@ -131,14 +141,14 @@ export default reduxConnect(
                 // refit this
                 //let s = objectWithTheseFields(result.data.addHoldingOpen.holding, ["holdings", "groups", "fx"])
 
-                let holding = result.data.addHoldingOpen.holding
+                const holding = result.data.addHoldingOpen.holding
 
                 console.log("update store 2")
                 this.props.updateStore('updateHolding', holding)
 
                 //this.props.updateStore(s)
                 //this.props.updateStore({ holdings : r.holdings, groups : r.groups, fx : r.fx })
-            });
+            })
 
 
             /*this.holdingComponent.holdingsComponent.post(
@@ -189,52 +199,52 @@ export default reduxConnect(
 
         return (
             <div class="holding-open">
-                    <h3>Open</h3>
+                <h3>Open</h3>
 
-                    <form>
+                <form>
 
-                        <div>
-                            <span>Quantity: </span>
-                            <input id="number" name="quantity" ref={this.bindings.prices.items.quantity.ref} type="number" min="0" step="any"
-                                defaultValue={this.form.quantity} onChange={this.quantityChanged} />
-                        </div>
+                    <div>
+                        <span>Quantity: </span>
+                        <input id="number" name="quantity" ref={this.bindings.prices.items.quantity.ref} type="number" min="0" step="any"
+                            defaultValue={this.form.quantity} onChange={this.quantityChanged} />
+                    </div>
 
-                        <div>
-                            <span>Buy Price (Unit): </span>
-                            <input id="buyUnitPrice" name="buyUnitPrice" ref={this.bindings.prices.items.buyUnitPrice.ref} type="number" min="1" step="any"
-                                defaultValue={this.form.buyUnitPrice} onChange={this.buyUnitPriceChanged} />
-                            <span> Currency: </span>
-                            <input type="text" name="buyUnitCurrency"
-                                value={this.holding.buyCurrency} disabled />
-                        </div>
+                    <div>
+                        <span>Buy Price (Unit): </span>
+                        <input id="buyUnitPrice" name="buyUnitPrice" ref={this.bindings.prices.items.buyUnitPrice.ref} type="number" min="1" step="any"
+                            defaultValue={this.form.buyUnitPrice} onChange={this.buyUnitPriceChanged} />
+                        <span> Currency: </span>
+                        <input type="text" name="buyUnitCurrency"
+                            value={this.holding.buyCurrency} disabled />
+                    </div>
 
-                        <div>
-                            <span>Buy Price (Total): </span>
-                            <input id="buyTotalPrice" name="buyTotalPrice" ref={this.bindings.prices.items.buyTotalPrice.ref} type="number" min="1" step="any"
-                                defaultValue={this.form.buyTotalPrice} onChange={this.buyTotalPriceChanged} />
-                            <span> Currency: </span>
-                            <input type="text" name="buyTotalCurrency"
-                                value={this.holding.buyCurrency} disabled />
-                        </div>
+                    <div>
+                        <span>Buy Price (Total): </span>
+                        <input id="buyTotalPrice" name="buyTotalPrice" ref={this.bindings.prices.items.buyTotalPrice.ref} type="number" min="1" step="any"
+                            defaultValue={this.form.buyTotalPrice} onChange={this.buyTotalPriceChanged} />
+                        <span> Currency: </span>
+                        <input type="text" name="buyTotalCurrency"
+                            value={this.holding.buyCurrency} disabled />
+                    </div>
 
-                        <div>
-                            <span>Buy Date: </span>
-                            <input id="buyyDate" name="buyDate" type="datetime-local"
-                                defaultValue={this.form.buyDate} onChange={this.buyDateChanged} />
-                        </div>
+                    <div>
+                        <span>Buy Date: </span>
+                        <input id="buyyDate" name="buyDate" type="datetime-local"
+                            defaultValue={this.form.buyDate} onChange={this.buyDateChanged} />
+                    </div>
 
-                        {/*<div>
+                    {/*<div>
                             <span>Fee: </span>
                             <input id="fees" name="fees"
                                 defaultValue={this.form.fees} type="number" onChange={this.inputChanged} />%
                         </div>*/}
 
-                        <div>
-                            <input type="submit" name="submit" value="Save" onClick={this.saveOpen} />
-                        </div>
+                    <div>
+                        <input type="submit" name="submit" value="Save" onClick={this.saveOpen} />
+                    </div>
 
-                    </form>
-                </div>
+                </form>
+            </div>
         )
     }
 })

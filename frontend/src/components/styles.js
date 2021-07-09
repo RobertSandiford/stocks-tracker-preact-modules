@@ -1,5 +1,5 @@
 
-import { toPercentage as toPercentage } from './functions'
+import { toPercentage } from './functions'
 
 const spanWidth = 8, controlsWidth = 4, titleWidth = 20, typeWidth = 6, feesWidth = 5, dateWidth = 10, percentAnnumWidth = 10, timeHeldWidth = 10, deleteWidth = 10
 const titleNameWidth = 10, titleTickerWidth = 10
@@ -18,42 +18,42 @@ const inputSizeFactor = 0.57
 export const EditLineStyles = {
     input : {
         boxSizing : "border-box",
-        width : (spanWidth * inputSizeFactor) + "vw"
+        width : `${spanWidth * inputSizeFactor }vw`
     },
     inputTitle : {
         boxSizing : "border-box",
-        width : (titleWidth * inputSizeFactor) + "vw"
+        width : `${titleWidth * inputSizeFactor }vw`
     },
     inputTicker : {
         boxSizing : "border-box",
-        width : (titleWidth * inputSizeFactor) + "vw"
+        width : `${titleWidth * inputSizeFactor }vw`
     },
     inputType : {
         boxSizing : "border-box",
-        width : (typeWidth * inputSizeFactor) + "vw"
+        width : `${typeWidth * inputSizeFactor }vw`
     },
     inputDate : {
         boxSizing : "border-box",
-        width : (dateWidth * inputSizeFactor) + "vw"
+        width : `${dateWidth * inputSizeFactor }vw`
     },
     inputFees : {
         boxSizing : "border-box",
-        width : (feesWidth * inputSizeFactor) + "vw"
+        width : `${feesWidth * inputSizeFactor }vw`
     }
 }
 
 export const HoldingStyle = {
     holdingsTitles : {
-        padding : tablePadding + " 0"
+        padding : `${tablePadding } 0`
     },
     holding : {
         borderTop : "solid 0.1vmin dodgerblue",
-        padding : tablePadding + " 0"
+        padding : `${tablePadding } 0`
     },
     holdingsTotals : {
         borderTop : "solid 0.1vmin black",
         fontWeight : 'bold',
-        padding : totalsPadding + " 0"
+        padding : `${totalsPadding } 0`
     },
     T1 : {
         fontWeight : "bold",

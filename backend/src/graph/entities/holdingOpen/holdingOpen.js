@@ -1,6 +1,6 @@
 
-const addHoldingOpenMutation = require('./addHoldingOpenMutation')
-const removeHoldingOpenMutation = require('./removeHoldingOpenMutation')
+import addHoldingOpenMutation from './addHoldingOpenMutation'
+import removeHoldingOpenMutation from './removeHoldingOpenMutation'
 
 
 const entityName = "HoldingOpen"
@@ -13,7 +13,7 @@ buyDate : Date!
 buyRate : Float
 fees : Float`
 
-module.exports = {
+export default {
     [entityName] : {
         type : `{
             _id : ID!

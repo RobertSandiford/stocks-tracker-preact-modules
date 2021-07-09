@@ -1,13 +1,17 @@
-require('dotenv').config()
-const { GraphQLClient : GraphQlClient, gql } = require('graphql-request')
-const { formatInputData } = require('./funcs')
-const supertest = require('supertest')
+import dotenv from 'dotenv'
+dotenv.config()
+import { GraphQLClient as GraphQlClient, gql } from 'graphql-request'
+import { formatInputData } from './funcs'
+//import supertest from 'supertest'
 
+/*
 const port = (Number(process.env.port) + 1) || console.log("Error, no port specified in .env")
 const graphQlEndpoint = `http://localhost:${port}/graphql`
 const graphQlClient = new GraphQlClient(graphQlEndpoint, { headers: {} })
 const graphQlRequest = graphQlClient.request.bind(graphQlClient)
+*/
 
+/*
 async function testRequest(test, url, query) {
     const res = await supertest(test.app)
         .post(url)
@@ -15,6 +19,7 @@ async function testRequest(test, url, query) {
         .send(query)
     return res
 }
+*/
 
 /*
 function parseTypeToRequest(typesRegistry, type) {
@@ -155,7 +160,7 @@ function generateFunction(requests, objects, type, name, format) {
 }
 
 
-module.exports = function (objects) {
+export default function (objects) {
 
     const requests = {}
 
@@ -174,7 +179,7 @@ module.exports = function (objects) {
     for ( const queryFormat of objects.queries ) {
 
         const queryName = queryFormat.split(' ').splice(0, 1).pop()
-        const queryResolver = objects.queryResolvers[queryName]
+        //const queryResolver = objects.queryResolvers[queryName]
 
         const r = generateFunction(requests, objects, 'query', queryName, queryFormat)
 
@@ -185,7 +190,7 @@ module.exports = function (objects) {
     for ( const mutationFormat of objects.mutations ) {
         
         const mutationName = mutationFormat.split(' ').splice(0, 1).pop()
-        const mutator = objects.mutators[mutationName]
+        //const mutator = objects.mutators[mutationName]
 
         const r = generateFunction(requests, objects, 'mutation', mutationName, mutationFormat)
 
@@ -194,9 +199,6 @@ module.exports = function (objects) {
     }
 
     return requests
-}
+};
 
-
-module.exports.parseTypeToRequest = parseTypeToRequest
-//module.exports.parseTypeToRequest2 = parseTypeToRequest2
-module.exports.generateFunction = generateFunction
+export { parseTypeToRequest, generateFunction }

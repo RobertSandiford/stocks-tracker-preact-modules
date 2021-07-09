@@ -1,10 +1,10 @@
 
-const assets = require('../../../../lib/assets')
-const Holding = require('../../../../models/Holding')
+//import * as assets from '../../../../lib/assets'
+import Holding from '../../../../models/Holding'
 
 // removeHoldingMutation
 
-module.exports = {
+export default {
     removeHolding : {
         types : {
             RemoveHoldingResponse : `{
@@ -43,7 +43,7 @@ module.exports = {
                 //console.log("removeHolding response: ", response)
                 return response
 
-            } catch (e) {
+            } catch(e) {
                 console.log("Error trying to delete Holding: " + e)
                 const response = {
                     status : "ERROR",

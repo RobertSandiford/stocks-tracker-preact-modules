@@ -1,10 +1,10 @@
-import { h } from 'preact';
-import style from './style.css';
+import { h } from 'preact'
+import style from './style.css'
 
-import Holdings from '../../components/holdings/Holdings';
+import Holdings from '../../components/holdings/Holdings'
 
 const HoldingsRoute = () => (
-	<Holdings />
-);
+    <Holdings />
+)
 
-export default HoldingsRoute;
+export default HoldingsRoute

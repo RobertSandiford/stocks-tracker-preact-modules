@@ -6,18 +6,18 @@ export default class HoldingsSorter extends Component {
         super(props)
 
         this.sortChanged = (num, event) => {
-            let s = event.target.value
+            const s = event.target.value
 
-            let sort = this.props.currentHoldingsComponent.state.sort
+            const sort = this.props.currentHoldingsComponent.state.sort
             sort[num] = s
 
-            this.props.currentHoldingsComponent.setState({ sort : sort })
+            this.props.currentHoldingsComponent.setState({ sort })
         }
     }
     render() {
-        let sorts = this.props.currentHoldingsComponent.state.sort
+        const sorts = this.props.currentHoldingsComponent.state.sort
         return (
-            <div>   
+            <div>
                 <div id="sorts">
                     Sort: <select onChange={event => { this.sortChanged(1, event) }} defaultValue={sorts[1]}>
                         <option value=""></option>
@@ -42,7 +42,7 @@ export default class HoldingsSorter extends Component {
                         <option value="timeHeld">Time Held</option>
                         <option value="percentageChange">% Change</option>
                         <option value="percentageChangeAnnum">% / Year</option>
-                    </select> 
+                    </select>
                     <select onChange={event => { this.sortChanged(3, event) }} defaultValue={sorts[3]}>
                         <option value=""></option>
                         <option value="name">Title</option>

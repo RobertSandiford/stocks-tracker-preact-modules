@@ -1,5 +1,6 @@
 {
-    "extends" : "google",
+    "plugins" : ["babel"],
+    "extends" : ["google", "preact"],
     "rules" : {
         "no-undef" : "error",
         "semi" : ["warn", "never"],
@@ -33,15 +34,30 @@
         "object-shorthand" : ["warn", "always"],
         "prefer-spread" : "warn",
         "space-before-function-paren" : ["warn", {
-            "anonymous": "always",
+            "anonymous": "never",
             "named": "never",
             "asyncArrow": "always"
         }],
         "require-jsdoc" : "off",
         "new-cap" : "off",
         "curly" : "off",
-        "no-const-assign" : "error"
+        "no-const-assign" : "error",
+        "rest-spread-spacing" : "off",
+        "no-case-declarations" : "warn",
+        "no-multi-spaces" : ["warn", { "exceptions": { 
+            "VariableDeclarator": true,
+            "ImportDeclaration": true 
+        } }],
+        "one-var" : "off",
+        "prefer-arrow-callback" : "warn",
 
+        "no-lonely-if" : "off",
+
+        "no-invalid-this" : "off",
+        "babel/no-invalid-this" : "warn",
+
+        "react/prefer-stateless-function" : "off",
+        "react/self-closing-comp" : "warn"
     },
     "globals": {
         "global": "readonly",
@@ -64,10 +80,15 @@
         "requestError": "readonly",
         "test": "readonly"
     },
+    "parser": "babel-eslint",
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2020,
+        "sourceType": "module"
     },
     "env": {
         "es6": true
-    }
+    },
+    "ignorePatterns": [
+      "build/"
+    ]
 }

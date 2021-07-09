@@ -1,6 +1,7 @@
-require('dotenv').config()
-const { GraphQLClient : GraphQlClient, gql } = require('graphql-request')
-const { formatInputData, formatInnerInputData, formatSingleInputData } = require('../funcs')
+import dotenv from 'dotenv'
+dotenv.config()
+import { GraphQLClient as GraphQlClient, gql } from 'graphql-request'
+import { formatInputData, formatInnerInputData, formatSingleInputData } from '../funcs'
 
 const port = (Number(process.env.port) + 1) || console.log("Error, no port specified in .env")
 
@@ -70,7 +71,7 @@ function makeRequestFunction(type, name, defaultOutput) {
         return response[name]
     }
 }
-const testFunc1 = makeRequestFunction('query', 'getHolding', GetHoldingResponseType)
+//const testFunc1 = makeRequestFunction('query', 'getHolding', GetHoldingResponseType)
 
 
 function makeSingleInputRequestFunction(type, name, inputFormat, defaultOutput) {
@@ -83,10 +84,10 @@ function makeSingleInputRequestFunction(type, name, inputFormat, defaultOutput) 
         return response[name]
     }
 }
-const testFunc2 = makeSingleInputRequestFunction('query', 'getHolding', 'holdingId:', GetHoldingResponseType)
+//const testFunc2 = makeSingleInputRequestFunction('query', 'getHolding', 'holdingId:', GetHoldingResponseType)
 
 
-module.exports.getHolding = async (holdingId, requestedData = GetHoldingResponseType) => {
+export const getHolding = async (holdingId, requestedData = GetHoldingResponseType) => {
     
     const queryName = 'getHolding'
 
@@ -102,7 +103,7 @@ module.exports.getHolding = async (holdingId, requestedData = GetHoldingResponse
     return response[queryName]
 }
 
-module.exports.getHoldings = async (user, requestedData = GetHoldingsResponseType) => {
+export const getHoldings = async (user, requestedData = GetHoldingsResponseType) => {
     
     const queryName = 'getHoldings'
 
@@ -117,8 +118,7 @@ module.exports.getHoldings = async (user, requestedData = GetHoldingsResponseTyp
     return response[queryName]
 }
 
-
-module.exports.addHolding = async (holdingData, requestedData = AddHoldingResponseType) => {
+export const addHolding = async (holdingData, requestedData = AddHoldingResponseType) => {
     
     const mutationName = 'addHolding'
 
@@ -133,7 +133,7 @@ module.exports.addHolding = async (holdingData, requestedData = AddHoldingRespon
     return response[mutationName]
 }
 
-module.exports.updateHolding = async (holdingData, requestedData = UpdateHoldingResponseType) => {
+export const updateHolding = async (holdingData, requestedData = UpdateHoldingResponseType) => {
     
     const mutationName = 'updateHolding'
 
@@ -147,7 +147,7 @@ module.exports.updateHolding = async (holdingData, requestedData = UpdateHolding
     return response[mutationName]
 }
 
-module.exports.deleteHolding = async (holdingId, requestedData = DeleteHoldingResponseType) => {
+export const deleteHolding = async (holdingId, requestedData = DeleteHoldingResponseType) => {
     
     const mutationName = 'removeHolding'
 

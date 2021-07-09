@@ -1,9 +1,9 @@
 
-const { getExchangeRate, populateHolding } = require('../../../../lib/data')
-const Holding = require('../../../../models/Holding')
+import { getExchangeRate, populateHolding } from '../../../../lib/data'
+import Holding from '../../../../models/Holding'
 
 
-module.exports = {
+export default {
     getHoldings : {
 
         types : {

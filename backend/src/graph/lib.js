@@ -1,5 +1,5 @@
-const fs = require("fs")
-require("colors")
+import fs from 'fs'
+import 'colors'
 
 /*
 module.exports.loadEntities = (folder, includeIndex = false) => {
@@ -14,7 +14,8 @@ module.exports.loadEntities = (folder, includeIndex = false) => {
 }
 */
 
-module.exports.load = (folder, includeIndex = false) => {
+/*
+export const load = (folder, includeIndex = false) => {
     let items = {}
     //console.log("load dirname", __dirname)
     const files = fs.readdirSync(folder, { withFileTypes: true })
@@ -29,3 +30,4 @@ module.exports.load = (folder, includeIndex = false) => {
     }
     return items
 }
+*/

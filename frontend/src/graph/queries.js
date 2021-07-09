@@ -5,7 +5,7 @@ import types from './types'
 
 export default {
 
-    getHoldings : function(userId, displayCurrency, secondCurrency) {
+    getHoldings(userId, displayCurrency, secondCurrency) {
         return `query GetHoldings {
             getHoldings(
                 user: ${userId}

@@ -1,13 +1,11 @@
 
-const getHoldingQuery = require('./queries/getHoldingQuery')
-const getHoldingAdvancedQuery = require('./queries/getHoldingAdvancedQuery')
-const getHoldingsQuery = require('./queries/getHoldingsQuery')
-
-const addHoldingMutation = require('./mutations/addHoldingMutation')
-const updateHoldingMutation = require('./mutations/updateHoldingMutation')
-const removeHoldingMutation = require('./mutations/removeHoldingMutation')
-
-const Holding = require('../../../models/Holding')
+import getHoldingQuery from './queries/getHoldingQuery'
+import getHoldingAdvancedQuery from './queries/getHoldingAdvancedQuery'
+import getHoldingsQuery from './queries/getHoldingsQuery'
+import addHoldingMutation from './mutations/addHoldingMutation'
+import updateHoldingMutation from './mutations/updateHoldingMutation'
+import removeHoldingMutation from './mutations/removeHoldingMutation'
+import Holding from '../../../models/Holding'
 
 const entityName = "Holding"
 
@@ -46,7 +44,7 @@ const holdingWithIdInput = `{
     ${typeCore}
 }`
 
-module.exports = {
+export default {
     [entityName] : {
         type : holdingType,
         inputs : {

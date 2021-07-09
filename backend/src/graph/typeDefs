@@ -10,12 +10,6 @@ type GetExchangeRateResponse {
     reason : String
     exchangeRate : ExchangeRate
 }
-type Fx {
-    toCurr : String!
-    fromCurr : String!
-    date : String
-    rate : Float
-}
 type Holding {
     _id : ID!
     name : String
@@ -67,6 +61,27 @@ type RemoveHoldingResponse {
     reason : String
     holdingId : ID
 }
+type HoldingOpen {
+    _id : ID!
+    quantity : Float!
+    buyUnitPrice : Float!
+    buyTotalPrice : Float!
+    buyDate : Date!
+    buyRate : Float
+    fees : Float
+}
+type AddHoldingOpenResponse {
+    status : String!
+    reason : String
+    holdingId : ID!
+    holdingOpen : HoldingOpen
+}
+type RemoveHoldingIdResponse {
+    status : String!
+    reason : String
+    holdingId : ID!
+    holdingOpenId : ID!
+}
 type HoldingClose {
     _id : ID!
     name : String
@@ -94,27 +109,6 @@ type RemoveHoldingCloseResponse {
     reason : String
     holdingId : ID!
     holdingCloseId : ID!
-}
-type HoldingOpen {
-    _id : ID!
-    quantity : Float!
-    buyUnitPrice : Float!
-    buyTotalPrice : Float!
-    buyDate : Date!
-    buyRate : Float
-    fees : Float
-}
-type AddHoldingOpenResponse {
-    status : String!
-    reason : String
-    holdingId : ID!
-    holdingOpen : HoldingOpen
-}
-type RemoveHoldingIdResponse {
-    status : String!
-    reason : String
-    holdingId : ID!
-    holdingOpenId : ID!
 }
 input HoldingInput {
     name : String
@@ -159,6 +153,14 @@ input HoldingWithIdInput {
     currentPriceDate : Date
     currentRate : Float
 }
+input HoldingOpenInput {
+    quantity : Float!
+    buyUnitPrice : Float!
+    buyTotalPrice : Float!
+    buyDate : Date!
+    buyRate : Float
+    fees : Float
+}
 input HoldingCloseInput {
     name : String
     quantity : Float
@@ -166,14 +168,6 @@ input HoldingCloseInput {
     sellTotalPrice : Float
     sellDate : Date
     sellRate : Float
-    fees : Float
-}
-input HoldingOpenInput {
-    quantity : Float!
-    buyUnitPrice : Float!
-    buyTotalPrice : Float!
-    buyDate : Date!
-    buyRate : Float
     fees : Float
 }
 type Query {
@@ -192,6 +186,12 @@ type Mutation {
     addHolding (holdingInput : HoldingInput!) : AddHoldingResponse!
     updateHolding (holdingWithIdInput : HoldingWithIdInput!) : UpdateHoldingResponse!
     removeHolding (holdingId : ID!) : RemoveHoldingResponse!
+    addHoldingOpen (
+        user : ID
+        holdingId : ID!
+        holdingOpenInput : HoldingOpenInput
+    ) : AddHoldingOpenResponse!
+    removeHoldingOpen (holdingId : ID!, holdingOpenId : ID!) : RemoveHoldingIdResponse!
     addHoldingClose (
         user : Int
         holdingId : ID!
@@ -199,10 +199,4 @@ type Mutation {
     ) : AddHoldingCloseResponse!
     updateHoldingClose (holdingId : ID!, holdingCloseInput : HoldingCloseInput) : UpdateHoldingCloseResponse
     removeHoldingClose (holdingId : ID!, holdingCloseId : ID!) : RemoveHoldingCloseResponse
-    addHoldingOpen (
-        user : ID
-        holdingId : ID!
-        holdingOpenInput : HoldingOpenInput
-    ) : AddHoldingOpenResponse!
-    removeHoldingOpen (holdingId : ID!, holdingOpenId : ID!) : RemoveHoldingIdResponse!
 }

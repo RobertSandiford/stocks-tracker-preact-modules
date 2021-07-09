@@ -1,8 +1,10 @@
 
 //const assert = require('assert')
-const expect = require('chai').expect
-require('colors')
-const { createApp } = require('../src/app')
+import { expect } from 'chai'
+
+import 'colors'
+import { createApp } from '../src/app'
+
 
 
 console.log("start main.test".blue)

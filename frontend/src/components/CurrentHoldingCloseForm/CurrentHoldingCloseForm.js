@@ -1,5 +1,16 @@
 
-import { h, Component } from 'preact'
+import { h, Component, createRef } from 'preact'
+
+import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
+import { runBindings } from '../bindings'
+
+
+LuxonSettings.defaultLocale = "en-GB"
+const stDateFormat = Object.assign(Luxon.DATE_MED, { })
+const luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
+
+import { roundDp } from '../functions'
+
 
 export default class CurrentHoldingCloseForm extends Component {
     constructor(props) {
@@ -7,12 +18,12 @@ export default class CurrentHoldingCloseForm extends Component {
         this.holdingComponent = this.props.holdingComponent
         this.holding = this.props.holding
 
-        let sellUnitPrice = roundDp(this.holding.currentUnitPrice,2)
+        const sellUnitPrice = roundDp(this.holding.currentUnitPrice, 2)
 
         this.formDefault = {
             quantity : "",
             sellDate : Luxon.local().toFormat(luxonLocalFormat),
-            sellUnitPrice : sellUnitPrice,
+            sellUnitPrice,
             sellTotalPrice : "",
             sellCurrency : "USD",
             fees : ""
@@ -32,14 +43,14 @@ export default class CurrentHoldingCloseForm extends Component {
                         ref : createRef(),
                         value : (items) => {
                             console.log(items)
-                            return roundDp(items.sellTotalPrice.ref.current.value / items.sellUnitPrice.ref.current.value,4)
+                            return roundDp(items.sellTotalPrice.ref.current.value / items.sellUnitPrice.ref.current.value, 4)
                         },
                         saveToObj : this.form
                     },
                     sellUnitPrice : {
                         ref : createRef(),
                         value : (items) => {
-                            return roundDp(items.sellTotalPrice.ref.current.value / items.quantity.ref.current.value,4)
+                            return roundDp(items.sellTotalPrice.ref.current.value / items.quantity.ref.current.value, 4)
                         },
                         saveToObj : this.form,
                         lastUpdated : 1
@@ -47,7 +58,7 @@ export default class CurrentHoldingCloseForm extends Component {
                     sellTotalPrice : {
                         ref : createRef(),
                         value : (items) => {
-                            return roundDp(items.quantity.ref.current.value * items.sellUnitPrice.ref.current.value,2)
+                            return roundDp(items.quantity.ref.current.value * items.sellUnitPrice.ref.current.value, 2)
                         },
                         saveToObj : this.form
                     }
@@ -97,25 +108,25 @@ export default class CurrentHoldingCloseForm extends Component {
         
         this.quantityChanged = (event) => {
             console.log("quantity changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = Number(el.value)
             console.log(this.form)
         }
         this.sellUnitPriceChanged = (event) => {
             console.log("sell unit price changed changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = Number(el.value)
             console.log(this.form)
         }
         this.sellTotalPriceChanged = (event) => {
             console.log("sell total price changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = Number(el.value)
             console.log(this.form)
         }
         this.sellDateChanged = (event) => {
             console.log("sell total price changed")
-            let el = event.target
+            const el = event.target
             this.form[el.name] = el.value
             console.log(this.form)
         }
@@ -125,7 +136,7 @@ export default class CurrentHoldingCloseForm extends Component {
             this.uploadClose()
         }
         this.uploadClose = function() {
-            let data = {
+            const data = {
                 _id : this.holding._id,
                 ticker : this.holding.ticker,
                 close : this.form
@@ -152,22 +163,23 @@ export default class CurrentHoldingCloseForm extends Component {
     componentDidUpdate() {
         this.runBindings()
     }
-    runBindings() {
+    runBindings = runBindings.bind(this)
+    /*runBindings() {
         console.log("run bindings")
 
         const understandRelationship = function(relationship) {
-            let sides = relationship.split("=")
+            const sides = relationship.split("=")
             sides.map( x => {
                 return x.trim()
             })
-            let leftSide = sides[0]
-            let rightSide = sides[1]
-            let rightSideParts = rightSide.split(" ")
+            const leftSide = sides[0]
+            const rightSide = sides[1]
+            const rightSideParts = rightSide.split(" ")
         }
 
         const enoughItemsHaveValues = function(items, activeItemName) {
             let nUnset = 0
-            let ret = { }
+            const ret = { }
             for (const [name, item] of Object.entries(items)) {
                 if (name != activeItemName) {
                     if (item.ref.current.value === "") {
@@ -188,17 +200,17 @@ export default class CurrentHoldingCloseForm extends Component {
         }
 
         for (const [bindingName, binding] of Object.entries(this.bindings)) {
-            let items = binding.items
+            const items = binding.items
             for (const [itemName, item] of Object.entries(items)) {
                 item.ref.current.addEventListener("change", (event) => {
-                    let el = event.target
-                    item.lastChanged = new Date().getTime();
+                    const el = event.target
+                    item.lastChanged = new Date().getTime()
 
                     let i = enoughItemsHaveValues(items, itemName)
-                     if ( i ) {
+                    if ( i ) {
                         
                         i = (i.emptyItem || i.oldestItem)
-                        let v = i.value(items)
+                        const v = i.value(items)
                         i.ref.current.value = v
                         //i.lastChanged = new Date().getTime();
                         //binding.items[i.name].lastChanged = new Date().getTime();
@@ -210,11 +222,11 @@ export default class CurrentHoldingCloseForm extends Component {
                         console.log("ss", this.form, i.saveToObj[i.name])
 
                     }
-                });
+                })
             }
         }
 
-    }
+    }*/
 
     render() {
 
@@ -238,52 +250,52 @@ export default class CurrentHoldingCloseForm extends Component {
 
         return (
             <div class="holding-close">
-                    <h3>Close</h3>
+                <h3>Close</h3>
 
-                    <form>
+                <form>
 
-                        <div>
-                            <span>Quantity: </span>
-                            <input id="number" name="quantity" ref={this.bindings.prices.items.quantity.ref} type="number" min="0" step="any"
-                                defaultValue={this.form.quantity} onChange={this.quantityChanged} />
-                        </div>
+                    <div>
+                        <span>Quantity: </span>
+                        <input id="number" name="quantity" ref={this.bindings.prices.items.quantity.ref} type="number" min="0" step="any"
+                            defaultValue={this.form.quantity} onChange={this.quantityChanged} />
+                    </div>
 
-                        <div>
-                            <span>Sell Price (Unit): </span>
-                            <input id="sellUnitPrice" name="sellUnitPrice" ref={this.bindings.prices.items.sellUnitPrice.ref} type="number" min="1" step="any"
-                                defaultValue={roundDp(this.holding.currentUnitPrice,2)} onChange={this.sellUnitPriceChanged} />
-                            <span> Currency: </span>
-                            <input type="text" name="sellUnitCurrency"
-                                value={this.holding.buyCurrency} disabled />
-                        </div>
+                    <div>
+                        <span>Sell Price (Unit): </span>
+                        <input id="sellUnitPrice" name="sellUnitPrice" ref={this.bindings.prices.items.sellUnitPrice.ref} type="number" min="1" step="any"
+                            defaultValue={roundDp(this.holding.currentUnitPrice, 2)} onChange={this.sellUnitPriceChanged} />
+                        <span> Currency: </span>
+                        <input type="text" name="sellUnitCurrency"
+                            value={this.holding.buyCurrency} disabled />
+                    </div>
 
-                        <div>
-                            <span>Sell Price (Total): </span>
-                            <input id="sellTotalPrice" name="sellTotalPrice" ref={this.bindings.prices.items.sellTotalPrice.ref} type="number" min="1" step="any"
-                                defaultValue={this.form.sellTotalPrice} onChange={this.sellTotalPriceChanged} />
-                            <span> Currency: </span>
-                            <input type="text" name="sellTotalCurrency"
-                                value={this.holding.buyCurrency} disabled />
-                        </div>
+                    <div>
+                        <span>Sell Price (Total): </span>
+                        <input id="sellTotalPrice" name="sellTotalPrice" ref={this.bindings.prices.items.sellTotalPrice.ref} type="number" min="1" step="any"
+                            defaultValue={this.form.sellTotalPrice} onChange={this.sellTotalPriceChanged} />
+                        <span> Currency: </span>
+                        <input type="text" name="sellTotalCurrency"
+                            value={this.holding.buyCurrency} disabled />
+                    </div>
 
-                        <div>
-                            <span>Sell Date: </span>
-                            <input id="sellyDate" name="sellDate" type="datetime-local"
-                                defaultValue={this.form.sellDate} onChange={this.sellDateChanged} />
-                        </div>
+                    <div>
+                        <span>Sell Date: </span>
+                        <input id="sellyDate" name="sellDate" type="datetime-local"
+                            defaultValue={this.form.sellDate} onChange={this.sellDateChanged} />
+                    </div>
 
-                        {/*<div>
+                    {/*<div>
                             <span>Fee: </span>
                             <input id="fees" name="fees"
                                 defaultValue={this.form.fees} type="number" onChange={this.inputChanged} />%
                         </div>*/}
 
-                        <div>
-                            <input type="submit" name="submit" value="Save" onClick={this.saveClose} />
-                        </div>
+                    <div>
+                        <input type="submit" name="submit" value="Save" onClick={this.saveClose} />
+                    </div>
 
-                    </form>
-                </div>
+                </form>
+            </div>
         )
     }
 }

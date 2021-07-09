@@ -1,7 +1,7 @@
 
-const addMutation = require('./mutations/add')
-const updateMutation = require('./mutations/update')
-const deleteMutation = require('./mutations/delete')
+import addMutation from './mutations/add'
+import updateMutation from './mutations/update'
+import deleteMutation from './mutations/delete'
 
 const entityName = "HoldingClose"
 
@@ -14,7 +14,7 @@ sellDate : Date
 sellRate : Float
 fees : Float`
 
-module.exports = {
+export default {
     [entityName] : {
         type : `{
             _id : ID!

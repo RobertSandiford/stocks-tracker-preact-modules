@@ -1,13 +1,12 @@
-const expect = require('chai').expect
-const { Luxon } = require('../../src/lib/luxon')
-
-require('../testSetup')
+import { expect } from 'chai'
+import { Luxon } from '../../src/lib/luxon'
+import '../testSetup'
 
 
 log("start HoldingOpenAndClose.test".blue)
 
-const setup = require('../setup')
-const teardown = require('../teardown')
+import setup from '../setup'
+import teardown from '../teardown'
 
 let app
 let graphqlRequests

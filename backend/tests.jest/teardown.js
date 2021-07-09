@@ -1,3 +1,3 @@
-module.exports = async (app) => {
+export default async (app) => {
     app.stop()
 }

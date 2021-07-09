@@ -1,18 +1,17 @@
 
-const scalars = require('./scalars/scalars')
-const entities = require('./entities')
+import scalars from './scalars/scalars'
+import entities from './entities'
 
 //const lib = require('./lib')
 //const entities2 = lib.load(__dirname + '/entities')
 //console.log('entities2', entities2)
 
-const { typeDefs, resolvers, requests }
-    = require('./graphqlSchemaBuilder')({
-        scalars,
-        entities
-    })
+import typeDefsresolversrequestsFactory from './graphqlSchemaBuilder'
+
+const { typeDefs, resolvers, requests } = typeDefsresolversrequestsFactory({
+    scalars,
+    entities
+})
 
 
-module.exports.typeDefs = typeDefs
-module.exports.resolvers = resolvers
-module.exports.requests = requests
+export { typeDefs, resolvers, requests }

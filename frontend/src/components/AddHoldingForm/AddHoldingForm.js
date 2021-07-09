@@ -1,6 +1,6 @@
 
 import { h, Component, createRef } from 'preact'
-import { connect as reduxConnect, useSelector, useDispatch, connect } from 'react-redux'
+import { connect as reduxConnect } from 'react-redux'
 import { dispatchFunction as reduxDispatchFunction, getStoreItems } from '../../redux/functions'
 import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
 //cloneDeep = require('lodash.clonedeep')
@@ -8,76 +8,11 @@ import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
 import cloneDeep from 'lodash/cloneDeep'
 
 LuxonSettings.defaultLocale = "en-GB"
-let stDateFormat = Object.assign(Luxon.DATE_MED, { });
-let luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
+const stDateFormat = Object.assign(Luxon.DATE_MED, { })
+const luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
 
 import { roundDp } from '../functions'
-
-
-const runBindings = function() {
-    //console.log("run bindings", this)
-
-    const understandRelationship = function(relationship) {
-        let sides = relationship.split("=")
-        sides.map( x => {
-            return x.trim()
-        })
-        let leftSide = sides[0]
-        let rightSide = sides[1]
-        let rightSideParts = rightSide.split(" ")
-    }
-
-    const enoughItemsHaveValues = function(items, activeItemName) {
-        let nUnset = 0
-        let ret = { }
-        for (const [name, item] of Object.entries(items)) {
-            if (name != activeItemName) {
-                if (item.ref.current.value === "") {
-                    if (++nUnset > 1) return false
-                    item.name = name
-                    ret.emptyItem = item
-                } else {
-                    //console.log(ret.oldestItem)
-                    if ( ! ret.oldestItem || ! ("lastChanged" in item) || item.lastChanged < ret.oldestItem.lastChanged) {
-                        item.name = name
-                        ret.oldestItem = item
-                    }
-                }
-            }
-        }
-        if (ret.emptyItem) delete ret.oldestItem
-        return ret
-    }
-
-    for (const [bindingName, binding] of Object.entries(this.bindings)) {
-        let items = binding.items
-        for (const [itemName, item] of Object.entries(items)) {
-            //console.log("item", itemName, item)
-            item.ref.current.addEventListener("change", (event) => {
-                let el = event.target
-                item.lastChanged = new Date().getTime();
-
-                let i = enoughItemsHaveValues(items, itemName)
-                 if ( i ) {
-                    
-                    i = (i.emptyItem || i.oldestItem)
-                    let v = i.value(items)
-                    i.ref.current.value = v
-                    //i.lastChanged = new Date().getTime();
-                    //binding.items[i.name].lastChanged = new Date().getTime();
-
-                    // save to other variables
-                    if (i.saveTo) i.saveTo = v
-                    if (i.saveToObj) i.saveToObj[i.name] = v
-                    
-                    //console.log("ss", this.form, i.saveToObj[i.name])
-
-                }
-            });
-        }
-    }
-
-}
+import { runBindings } from '../bindings'
 
 
 export default reduxConnect(
@@ -141,11 +76,11 @@ export default reduxConnect(
     }
 
     typeChanged = (event) => {
-        let el = event.target
-        let type = el.value
+        const el = event.target
+        const type = el.value
         console.log(type)
         this.form.type = type
-        this.setState({type : type})
+        this.setState({type})
         console.log(type)
         for (const k in this.tickers) {
             //console.log(k)
@@ -156,11 +91,11 @@ export default reduxConnect(
     }
 
     tickerChanged = (event) =>{
-        let el = event.target
-        let type = el.attributes['data-type'].value
-        let ticker = el.value
+        const el = event.target
+        const type = el.attributes['data-type'].value
+        const ticker = el.value
         this.form.type = type
-        this.setState({type : type})
+        this.setState({type})
         this.form.ticker = ticker
         console.log("ticker", this.form.ticker)
         event.target.parentNode.children["asset-type"].checked = true
@@ -172,44 +107,44 @@ export default reduxConnect(
     }
 
     inputChanged = (event) => {
-        let el = event.target
+        const el = event.target
         //console.log("input changed")
-        switch(el.type) {
+        switch (el.type) {
             case "checkbox":
                 this.form[event.target.name] = event.target.checked
                 console.log(event.target.name, this.form[event.target.name])
-                break;
+                break
             default:
                 this.form[event.target.name] = event.target.value
                 console.log(event.target.name, this.form[event.target.name])
-                break;
+                break
         }
     }
 
     quantityChanged = (event) => {
-        let el = event.target
-        let q = el.value
+        const el = event.target
+        const q = el.value
         this.form["quantity"] = q
         console.log("quantity", this.form["quantity"])
     }
 
     buyUnitPriceChanged = (event) => {
-        let el = event.target
-        let v = el.value
+        const el = event.target
+        const v = el.value
         this.form["buyUnitPrice"] = v
         console.log("buyUnitPrice", this.form["buyUnitPrice"])
     }
 
     buyTotalPriceChanged = (event) => {
-        let el = event.target
-        let v = el.value
+        const el = event.target
+        const v = el.value
         this.form["buyTotalPrice"] = v
         console.log("buyTotalPrice", this.form["buyTotalPrice"])
     }
 
     buyCurrencyChanged = (event) => {
-        let el = event.target
-        let v = el.value
+        const el = event.target
+        const v = el.value
         this.form["buyCurrency"] = v
         this.buyUnitCurrency.current.value = v
         this.buyTotalCurrency.current.value = v
@@ -234,7 +169,7 @@ export default reduxConnect(
 
     createGroup = (event) => {
         event.preventDefault()
-        let ng = this.newGroup.current.value
+        const ng = this.newGroup.current.value
         console.log("new group", ng)
         if ( ng !== "" && ! this.state.groups.includes(ng) ) {
 
@@ -250,7 +185,7 @@ export default reduxConnect(
 
     addHolding = (event) => {
         event.preventDefault()
-        let holding = cloneDeep(this.form)
+        const holding = cloneDeep(this.form)
         if (holding.type === "") { console.log("setting type to custom"); holding.type = "custom" }
         holding.buyDate += ":00.000+00:00"
         //holding.buyDate += ":00"
@@ -266,7 +201,7 @@ export default reduxConnect(
     }
 
     uploadHolding = (holding) => {
-        let data = holding
+        const data = holding
         data.user = 1
         //data.buyDate += ":00.000+00:00" // fix the date format
 
@@ -347,12 +282,12 @@ export default reduxConnect(
 
                     <div>
                         <span>Holding Name: </span>
-                        <input id="name" name="name" key="name" 
+                        <input id="name" name="name" key="name"
                             defaultValue={this.form.name} onChange={this.inputChanged} />
                     </div>
 
                     <div>
-                        <input type="radio" name="asset-type" value="stock" onChange={this.typeChanged} /> 
+                        <input type="radio" name="asset-type" value="stock" onChange={this.typeChanged} />
                         <span>Stock Ticker: </span>
                         <input id="stock-ticker" name="ticker" ref={this.stockTicker} placeholder="e.g. TSLA"
                             defaultValue={this.form.ticker} data-type="stock"
@@ -360,7 +295,7 @@ export default reduxConnect(
                     </div>
 
                     <div>
-                        <input type="radio" name="asset-type" value="crypto" onChange={this.typeChanged} /> 
+                        <input type="radio" name="asset-type" value="crypto" onChange={this.typeChanged} />
                         <span>Crypto Symbol: </span>
                         <input id="crypto-ticker" name="ticker" ref={this.cryptoTicker} placeholder="e.g. BTC"
                             defaultValue={this.form.ticker} data-type="crypto"
@@ -368,7 +303,7 @@ export default reduxConnect(
                     </div>
 
                     <div>
-                        <input type="radio" name="asset-type" value="currency" onChange={this.typeChanged} /> 
+                        <input type="radio" name="asset-type" value="currency" onChange={this.typeChanged} />
                         <span>Currency Symbol: </span>
                         <input id="currency-ticker" name="ticker" ref={this.currencyTicker} placeholder="e.g. USD"
                             defaultValue={this.form.ticker} data-type="currency"
@@ -376,7 +311,7 @@ export default reduxConnect(
                     </div>
 
                     <div>
-                        <input type="radio" name="asset-type" value="fund" onChange={this.typeChanged} /> 
+                        <input type="radio" name="asset-type" value="fund" onChange={this.typeChanged} />
                         <span>Fund ISIN: </span>
                         <input id="fund-ticker" name="ticker" ref={this.fundTicker} placeholder="e.g. US0004026250"
                             defaultValue={this.form.ticker} data-type="fund"
@@ -384,7 +319,7 @@ export default reduxConnect(
                     </div>
 
                     <div>
-                        <input type="radio" name="asset-type" value="custom" onChange={this.typeChanged} /> 
+                        <input type="radio" name="asset-type" value="custom" onChange={this.typeChanged} />
                         <span>Custom - Tag (optional): </span>
                         <input id="custom-ticker" name="ticker" ref={this.customTicker} placeholder="e.g. Anything"
                             defaultValue={this.form.ticker} data-type="custom"
@@ -392,7 +327,7 @@ export default reduxConnect(
                     </div>
 
                     <div>
-                        <input type="radio" name="asset-type" value="pot" onChange={this.typeChanged} /> 
+                        <input type="radio" name="asset-type" value="pot" onChange={this.typeChanged} />
                         <span>Pot - Tag (optional): </span>
                         <input id="pot-ticker" name="ticker" ref={this.potTicker} placeholder="e.g. Anything"
                             defaultValue={this.form.ticker} data-type="pot"
@@ -401,15 +336,15 @@ export default reduxConnect(
 
                     <div>
                         <span>Priced in: </span>
-                        <input name="priceCurrency" defaultValue={this.form.priceCurrency} onChange={this.inputChanged} /> 
+                        <input name="priceCurrency" defaultValue={this.form.priceCurrency} onChange={this.inputChanged} />
                     </div>
 
                     <div>
                         <span>Group: </span>
                         <select id="id" name="group" ref={this.group} defaultValue={this.form.group} onChange={this.inputChanged}>
-                            <option value=""></option>
+                            <option value="" />
                             { this.state.groups.map( x => {
-                                return <option value={x}>{x}</option>
+                                return <option key={x} value={x}>{x}</option>
                             } ) }
                         </select>
                         <input id="newGroup" name="newGroup" ref={this.newGroup}

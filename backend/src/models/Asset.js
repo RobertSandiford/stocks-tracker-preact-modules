@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const name = "asset"
 const collection = "assets"
@@ -29,4 +29,4 @@ const schema = mongoose.Schema({
 
 const model = mongoose.connection.model(name, schema, collection)
 
-module.exports = model
+export default model

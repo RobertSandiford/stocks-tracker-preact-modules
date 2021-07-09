@@ -1,7 +1,6 @@
-const { Luxon } = require('./luxon')
-const assets = require('./assets')
-
-const Holding = require('../models/Holding')
+import { Luxon } from './luxon'
+import * as assets from './assets'
+import Holding from '../models/Holding'
 
 /*
 function goodBadPromise(f) {
@@ -32,7 +31,6 @@ const fillFx = async (fx, toCurr, fromCurr) => {
         console.log("error fetching currency exchange data", err)
     }
 }
-module.exports.fillFx = fillFx
 
 
 // changes the passed object
@@ -55,7 +53,6 @@ const getExchangeRate = async (toCurr, fromCurr) => {
         throw err
     }
 }
-module.exports.getExchangeRate = getExchangeRate
 
 
 // changes the passed object
@@ -107,13 +104,12 @@ const getHolding = async (user, _id, displayCurrency, secondCurrency) => {
     try {
         //console.log("get the holding")
         const holding = await Holding.findOne({ user, _id }).lean().exec()
-        module.exports.populateHolding(holding, displayCurrency, secondCurrency)
+        populateHolding(holding, displayCurrency, secondCurrency)
         return holding
     } catch(error) {
         console.log(error)
     }
 }
-module.exports.getHolding = getHolding
 
 
 const populateHolding = async (holding, displayCurrency, secondCurrency) => {
@@ -150,4 +146,4 @@ const populateHolding = async (holding, displayCurrency, secondCurrency) => {
     }
 
 }
-module.exports.populateHolding = populateHolding
+export { fillFx, getExchangeRate, getHolding, populateHolding }

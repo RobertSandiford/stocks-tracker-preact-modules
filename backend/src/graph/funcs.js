@@ -1,5 +1,5 @@
 
-module.exports.objToGraphqlInner = (obj = {}) => {
+export const objToGraphqlInner = (obj = {}) => {
     let output = '{\n'
     for (const [k, v] of Object.entries(obj)) {
         if (typeof v === 'string')
@@ -12,13 +12,12 @@ module.exports.objToGraphqlInner = (obj = {}) => {
     return output
 }
 
-
-module.exports.objToGraphq = (obj = {}) => {
+export const objToGraphq = (obj = {}) => {
     let output = ""
     for (let [k, v] of Object.entries(obj)) {
         switch (typeof v) {
             case 'object':
-                v = module.exports.objToGraphqlInner(v)
+                v = objToGraphqlInner(v)
                 output += `        ${k}: ${v}\n`
                 break
             case 'string':
@@ -33,23 +32,23 @@ module.exports.objToGraphq = (obj = {}) => {
     return output
 }
 
-module.exports.formatInputData = (input) => {
+export const formatInputData = (input) => {
     if ( typeof input === 'object' ) {
         // turn the js obj into graphql structure
-        input = module.exports.objToGraphq(input)
+        input = objToGraphq(input)
     }
     return input
 }
 
-module.exports.formatInnerInputData = (input) => {
+export const formatInnerInputData = (input) => {
     if ( typeof input === 'object' ) {
         // turn the js obj into graphql structure
-        input = module.exports.objToGraphqlInner(input)
+        input = objToGraphqlInner(input)
     }
     return input
 }
 
-module.exports.formatSingleInputData = (input) => {
+export const formatSingleInputData = (input) => {
     if ( typeof input === 'string' ) {
         // turn the js obj into graphql structure
         input = `"${input}"`

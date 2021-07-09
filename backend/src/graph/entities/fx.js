@@ -1,7 +1,7 @@
 
 const entityName = "Fx"
-      
-module.exports = {
+
+export default {
     [entityName] : {
         type : `{
             toCurr : String!

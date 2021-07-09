@@ -1,8 +1,8 @@
 
-const { createApp } = require('../src/app')
-const { requests : graphqlRequests } = require('../src/graph')
+import { createApp } from '../src/app'
+import { requests as graphqlRequests } from '../src/graph'
 
-module.exports = async () => {
+export default async () => {
     const app = await createApp()
     const port = await app.start(0)
     const graphqlEndpoint = `http://localhost:${port}/graphql`

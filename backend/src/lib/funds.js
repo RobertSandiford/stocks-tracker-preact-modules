@@ -1,19 +1,19 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 
-const { DateTime : Luxon, Settings : LuxonSettings } = require('luxon')
+import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
 LuxonSettings.defaultLocale = "en-GB"
 const stDateFormat = Object.assign(Luxon.DATE_MED, { })
 
-const axios = require("axios").default
-
-const funcs = require("./apiFuncs")
+import axios from 'axios'
+import * as funcs from './apiFuncs'
 
 const apiKey = process.env.funds_api_key
 const apiHost = process.env.funds_api_host
 
+import AssetData from '../models/AssetData'
 
-
-module.exports.loadFundData = async function (isin, baseCurrency, success, failure/*, baseCurr = "USD"*/) {
+export const loadFundData = async function (isin, baseCurrency, success, failure/*, baseCurr = "USD"*/) {
     isin = isin.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -37,7 +37,7 @@ module.exports.loadFundData = async function (isin, baseCurrency, success, failu
 
             const date = Luxon.local().toISO()
             
-            const AssetData = require('./models/AssetData')
+           
             
             new AssetData({
                 ticker : isin,
@@ -66,7 +66,5 @@ module.exports.loadFundData = async function (isin, baseCurrency, success, failu
 
 }
 
-
-
-module.exports.updateFundData = module.exports.loadFundData
+export const updateFundData = loadFundData
 

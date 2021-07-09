@@ -1,8 +1,11 @@
 // package imports
 import { h, Component } from 'preact'
 import { connect as reduxConnect } from 'react-redux'
+import lodashClonedeep from 'lodash.clonedeep'
+
 import { dispatchFunction as reduxDispatchFunction, getStoreItems } from '../../redux/functions'
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client'
+
 
 // project dependencies
 import graph from '../../graph'
@@ -48,7 +51,7 @@ export default reduxConnect(
             
             console.log("Try to get holdings")
             
-            let query = `query GetHoldings {
+            const query = `query GetHoldings {
                 getHoldings(
                     user: 1
                     displayCurrency : "USD"
@@ -66,11 +69,11 @@ export default reduxConnect(
             this.props.apolloClient.query({ query: gql(query) })
             .then( result => {
                 console.log("graphql holdings", result.data)
-                let r = result.data.getHoldings
+                const r = result.data.getHoldings
 
                 if ( r !== null ) {
-                    let s = objectWithTheseFields(r, ["holdings", "groups"])
-                    let exchangeRates = {}
+                    const s = objectWithTheseFields(r, ["holdings", "groups"])
+                    const exchangeRates = {}
                     for ( const exchangeRate of r.exchangeRates ) {
                         exchangeRates[exchangeRate.fromCurr] = exchangeRate
                     }
@@ -97,30 +100,30 @@ export default reduxConnect(
         }
         
         this.sort = function(holdings) {
-            let sort = this.state.sort
+            const sort = this.state.sort
 
-            let newHoldings = _.cloneDeep(holdings)
+            const newHoldings = lodashClonedeep(holdings)
 
-            let propComp3Way = function(prop1, prop2, prop3, dir = 1) {
+            const propComp3Way = function(prop1, prop2, prop3, dir = 1) {
 
-                let prop1Comp = (a, b) => {
-                    let aa = a[prop1] || ""
-                    let bb = b[prop1] || ""
+                const prop1Comp = (a, b) => {
+                    const aa = a[prop1] || ""
+                    const bb = b[prop1] || ""
                     //console.log(aa, bb, a[prop1] > b[prop1], a[prop1] < b[prop1])
                     if (aa > bb) return 1 * dir
                     if (aa < bb) return -1 * dir
                     return 0
                 }
-                let prop2Comp = (a, b) => {
-                    let aa = a[prop2] || ""
-                    let bb = b[prop2] || ""
+                const prop2Comp = (a, b) => {
+                    const aa = a[prop2] || ""
+                    const bb = b[prop2] || ""
                     if (aa > bb) return 1 * dir
                     if (aa < bb) return -1 * dir
                     return 0
                 }
-                let prop3Comp = (a, b) => {
-                    let aa = a[prop3] || ""
-                    let bb = b[prop3] || ""
+                const prop3Comp = (a, b) => {
+                    const aa = a[prop3] || ""
+                    const bb = b[prop3] || ""
                     if (aa > bb) return 1 * dir
                     if (aa < bb) return -1 * dir
                     return 0
@@ -155,26 +158,26 @@ export default reduxConnect(
 
         }.bind(this)
 
-    }  
+    }
 
     render() {
         console.log("render current holdings")
 
-        this.totals = _.cloneDeep(this.totalsDefault)
+        this.totals = lodashClonedeep(this.totalsDefault)
 
         if (this.props.holdings.length == 0) return <div id="show-holdings" /> // show nothing until we have holdings
 
-        let holdings = this.sort(this.props.holdings)
+        const holdings = this.sort(this.props.holdings)
         
-        let sort = this.state.sort
+        const sort = this.state.sort
 
-        let lastSortValue = {}
+        const lastSortValue = {}
         
-        let identity = {}
-        let title = {}
+        const identity = {}
+        const title = {}
 
-        let defaultIdentity = "__NONE"
-        let defaultTitle = "__"
+        const defaultIdentity = "__NONE"
+        const defaultTitle = "__"
 
         for (let i = 1; i <= 3; i++) {
             if (sort[i] !== "") {
@@ -186,7 +189,7 @@ export default reduxConnect(
             }
         }
 
-        let currentHoldings = []
+        const currentHoldings = []
         for (const [index, holding] of holdings.entries()) {
 
             //console.log("holding", holding["name"], holding)
@@ -204,9 +207,8 @@ export default reduxConnect(
 
                     if (index == holdings.length -1) {
                         sortValue = "__LAST_ONE"
-                    }
-                    else {
-                        let nextHolding = holdings[index + 1]
+                    } else {
+                        const nextHolding = holdings[index + 1]
                         console.log("undefined nextHolding.group error debug 2", nextHolding)
                         sortValue = (nextHolding[sort[i]]) ? nextHolding[sort[i]].toLowerCase() : defaultIdentity
                         nextTitle = (nextHolding[sort[i]]) || defaultTitle
@@ -214,16 +216,16 @@ export default reduxConnect(
 
                     if (sortValue != lastSortValue[i]) {
 
-                        let thisIdentity = {}
-                        let thisTitle = {}
+                        const thisIdentity = {}
+                        const thisTitle = {}
                         for (let j = 1; j <= i; j++) {
                             thisIdentity[j] = lastSortValue[j]
                             thisTitle[j] = title[j]
                         }
 
-                        let key = Object.values(thisIdentity).join("-")
+                        const key = Object.values(thisIdentity).join("-")
 
-                        currentHoldings.push(<GroupSummary key={key} title={_.cloneDeep(thisTitle)} identity={_.cloneDeep(thisIdentity)} totals={this.totals} sorts={sort} />)
+                        currentHoldings.push(<GroupSummary key={key} title={lodashClonedeep(thisTitle)} identity={lodashClonedeep(thisIdentity)} totals={this.totals} sorts={sort} />)
                         
                         lastSortValue[i] = sortValue
                         title[i] = nextTitle

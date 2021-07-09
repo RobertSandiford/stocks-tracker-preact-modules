@@ -1,15 +1,15 @@
-import { createStore, combineReducers } from "redux";
-import rootReducer from "./reducers/rootReducer";
+import { createStore, combineReducers } from "redux"
+import rootReducer from "./reducers/rootReducer"
 
 
-const initialState = { 
+const initialState = {
     holdings : [],
     groups : []
 }
 
 let store
 
-if (typeof window !== "undefined") {  // Redux dev tools
+if (typeof window !== "undefined") { // Redux dev tools
     store = createStore(
         rootReducer,
         initialState,

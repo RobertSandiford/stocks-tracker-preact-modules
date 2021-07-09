@@ -1,13 +1,13 @@
 
-const main = require('../controllers/main')
-const holdings = require('../controllers/holdings')
-const rates = require('../controllers/rates')
+import * as main from '../controllers/main'
+//import * as holdings from '../controllers/holdings'
+//import * as rates from '../controllers/rates'
 
 ///////////////////////////
 // Routes
 ///////////////////////////
 
-module.exports = (app) => {
+export default (app) => {
 
     app.get('/', main.index)
 

@@ -1,6 +1,16 @@
 
 import { h, Component } from 'preact'
 
+import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
+import { formatMoney, formatPercentage, numToXChars } from '../../../../backend/src/lib/functions'
+import { HoldingStyle } from '../styles'
+
+
+
+LuxonSettings.defaultLocale = "en-GB"
+const stDateFormat = Object.assign(Luxon.DATE_MED, { })
+const luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
+
 export default class CurrentHoldingCloseSummary extends Component {
     constructor(props) {
         super(props)
@@ -16,12 +26,12 @@ export default class CurrentHoldingCloseSummary extends Component {
     
     render() {
         //console.log("render", this.holding)
-        let holding = this.holding
+        const holding = this.holding
 
-        let displayCurrency = "USD"
-        let buyCurrency = holding.buyCurrency
-        let fxc = (holding.priceCurrency != displayCurrency)
-        let convert = (fxc && holding.buyRate && holding.currentRate)
+        const displayCurrency = "USD"
+        const buyCurrency = holding.buyCurrency
+        const fxc = (holding.priceCurrency != displayCurrency)
+        const convert = (fxc && holding.buyRate && holding.currentRate)
 
         
 /*
@@ -40,39 +50,39 @@ export default class CurrentHoldingCloseSummary extends Component {
         }
 */
         //console.log(holding.buyUnitPrice)
-        let buyUnitPriceLocal = holding.buyUnitPrice
+        const buyUnitPriceLocal = holding.buyUnitPrice
 
         let closedQuantity = 0
         let closedBuyTotalPriceLocal = 0
         let closedSellTotalPriceLocal = 0
-        let lastClosedDate = Luxon.local(0,1,1,0,0,0)
+        let lastClosedDate = Luxon.local(0, 1, 1, 0, 0, 0)
         //console.log("lastClosedDate", lastClosedDate)
         if (holding.closes) {
             for (const c of holding.closes) {
                 closedQuantity += c.quantity
                 closedBuyTotalPriceLocal += buyUnitPriceLocal * c.quantity
                 closedSellTotalPriceLocal += c.sellTotalPrice
-                let d = Luxon.fromISO(c.sellDate)
+                const d = Luxon.fromISO(c.sellDate)
                 if (d > lastClosedDate) lastClosedDate = d
             }
         }
         //console.log("flcp", lastClosedDate)
 
-        let buyUnitPrice = (convert) ? buyUnitPriceLocal * holding.buyRate : buyUnitPriceLocal
-        let closedBuyTotalPrice = (convert) ? closedBuyTotalPriceLocal * holding.buyRate : closedBuyTotalPriceLocal
+        const buyUnitPrice = (convert) ? buyUnitPriceLocal * holding.buyRate : buyUnitPriceLocal
+        const closedBuyTotalPrice = (convert) ? closedBuyTotalPriceLocal * holding.buyRate : closedBuyTotalPriceLocal
         /////// Currrent Rate needs to change to time specific rate *****
-        let closedSellTotalPrice = (convert) ? closedSellTotalPriceLocal * holding.currentRate[displayCurrency] : closedSellTotalPriceLocal
+        const closedSellTotalPrice = (convert) ? closedSellTotalPriceLocal * holding.currentRate[displayCurrency] : closedSellTotalPriceLocal
 
         //console.log(buyUnitPriceLocal, buyUnitPrice)
 
 
-        let valueChange = closedSellTotalPrice - closedBuyTotalPrice
-        let percentageChange = ((closedSellTotalPrice / closedBuyTotalPrice) - 1) * 100
+        const valueChange = closedSellTotalPrice - closedBuyTotalPrice
+        const percentageChange = ((closedSellTotalPrice / closedBuyTotalPrice) - 1) * 100
 
         // annum
 
-        let changeSign = ( (percentageChange > 0) ? "+" : (percentageChange < 0) ? '-' : '' )
-        let changeType = ( (changeSign === "+") ? "change-grown" : (changeSign === "-") ? 'change-shrunk' : 'change-neutral' )
+        const changeSign = ( (percentageChange > 0) ? "+" : (percentageChange < 0) ? '-' : '' )
+        const changeType = ( (changeSign === "+") ? "change-grown" : (changeSign === "-") ? 'change-shrunk' : 'change-neutral' )
 
         //let timeHeld = dateDiff
 
@@ -89,10 +99,10 @@ export default class CurrentHoldingCloseSummary extends Component {
 */
 
 
-        let totals = this.props.totals
-        totals.buyValue     += closedBuyTotalPrice // currentValueAfterFees
+        const totals = this.props.totals
+        totals.buyValue += closedBuyTotalPrice // currentValueAfterFees
         totals.currentValue += closedSellTotalPrice // currentValueAfterFees
-        totals.change       += valueChange //valueChangeAfterFees
+        totals.change += valueChange //valueChangeAfterFees
         //console.log(totals.buyValue, totals.currentValue, totals.change)
 
 
@@ -113,7 +123,7 @@ export default class CurrentHoldingCloseSummary extends Component {
         //console.log(this.holding)
         //console.log(formatMoney(buyUnitPrice, displayCurrency))
 
-        let d = {
+        const d = {
             buyUnitPriceLocal : formatMoney(buyUnitPriceLocal, holding.buyCurrency),
             buyUnitPrice : formatMoney(buyUnitPrice, displayCurrency),
             closedQuantity : numToXChars(closedQuantity, 7), //roundDp(closedQuantity, 4)
@@ -130,26 +140,26 @@ export default class CurrentHoldingCloseSummary extends Component {
             valueChangeAfterFees : formatMoney(valueChange, displayCurrency),
             percentageChangeAfterFees : formatPercentage(percentageChange),
 
-            changeSign : changeSign,
-            changeType : changeType
+            changeSign,
+            changeType
         }
 
 
 
         //console.log("render", this.state.edit)
         return (
-             <div class="closed-summary">
+            <div class="closed-summary">
                 <span style={HoldingStyle.controls}><button style={HoldingStyle.expandButton} title="Expand" onClick={this.expand}>+</button></span>
                 <span style={HoldingStyle.title}>Closed Summary: </span>
-                <span style={HoldingStyle.type}></span>
-                <span style={HoldingStyle.type}></span>
-                <span style={HoldingStyle.type}></span>
-                <span style={HoldingStyle.span} title={'-' + d.closedQuantity}>-{d.closedQuantity}</span>
+                <span style={HoldingStyle.type} />
+                <span style={HoldingStyle.type} />
+                <span style={HoldingStyle.type} />
+                <span style={HoldingStyle.span} title={`-${ d.closedQuantity}`}>-{d.closedQuantity}</span>
                 <span style={HoldingStyle.span} title={ (fxc) ? d.buyUnitPriceLocal : '' }>{d.buyUnitPrice}</span>
                 <span style={HoldingStyle.span} title={ (fxc) ? d.closedBuyTotalPriceLocal : '' }>{d.closedBuyTotalPrice}</span>
                 <span style={HoldingStyle.date}>{d.buyDate}</span>
                 <span style={HoldingStyle.fees}>{}</span>
-                <span style={HoldingStyle.span} className={changeType}></span>
+                <span style={HoldingStyle.span} className={changeType} />
 
                 <span style={HoldingStyle.span} className={changeType} title={ (fxc) ? d.closedSellTotalPriceLocal : "" }>
                     {d.closedSellTotalPrice}
@@ -159,7 +169,7 @@ export default class CurrentHoldingCloseSummary extends Component {
                     {d.lastClosedDate}
                 </span>
 
-                { (fees !== 0)
+                { (holding.fees !== 0) // check this
                     ? <span style={HoldingStyle.span} className={changeType} title={d.lastClosedDate}>
                         {d.valueChangeAfterFeesDisplay}
                     </span>
@@ -168,7 +178,7 @@ export default class CurrentHoldingCloseSummary extends Component {
                     </span>
                 }
 
-                { (fees !== 0)
+                { (holding.fees !== 0) // check this
                     ? <span style={HoldingStyle.span} className={changeType} title={d.lastClosedDate}>
                         {d.percentageChangeAfterFees}
                     </span>
@@ -177,16 +187,16 @@ export default class CurrentHoldingCloseSummary extends Component {
                     </span>
                 }
 
-                { (fees !== 0)
+                { (holding.fees !== 0) // check this
                     ? <span style={HoldingStyle.percentAnnumWidth} className={changeType} title={d.lastClosedDate}>
-                       { (dateDiff > 0.1) ? d.percentageChangeAnnumAfterFees : <span>-</span> }
+                        { (dateDiff > 0.1) ? d.percentageChangeAnnumAfterFees : <span>-</span> }
                     </span>
                     : <span style={HoldingStyle.percentAnnumWidth} className={changeType} title={d.lastClosedDate}>
                         { (dateDiff > 0.1) ? d.percentageChangeAnnum : <span>-</span> }
                     </span>
                 }
 
-                <span style={HoldingStyle.timeHeld}></span>
+                <span style={HoldingStyle.timeHeld} />
                 
                 <span style={HoldingStyle.deleteSpan}>
                     <button style={HoldingStyle.editButton} title="Edit" onClick={this.edit}>e</button>

@@ -1,4 +1,14 @@
 
+import fs from 'fs'
+import graphqlRequestsMaker from './graphqlRequestsMaker'
+
+
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+
+
 function formatTypeDefs(typeDefs) {
     let lines = typeDefs.split('\n')
     const spacesPerIndent = 4
@@ -20,7 +30,7 @@ function formatTypeDefs(typeDefs) {
     return lines.join('\n')
 }
 
-module.exports = function (input) {
+export default function (input) {
 
     const scalars = input.scalars || {}
     //const types = input.types || {}
@@ -28,6 +38,7 @@ module.exports = function (input) {
     //const queries = input.queries || {}
     //const mutations = input.mutations || {}
     const entities = input.entities || {}
+
 
     const schemaTypes = []
     const schemaTypesRegistry = {}
@@ -45,6 +56,7 @@ module.exports = function (input) {
         schemaScalars.push(`scalar ${scalarName}`)
         schemaResolvers[scalarName] = scalarResolver
     }
+
 
     for ( const [entityName, entityData] of Object.entries(entities) ) {
 
@@ -105,6 +117,7 @@ module.exports = function (input) {
     //        .join('')
     //}
 
+
     let typeDefs
     typeDefs = schemaScalars.map(x => `${x}\n`).join('')
     typeDefs += schemaTypes.map(x => `${x}\n`).join('')
@@ -140,15 +153,15 @@ module.exports = function (input) {
         mutators : schemaMutators
     }
 
-    const requests = require('./graphqlRequestsMaker')(graphObjects)
-
-    const fs = require('fs')
-
+    // format the typeDefs
     typeDefs = formatTypeDefs(typeDefs)
 
-
+    // save the typeDefs to the file typeDefs for reference
     fs.writeFileSync(__dirname + '/typeDefs', typeDefs)
+
+    // generate functions to make the graphqlRequests
+    const requests = graphqlRequestsMaker(graphObjects)
 
     return { typeDefs, resolvers, requests }
 
-}
+};

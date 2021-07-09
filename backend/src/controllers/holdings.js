@@ -1,7 +1,8 @@
 
-const assets = require('../lib/assets')
-const { Luxon } = require('../lib/luxon')
-const Holding = require('../models/Holding')
+import * as assets from '../lib/assets'
+import { Luxon } from '../lib/luxon'
+
+import Holding from '../models/Holding'
 
 
 /*

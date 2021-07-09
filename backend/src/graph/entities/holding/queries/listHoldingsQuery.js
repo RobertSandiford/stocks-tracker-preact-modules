@@ -1,10 +1,10 @@
 
-const assets = require('../lib/assets')
-const { Luxon } = require('../lib/luxon')
-const Holding = require('../models/Holding')
+import * as assets from '../../../../lib/assets'
+import { Luxon } from '../../../../lib/luxon'
+import Holding from '../../../../models/Holding'
 
 
-module.exports = {
+export default {
     listHoldings : {
         types : {
             ListHoldingsResponse : `{
@@ -28,15 +28,16 @@ module.exports = {
 
                 const toCurr = c
                 const fromCurr = "USD"
-                assets.getCurrencyExchangeRateUpdateIfNeeded(toCurr, fromCurr, Luxon.local(),
-                    (rate) => {
-                        fx[toCurr] = rate
-                        mainLoading["currency_" + toCurr] = false
-                    },
-                    () => {
-                        console.log("error fetching currency exchange data")
-                        mainLoading["currency_" + toCurr] = false
-                    })
+                try {
+                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(
+                        toCurr, fromCurr, Luxon.local())
+
+                    fx[toCurr] = rate
+                    mainLoading["currency_" + toCurr] = false
+                } catch(e) {
+                    console.log("error fetching currency exchange data")
+                    mainLoading["currency_" + toCurr] = false
+                }
                 loading = true
                 mainLoading["currency_" + toCurr] = true
             }
@@ -70,44 +71,46 @@ module.exports = {
 
                                 const toCurr = "USD"
                                 //let key = "buyRate"
-                                assets.getCurrencyExchangeRateUpdateIfNeeded(
-                                    toCurr,
-                                    holding.buyCurrency,
-                                    buyDate,
-                                    (rate) => {
-                                        //console.log("fetched currency exchange data, rate: " + rate)
-                                        
-                                        const key = "buyRate"
-                                        console.log("key should be buyRate", key)
-                                        holdings[i][key] = {}
-                                        holdings[i][key][toCurr] = rate
-                                        delete holdings[i].loading[key]
-                                    },
-                                    () => {
-                                        const key = "buyRate"
-                                        console.log("error fetching currency exchange data")
-                                        delete holdings[i].loading[key]
-                                    })
+
+                                try {
+                                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(
+                                        toCurr,
+                                        holding.buyCurrency,
+                                        buyDate
+                                    )
+                                    
+                                    //console.log("fetched currency exchange data, rate: " + rate)
+                                    
+                                    const key = "buyRate"
+                                    console.log("key should be buyRate", key)
+                                    holdings[i][key] = {}
+                                    holdings[i][key][toCurr] = rate
+                                    delete holdings[i].loading[key]
+                                } catch(e) {
+                                    const key = "buyRate"
+                                    console.log("error fetching currency exchange data")
+                                    delete holdings[i].loading[key]
+                                }
 
                                 //key = "currentRate"
-                                assets.getCurrencyExchangeRateUpdateIfNeeded(
-                                    toCurr,
-                                    holding.buyCurrency,
-                                    Luxon.local(),
-                                    (rate) => {
-                                        //console.log("fetched currency exchange data, rate: " + rate)
-                                        const key = "currentRate"
-                                        console.log("key should be currentRate", key)
-                                        holdings[i][key] = {}
-                                        holdings[i][key][toCurr] = rate
-                                        delete holdings[i].loading[key]
-                                    },
-                                    () => {
-                                        const key = "currentRate"
-                                        console.log("error fetching currency exchange data")
-                                        delete holdings[i].loading[key]
-                                    })
-
+                                try {
+                                    const rate = await assets.getCurrencyExchangeRateUpdateIfNeededPromise(
+                                        toCurr,
+                                        holding.buyCurrency,
+                                        Luxon.local()
+                                    )
+                                    
+                                    //console.log("fetched currency exchange data, rate: " + rate)
+                                    const key = "currentRate"
+                                    console.log("key should be currentRate", key)
+                                    holdings[i][key] = {}
+                                    holdings[i][key][toCurr] = rate
+                                    delete holdings[i].loading[key]
+                                } catch(e) {
+                                    const key = "currentRate"
+                                    console.log("error fetching currency exchange data")
+                                    delete holdings[i].loading[key]
+                                }
                                 //let rate = assets.getCurrencyExchangeRateUpdateIfNeeded(
                                 //    "USD", holding.buyCurrency, buyDate)
 

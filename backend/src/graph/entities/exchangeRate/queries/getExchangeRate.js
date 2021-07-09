@@ -1,7 +1,7 @@
-const { Luxon } = require('../../../../lib/luxon')
-const assets = require('../../../../lib/assets')
+import { Luxon } from '../../../../lib/luxon'
+import * as assets from '../../../../lib/assets'
 
-module.exports = {
+export default {
     getExchangeRate : {
         types : {
             GetExchangeRateResponse : `{

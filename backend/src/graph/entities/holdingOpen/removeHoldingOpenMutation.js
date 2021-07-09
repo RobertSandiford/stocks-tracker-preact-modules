@@ -1,6 +1,6 @@
-const Holding = require('../../../models/Holding')
+import Holding from '../../../models/Holding'
 
-module.exports = {
+export default {
     removeHoldingOpen : {
         types : {
             RemoveHoldingIdResponse : `{

@@ -1,6 +1,6 @@
 
 const baseReducer = (state = {}, {type, payload}) => {
-    let s = {...state}
+    const s = {...state}
 
     console.log("Root reducer", type, payload)
 
@@ -22,14 +22,14 @@ const baseReducer = (state = {}, {type, payload}) => {
     //// Remove a holding
     //// Receives: holding_
     if (type == "removeHoldingById") {
-        let holding_id = payload
+        const holding_id = payload
         s.holdings = s.holdings.filter( x => x._id != holding_id )
     }
 
     //// Update a specific holding
     //// Receives: Holding
     if (type == "updateHolding") {
-        let holdings = [...s.holdings]
+        const holdings = [...s.holdings]
         for (const [k, h] of holdings.entries()) {
             if (h._id == payload._id) {
                 holdings[k] = payload
@@ -42,13 +42,13 @@ const baseReducer = (state = {}, {type, payload}) => {
     //// Remove a specific holding open
     //// Receives: { holidng : Holding, open : Open }
     if (type == "removeHoldingOpen") {
-        let holding = payload.holding
-        let open = payload.open
+        const holding = payload.holding
+        const open = payload.open
 
-        let holdings = [...s.holdings]
-        for (let [k, h] of holdings.entries()) {
+        const holdings = [...s.holdings]
+        for (const [k, h] of holdings.entries()) {
             if (h._id == holding._id) {
-                let newHolding = {...h}
+                const newHolding = {...h}
                 newHolding.opens = newHolding.opens.filter( x => x._id != open._id )
                 holdings[k] = newHolding
                 break
@@ -60,14 +60,16 @@ const baseReducer = (state = {}, {type, payload}) => {
     //// Remove a specific holding close
     //// Receives: { holidng : Holding, close : Close }
     if (type == "removeHoldingOpen") {
-        let holding = payload.holding
-        let close = payload.close
+        const holding = payload.holding
+        const close = payload.close
 
-        let holdings = [...s.holdings]
-        for (let [k, h] of holdings.entries()) {
+        const holdings = [...s.holdings]
+        for (const [k, h] of holdings.entries()) {
             if (h._id == holding._id) {
-                let newHolding = {...h}
-                newHolding.closes = newHolding.closes.filter( x => x._id != closes._id )
+                const newHolding = {...h}
+                newHolding.closes = newHolding.closes.filter(
+                    x => x._id != close._id
+                )
                 holdings[k] = newHolding
                 break
             }

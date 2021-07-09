@@ -3,7 +3,7 @@ export { default as dispatchFunction } from './dispatcher'
 
 export function getStoreItems(items) {
     return state => {
-        let values = {}
+        const values = {}
         for (const key of items) {
             values[key] = state[key]
         }

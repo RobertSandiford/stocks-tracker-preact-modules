@@ -1,6 +1,6 @@
-const data = require('../../../../lib/data')
+import * as data from '../../../../lib/data'
 
-module.exports = {
+export default {
     getHoldingAdvanced : {
         types : {},
         format : "(user : Int!, _id : ID!, displayCurrency : String!, secondCurrency : String) : Holding",

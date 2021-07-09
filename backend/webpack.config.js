@@ -1,11 +1,12 @@
-module.exports = {
-    entry: "./server.js",
+/*
+export default {
+    entry: "./start.js",
     output: {
         path: __dirname,
         filename: "static/bundle.js"
     },
     resolve: {
-        extensions: [".js", ".marko"]
+        extensions: [".js"]
     },
     module: {
         rules: [
@@ -16,3 +17,4 @@ module.exports = {
         ]
     }
 }
+*/

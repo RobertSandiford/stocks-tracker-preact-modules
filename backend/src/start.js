@@ -1,7 +1,8 @@
 
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 
-const { createApp } = require('./app')
+import { createApp } from './app'
 
 createApp().then( app => {
     // Start the Server!

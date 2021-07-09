@@ -1,7 +1,7 @@
 
-const expect = require('chai').expect
-require('colors')
-require('../testGlobals')
+import { expect } from 'chai'
+import 'colors'
+import '../testGlobals'
 
 
 const test = it
@@ -14,8 +14,8 @@ console.log("start holding.test".blue)
 
 
 
-const setup = require('../setup')
-const teardown = require('../teardown')
+import setup from '../setup'
+import teardown from '../teardown'
 let app
 let graphqlRequests
 

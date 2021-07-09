@@ -2,7 +2,7 @@ import { h, Component } from 'preact'
 import { Link } from 'preact-router/match'
 import { connect as reduxConnect } from 'react-redux'
 const dispatchFunction = require('../../redux/dispatcher')
-import _ from 'lodash/core';
+import _ from 'lodash/core'
 _.cloneDeep = require('lodash.clonedeep')
 import global from '../global'
 
@@ -34,23 +34,23 @@ export default reduxConnect(
             qs = new URLSearchParams(data).toString()
         }
         // prepend '?' if needed
-        if ( qs.length > 0 && qs.charAt(0) !== "?" ) qs = "?" + qs
+        if ( qs.length > 0 && qs.charAt(0) !== "?" ) qs = `?${ qs}`
 
 
         console.log("make a get request")
         fetch(url + qs, {
             method: "GET",
             headers: {
-                'Accept': 'application/json',
+                Accept: 'application/json',
             }
         })
-        .then(function(response){ 
-            return response.json();   
+        .then((response) => {
+            return response.json()
         })
-        .then(function(data){ 
+        .then((data) => {
             success(data)
         })
-        .catch(function(error){
+        .catch((error) => {
             failure(error)
         })
     }
@@ -59,18 +59,18 @@ export default reduxConnect(
         fetch(url, {
             method: "POST",
             headers: {
-                'Accept': 'application/json',
+                Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
         })
-        .then(function(response){ 
-            return response.json();   
+        .then((response) => {
+            return response.json()
         })
-        .then(function(data){ 
+        .then((data) => {
             success(data)
         })
-        .catch(function(error){
+        .catch((error) => {
             failure(error)
         })
     }
@@ -80,7 +80,7 @@ export default reduxConnect(
         event.preventDefault()
         console.log(_id)
 
-        let data = { _id : _id }
+        const data = { _id }
         this.post(
             "http://localhost:4000/holdings/remove",
             data,
@@ -103,7 +103,7 @@ export default reduxConnect(
                 <CurrentHoldings holdingsComponent={this} />
                 <AddHoldingForm holdingsComponent={this} />
             </div>
-        );
+        )
     }
     
 })

@@ -1,13 +1,13 @@
 
-const { Luxon } = require('../../../../lib/luxon')
-const assets = require('../../../../lib/assets')
-const { roundDp } = require('../../../../lib/functions')
-const Holding = require('../../../../models/Holding')
+import { Luxon } from '../../../../lib/luxon'
+import * as assets from '../../../../lib/assets'
+import { roundDp } from '../../../../lib/functions'
+import Holding from '../../../../models/Holding'
 
 
 //addHoldingMutation
 
-module.exports = {
+export default {
     addHolding : {
         types : {
             AddHoldingResponse : `{
@@ -62,7 +62,7 @@ module.exports = {
                             await assets.updateCurrencyExchangeDataIfNeededPromise(
                                 holding.buyCurrency, "USD", Luxon.local())
                             //console.log("fetched currency exchange data")
-                        } catch (e) {
+                        } catch(e) {
                             console.log("error", e)
                         }
                     }
@@ -74,7 +74,7 @@ module.exports = {
                     //console.log(response)
                     return response
 
-                } catch (e) {
+                } catch(e) {
                     console.log("error:", e)
                     const response = {
                         status : "ERROR",
@@ -84,7 +84,7 @@ module.exports = {
                     return response
                 }
 
-            } catch (e) {
+            } catch(e) {
                 console.log("err: " + e)
             }
 

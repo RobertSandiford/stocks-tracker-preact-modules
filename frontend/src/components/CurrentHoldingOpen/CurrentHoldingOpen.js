@@ -1,9 +1,21 @@
 
 import { h, Component } from 'preact'
+import { connect as reduxConnect } from 'react-redux'
+import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
+import { numToXChars, formatMoney, formatPercentage } from '../functions'
 
-export default CurrentHoldingOpen = reduxConnect(
+
+LuxonSettings.defaultLocale = "en-GB"
+const stDateFormat = Object.assign(Luxon.DATE_MED, { })
+const luxonLocalFormat = "yyyy-MM-dd'T'HH:mm"
+
+import { dispatchFunction as reduxDispatchFunction } from '../../redux/functions'
+import { HoldingStyle } from '../styles'
+
+
+export default reduxConnect(
     null,
-    dispatchFunction
+    reduxDispatchFunction
 )(class CurrentHoldingOpen extends Component {
 
     //static reduxContext = ReactReduxContext
@@ -19,7 +31,7 @@ export default CurrentHoldingOpen = reduxConnect(
         this.remove = (event) => {
             event.preventDefault()
     
-            let data = { 
+            const data = {
                 holding_id : this.holding._id,
                 open_id : this.open._id
             }
@@ -32,8 +44,8 @@ export default CurrentHoldingOpen = reduxConnect(
                     if (response.status === "OK") {
 
                         this.props.updateStore("removeHoldingOpen", { holding : this.holding, open : this.open } )
-                        /*let opens = this.holding.opens.filter((close) => { 
-                            return open._id  !== response.open_id 
+                        /*let opens = this.holding.opens.filter((close) => {
+                            return open._id  !== response.open_id
                         })
                         console.log("new opens", opens)
                         this.holding.opens = opens*/
@@ -50,15 +62,15 @@ export default CurrentHoldingOpen = reduxConnect(
     render() {
         console.log("current holding open render", this.holding._id, this.holding.opens.length)
         
-        let holding = this.holding
-        let open = this.open
+        const holding = this.holding
+        const open = this.open
 
 
-        let displayCurrency = "USD"
-        let buyCurrency = holding.buyCurrency
+        const displayCurrency = "USD"
+        const buyCurrency = holding.buyCurrency
 
-        let fxc = (holding.priceCurrency != displayCurrency)
-        let convert = (fxc && holding.buyRate && open.buyRate)
+        const fxc = (holding.priceCurrency != displayCurrency)
+        const convert = (fxc && holding.buyRate && open.buyRate)
 
         console.log("holding.priceCurrency", holding.priceCurrency)
         console.log("fxc", fxc)
@@ -66,50 +78,50 @@ export default CurrentHoldingOpen = reduxConnect(
         console.log("open.buyRate", open.buyRate)
         console.log("convert", convert)
         
-        let buyRate = open.buyRate
-        let currentRate = holding.currentRate
+        const buyRate = open.buyRate
+        const currentRate = holding.currentRate
 
-        let quantity = open.quantity
+        const quantity = open.quantity
 
-        let buyUnitPriceLocal = open.buyUnitPrice
-        let buyTotalPriceLocal = buyUnitPriceLocal * quantity
-        let buyDate = Luxon.fromISO(open.buyDate)
+        const buyUnitPriceLocal = open.buyUnitPrice
+        const buyTotalPriceLocal = buyUnitPriceLocal * quantity
+        const buyDate = Luxon.fromISO(open.buyDate)
 
-        let currentUnitPriceLocal = holding.currentUnitPrice
-        let currentTotalPriceLocal = currentUnitPriceLocal * quantity
-        let currentPriceDate = Luxon.fromISO(holding.currentPriceDate)
-        let currentDate = Luxon.local()
+        const currentUnitPriceLocal = holding.currentUnitPrice
+        const currentTotalPriceLocal = currentUnitPriceLocal * quantity
+        const currentPriceDate = Luxon.fromISO(holding.currentPriceDate)
+        const currentDate = Luxon.local()
 
 
-        let buyUnitPrice = (convert) ? buyUnitPriceLocal * buyRate : buyUnitPriceLocal
-        let buyTotalPrice = (convert) ? buyTotalPriceLocal * buyRate : buyTotalPriceLocal
+        const buyUnitPrice = (convert) ? buyUnitPriceLocal * buyRate : buyUnitPriceLocal
+        const buyTotalPrice = (convert) ? buyTotalPriceLocal * buyRate : buyTotalPriceLocal
 
         /////// Currrent Rate needs to change to time specific rate *****
-        let currentUnitPrice = (convert) ? currentUnitPriceLocal * currentRate : currentUnitPriceLocal
-        let currentTotalPrice = (convert) ? currentTotalPriceLocal * currentRate : currentTotalPriceLocal
+        const currentUnitPrice = (convert) ? currentUnitPriceLocal * currentRate : currentUnitPriceLocal
+        const currentTotalPrice = (convert) ? currentTotalPriceLocal * currentRate : currentTotalPriceLocal
 
         //console.log(buyUnitPriceLocal, buyUnitPrice)
 
 
-        let valueChange = currentTotalPrice - buyTotalPrice
-        let percentageChange = ((currentTotalPrice / buyTotalPrice) - 1) * 100
+        const valueChange = currentTotalPrice - buyTotalPrice
+        const percentageChange = ((currentTotalPrice / buyTotalPrice) - 1) * 100
 
         // annum
-        let dateDiff = currentDate.diff(buyDate, 'years').toObject().years
-        let percentageChangeAnnum = (Math.pow(currentUnitPrice / buyUnitPrice, 1 / dateDiff) -1) * 100 //// annual rate calculated as exponential
+        const dateDiff = currentDate.diff(buyDate, 'years').toObject().years
+        const percentageChangeAnnum = (Math.pow(currentUnitPrice / buyUnitPrice, 1 / dateDiff) -1) * 100 //// annual rate calculated as exponential
         //let percentageChangeAnnumRounded = roundDp(percentageChangeAnnum, 1)
 
         //// Fees need to be incorporated ********
-        let percentageChangeAnnumAfterFees = percentageChangeAnnum // percentageChangeAnnum - fees
+        const percentageChangeAnnumAfterFees = percentageChangeAnnum // percentageChangeAnnum - fees
 
 
-        let changeSign = ( (percentageChange > 0) ? "+" : (percentageChange < 0) ? '-' : '' )
-        let changeType = ( (changeSign === "+") ? "change-grown" : (changeSign === "-") ? 'change-shrunk' : 'change-neutral' )
+        const changeSign = ( (percentageChange > 0) ? "+" : (percentageChange < 0) ? '-' : '' )
+        const changeType = ( (changeSign === "+") ? "change-grown" : (changeSign === "-") ? 'change-shrunk' : 'change-neutral' )
 
         console.log("open info", holding, open, valueChange, currentTotalPrice, buyTotalPrice)
 
         //// Values formatted for display
-        let d = {
+        const d = {
             quantity : numToXChars(quantity, 7), //roundDp(closedQuantity, 4)
             buyUnitPriceLocal : formatMoney(buyUnitPriceLocal, holding.buyCurrency),
             buyUnitPrice : formatMoney(buyUnitPrice, displayCurrency),
@@ -131,10 +143,10 @@ export default CurrentHoldingOpen = reduxConnect(
             percentageChangeAfterFees : formatPercentage(percentageChange),
             percentageChangeAnnumAfterFees : formatPercentage(percentageChangeAnnumAfterFees),
 
-            timeHeld : (typeof dateDiff === "number") ? dateDiff.toFixed(2) + " years" : "" ,
+            timeHeld : (typeof dateDiff === "number") ? `${dateDiff.toFixed(2) } years` : "",
             
-            changeSign : changeSign,
-            changeType : changeType
+            changeSign,
+            changeType
         }
 
 
@@ -142,12 +154,12 @@ export default CurrentHoldingOpen = reduxConnect(
 
         //console.log("render", this.state.edit)
         return (
-             <div class="closed-summary">
-                <span style={HoldingStyle.controls}></span>
+            <div class="closed-summary">
+                <span style={HoldingStyle.controls} />
                 <span style={HoldingStyle.title}>Open: </span>
-                <span style={HoldingStyle.type}></span>
-                <span style={HoldingStyle.type}></span>
-                <span style={HoldingStyle.type}></span>
+                <span style={HoldingStyle.type} />
+                <span style={HoldingStyle.type} />
+                <span style={HoldingStyle.type} />
                 <span style={HoldingStyle.span} title={quantity}>{d.quantity}</span>
                 <span style={HoldingStyle.span} title={ (fxc) ? d.buyUnitPriceLocal : '' }>{d.buyUnitPrice}</span>
                 <span style={HoldingStyle.span} title={ (fxc) ? d.buyTotalPriceLocal : '' }>{d.buyTotalPriceLocal}</span>
@@ -163,7 +175,7 @@ export default CurrentHoldingOpen = reduxConnect(
                     {d.currentDate}
                 </span>
 
-                { (fees !== 0)
+                { (holding.fees !== 0) // not sure holding.fees is correct, was just fees, showed error
                     ? <span style={HoldingStyle.span} className={changeType} title={d.currentDate}>
                         {d.valueChangeAfterFees}
                     </span>
@@ -172,7 +184,8 @@ export default CurrentHoldingOpen = reduxConnect(
                     </span>
                 }
 
-                { (fees !== 0)
+        
+                { (holding.fees !== 0) // not sure holding.fees is correct, was just fees, showed error
                     ? <span style={HoldingStyle.span} className={changeType} title={d.currentDate}>
                         {d.percentageChangeAfterFees}
                     </span>
@@ -181,9 +194,9 @@ export default CurrentHoldingOpen = reduxConnect(
                     </span>
                 }
 
-                { (fees !== 0)
+                { (holding.fees !== 0) // not sure that holding.fees is correct, was just fees, showed error
                     ? <span style={HoldingStyle.percentAnnumWidth} className={changeType} title={d.currentDate}>
-                       { (dateDiff > 0.1) ? d.percentageChangeAnnumAfterFees : <span>-</span> }
+                        { (dateDiff > 0.1) ? d.percentageChangeAnnumAfterFees : <span>-</span> }
                     </span>
                     : <span style={HoldingStyle.percentAnnumWidth} className={changeType} title={d.currentDate}>
                         { (dateDiff > 0.1) ? d.percentageChangeAnnum : <span>-</span> }

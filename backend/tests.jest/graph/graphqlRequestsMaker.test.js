@@ -1,7 +1,8 @@
 //require('dotenv').config()
 //const { createApp } = require('../../src/app')
-const graphqlRequestsMaker = require('../../src/graph/graphqlRequestsMaker')
-const entities = require('../../src/graph/entities')
+import * as graphqlRequestsMaker from '../../src/graph/graphqlRequestsMaker'
+
+import entities from '../../src/graph/entities'
 //const { gql } = require('graphql-request')
 //const setup = require('../setup')
 //const teardown = require('../teardown')
@@ -104,3 +105,5 @@ afterAll( async () => {
     //teardown(app)
 })
 */
+
+export default {}

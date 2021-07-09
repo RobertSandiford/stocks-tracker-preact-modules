@@ -1,24 +1,22 @@
 // db
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 // date-times
 
-const { Luxon } = require('./luxon')
+import { Luxon } from './luxon'
 
 // alpha vantage API manager
-const av = require('./av')
+import * as av from './av'
 
 // funds API manager
-const funds = require('./funds')
+import * as funds from './funds'
 
-const funcs = require("./apiFuncs")
-
-
-const Asset = require('../models/Asset')
-const AssetData = require('../models/AssetData')
+import * as funcs from './apiFuncs'
+import Asset from '../models/Asset'
+import AssetData from '../models/AssetData'
 
 
-module.exports.getLastPrice = async function (ticker, baseCurrency) {
+export const getLastPrice = async function (ticker, baseCurrency) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
     
@@ -34,9 +32,10 @@ module.exports.getLastPrice = async function (ticker, baseCurrency) {
     }
 
 }
-module.exports.getLastPricePromise = module.exports.getLastPrice
 
-module.exports.getDateOfLastPrice = function (ticker, type, baseCurrency, success, failure) {
+export const getLastPricePromise = getLastPrice
+
+export const getDateOfLastPrice = function (ticker, type, baseCurrency, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -59,9 +58,7 @@ module.exports.getDateOfLastPrice = function (ticker, type, baseCurrency, succes
     })
 }
 
-
-
-module.exports.getDateOfLastPricePromise = async function (ticker, type, baseCurrency) {
+export const getDateOfLastPricePromise = async function (ticker, type, baseCurrency) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -88,7 +85,7 @@ module.exports.getDateOfLastPricePromise = async function (ticker, type, baseCur
 
 }*/
 
-module.exports.createAsset = function (asset, success, failure) {
+export const createAsset = function (asset, success, failure) {
 
     console.log("Create Asset", asset)
     asset.ticker = asset.ticker.toUpperCase()
@@ -107,11 +104,11 @@ module.exports.createAsset = function (asset, success, failure) {
 
 }
 
-module.exports.doWeHaveAssetData = function (ticker, success, baseCurrency) {
+export const doWeHaveAssetData = function (ticker, success, baseCurrency) {
     ticker = ticker.toUpperCase()
 
 
-    AssetData.findOne({ ticker }, function (err, assetData) {
+    AssetData.findOne({ ticker }, (err, assetData) => {
         if (err) { console.log(err); return }
 
         //console.log(typeof AssetData, AssetData)
@@ -121,21 +118,20 @@ module.exports.doWeHaveAssetData = function (ticker, success, baseCurrency) {
     })
 }
 
-
-module.exports.loadAssetDataIfNeeded = function (ticker, type, baseCurrency, success, failure) {
+export const loadAssetDataIfNeeded = function (ticker, type, baseCurrency, success, failure) {
     ticker = ticker.toUpperCase()
 
-    module.exports.doWeHaveAssetData(ticker, (have) => {
+    doWeHaveAssetData(ticker, (have) => {
         if (have) {
             if (typeof success == "function") success()
             return
         }
-        module.exports.loadAssetData(ticker, type, baseCurrency, success, failure)
+        loadAssetData(ticker, type, baseCurrency, success, failure)
     })
 
 }
 
-module.exports.loadAssetData = function (ticker, baseCurrency, type, success, failure) {
+export const loadAssetData = function (ticker, baseCurrency, type, success, failure) {
     ticker = ticker.toUpperCase()
 
     //console.log("==look for asset data==")
@@ -261,11 +257,11 @@ module.exports.loadAssetData = function(ticker, type, success, failure) {
 */
 
 
-module.exports.updateAssetDataIfNeeded = function (ticker, type, baseCurrency) {
+export const updateAssetDataIfNeeded = function (ticker, type, baseCurrency) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
-    module.exports.getDateOfLastPrice(ticker, type, baseCurrency, (date) => {
+    getDateOfLastPrice(ticker, type, baseCurrency, (date) => {
         date = Luxon.fromJSDate(date)
 
         const now = Luxon.local()
@@ -273,18 +269,18 @@ module.exports.updateAssetDataIfNeeded = function (ticker, type, baseCurrency) {
         if ( now > date.plus({ days: 2 }) ) {
             console.log("Let's fetch new price data for " + ticker)
 
-            module.exports.updateAssetData(ticker, type, baseCurrency, date)
+            updateAssetData(ticker, type, baseCurrency, date)
         }
     })
 
 }
 
-module.exports.updateAssetDataIfNeededPromise = async function (ticker, type, baseCurrency) {
+export const updateAssetDataIfNeededPromise = async function (ticker, type, baseCurrency) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
     try {
-        let date = await module.exports.getDateOfLastPricePromise(ticker, type, baseCurrency)
+        let date = await getDateOfLastPricePromise(ticker, type, baseCurrency)
         date = Luxon.fromJSDate(date)
 
         const now = Luxon.local()
@@ -292,7 +288,7 @@ module.exports.updateAssetDataIfNeededPromise = async function (ticker, type, ba
         if ( now > date.plus({ days: 2 }) ) {
             console.log("Let's fetch new price data for " + ticker)
 
-            return module.exports.updateAssetDataPromise(ticker, type, baseCurrency, date)
+            return updateAssetDataPromise(ticker, type, baseCurrency, date)
         }
     } catch(err) {
         console.log(err)
@@ -320,7 +316,7 @@ module.exports.updateAssetDataIfNeeded = function(holding) {
 */
 
 
-module.exports.updateAssetData = function (ticker, type, baseCurrency, lastDate, success, failure) {
+export const updateAssetData = function (ticker, type, baseCurrency, lastDate, success, failure) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -330,7 +326,7 @@ module.exports.updateAssetData = function (ticker, type, baseCurrency, lastDate,
     switch (type) {
         case "stock":
             //console.log("==stock==")
-            av.updateStockData(
+            av.updateStockDataPromise(
                 ticker,
                 baseCurrency,
                 lastDate,
@@ -399,8 +395,7 @@ module.exports.updateAssetData = function (ticker, type, baseCurrency, lastDate,
     }
 }
 
-
-module.exports.updateAssetDataPromise = async function (ticker, type, baseCurrency, lastDate) {
+export const updateAssetDataPromise = async function (ticker, type, baseCurrency, lastDate) {
     ticker = ticker.toUpperCase()
     baseCurrency = baseCurrency.toUpperCase()
 
@@ -522,9 +517,11 @@ module.exports.updateAssetData = function(ticker, lastDate, success, failure) {
 */
 
 
-module.exports.loadCurrencyExchangeDataIfNeeded = av.loadCurrencyExchangeDataIfNeeded
-module.exports.updateCurrencyExchangeDataIfNeededPromise = av.updateCurrencyExchangeDataIfNeededPromise
-module.exports.getCurrencyExchangeRatePromise = av.getCurrencyExchangeRatePromise
+export const loadCurrencyExchangeDataIfNeeded = av.loadCurrencyExchangeDataIfNeeded
+
+export const updateCurrencyExchangeDataIfNeededPromise = av.updateCurrencyExchangeDataIfNeededPromise
+export const getCurrencyExchangeRatePromise = av.getCurrencyExchangeRatePromise
+
 //module.exports.getCurrencyExchangeRateUpdateIfNeeded = av.getCurrencyExchangeRateUpdateIfNeeded
 //module.exports.getCurrencyExchangeRateUpdateIfNeededAwaitable = av.getCurrencyExchangeRateUpdateIfNeededAwaitable
-module.exports.getCurrencyExchangeRateUpdateIfNeededPromise = av.getCurrencyExchangeRateUpdateIfNeededPromise
+export const getCurrencyExchangeRateUpdateIfNeededPromise = av.getCurrencyExchangeRateUpdateIfNeededPromise

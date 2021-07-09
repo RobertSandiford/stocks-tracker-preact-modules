@@ -3,14 +3,17 @@
 // Deps
 ///////////////////////////
 
-const dotenv = require('dotenv')
-const express = require('express')
-const mongoose = require('mongoose')
-const cors = require('cors')
-const { ApolloServer } = require('apollo-server-express')
-require('./globals')
+import dotenv from 'dotenv'
+import 'colors'
+import './globals'
+import express from 'express'
+import mongoose from 'mongoose'
+import cors from 'cors'
+import { ApolloServer } from 'apollo-server-express'
+import * as models from './models'
+import { typeDefs, resolvers } from './graph'
+import routes from './routes'
 
-global.globaltest2 = "abcd"
 
 const createApp = async () => {
 
@@ -21,7 +24,6 @@ const createApp = async () => {
     ///////////////////////////
     //const enviro = process.env.enviro
     const defaultPort = process.env.port || 4000
-
 
     ///////////////////////////
     // Set up
@@ -66,7 +68,6 @@ const createApp = async () => {
     ///////////////////////////
 
     // Load all models
-    const models = require('./models')
 
     for (const model in models) {
         eval(`var ${model} = models[model]`)
@@ -77,7 +78,9 @@ const createApp = async () => {
     ///////////////////////////
     // Setup graph server
     ///////////////////////////
-    const { typeDefs, resolvers } = require('./graph')
+    
+    //console.log(typeDefs.blue)
+    //return
     
     const apolloServer = new ApolloServer({
         typeDefs,
@@ -101,7 +104,6 @@ const createApp = async () => {
     // Routes
     ///////////////////////////
 
-    const routes = require('./routes')
 
     routes(app)
 
@@ -138,4 +140,4 @@ const createApp = async () => {
     return app
 }
 
-module.exports.createApp = createApp
+export { createApp }

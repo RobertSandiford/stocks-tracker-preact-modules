@@ -1,10 +1,10 @@
 
-const { Luxon } = require('../../../../lib/luxon')
-const Holding = require('../../../../models/Holding')
+import { Luxon } from '../../../../lib/luxon'
+import Holding from '../../../../models/Holding'
 
 // updateHoldingMutation
 
-module.exports = {
+export default {
     updateHolding : {
 
         types : {

@@ -4,7 +4,7 @@ import types from './types'
 //import mutations from './mutations'
 
 // assign types to the root for back compat
-let graph = { ... types }
+const graph = { ... types }
 
 graph.types = types
 //graph.queries = queries

@@ -1,4 +1,4 @@
-function iterableCopyProps (to, from) {
+function iterableCopyProps(to, from) {
     for (const key in from) {
         if (typeof from[key] === "object") {
             to[key] = new Iterable({})
@@ -10,11 +10,11 @@ function iterableCopyProps (to, from) {
 }
 
 class Iterable extends Object {
-    constructor (obj) {
+    constructor(obj) {
         super()
         iterableCopyProps(this, obj)
     }
-    foreach (f) {
+    foreach(f) {
         for (const key in this) {
             f(key, this[key])
         }

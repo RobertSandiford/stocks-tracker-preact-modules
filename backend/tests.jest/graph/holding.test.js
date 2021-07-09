@@ -1,13 +1,16 @@
-require('dotenv').config()
-const { GraphQLClient : GraphqlClient, gql } = require('graphql-request')
-const supertest = require('supertest')
+import dotenv from 'dotenv'
+dotenv.config()
+
+import { GraphQLClient as GraphqlClient, gql } from 'graphql-request'
+import supertest from 'supertest'
 
 //const graphqlRequests = require('../../src/graph/requests')
 //const { requests : graphqlRequests } = require('../../src/graph')
 
-const setup = require('../setup')
-const teardown = require('../teardown')
-const { createApp } = require('../../src/app')
+import setup from '../setup'
+
+import teardown from '../teardown'
+import { createApp } from '../../src/app'
 
 
 let app
@@ -84,14 +87,13 @@ describe("The getHolding query", () => {
             }
         }`
 
-        let response = await supertest(app)
+        const response = await supertest(app)
             .post('/graphql')
             .set('Content-type', 'application/graphql')
             .send(query)
 
         expect( response ).not.toBeUndefined()
     })
-
     
 
 
@@ -190,3 +192,5 @@ afterAll( async () => {
     app.stop()
     //app.destroy()
 })
+
+export default {}

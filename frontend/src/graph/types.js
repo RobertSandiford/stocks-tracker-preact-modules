@@ -1,5 +1,5 @@
 
-let types = {}
+const types = {}
 
 types.Open = `{
     _id
