@@ -8,7 +8,7 @@ import alphaFactory from 'alphavantage'
 const alpha = alphaFactory({ key: alphaconfig.key })
 import { DateTime as Luxon, Settings as LuxonSettings } from 'luxon'
 LuxonSettings.defaultLocale = "en-GB"
-const stDateFormat = Object.assign(Luxon.DATE_MED, { })
+//const stDateFormat = Object.assign(Luxon.DATE_MED, { })
 
 import * as funcs from './apiFuncs'
 import Asset from '../models/Asset'
@@ -18,7 +18,10 @@ import CurrencyExchange from '../models/CurrencyExchange'
 //import Util from './util';
 //const Util = require('alphavantage/lib/util')
 //const util = Util(config);
-//alpha.forex.dailyFull = (from_symbol, to_symbol, outputsize) => { util.fn('FX_DAILY')({ from_symbol, to_symbol, outputsize }) }
+
+//alpha.forex.dailyFull = (from_symbol, to_symbol, outputsize) => {
+//    util.fn('FX_DAILY')({ from_symbol, to_symbol, outputsize })
+//}
 
 alphaconfig.base = `https://www.alphavantage.co/query?apikey=${alphaconfig.key}&`
 const alphaurl = (params) => {
@@ -61,7 +64,9 @@ const alphafn = (type) => (params) =>
             return data
         })
 
-alpha.forex.dailyExt = (from_symbol, to_symbol, outputsize) => alphafn('FX_DAILY')({ from_symbol, to_symbol, outputsize })
+alpha.forex.dailyExt = (fromSymbol, toSymbol, outputsize) => {
+    return alphafn('FX_DAILY')({ fromSymbol, toSymbol, outputsize })
+}
 
 
 
@@ -406,7 +411,7 @@ export const loadCurrencyData = async function (ticker, baseCurrency, success, f
         const pData = alpha.util.polish(data)
         console.log(pData)
 
-        for (const [date, data] of Object.entries(pData)) {
+        for (const data of pData) {
             //console.log(ticker, date, parseFloat(data.value))
             const assetData = new AssetData({
                 ticker,
@@ -602,7 +607,11 @@ export const doWeHaveRecentCurrencyExchangeDataPromise = async function (toCurr,
 
 
     try {
-        const exchangeData = await CurrencyExchange.findOne({ toCurr, fromCurr }, null, { sort: { date : "desc" } }).exec()
+        const exchangeData = await CurrencyExchange.findOne(
+            { toCurr, fromCurr },
+            null,
+            { sort: { date : "desc" } }
+        ).exec()
 
         if (exchangeData != null) {
             const lastDate = Luxon.fromJSDate(exchangeData.date)

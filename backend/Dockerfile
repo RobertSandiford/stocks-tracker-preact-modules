@@ -5,3 +5,4 @@ RUN npm install
 COPY . /app
 WORKDIR src
 CMD ["npm", "run", "docker-watch"]
+

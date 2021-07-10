@@ -28,6 +28,7 @@ const schema = mongoose.Schema({
     }
 })
 
+
 const model = mongoose.connection.model(name, schema, collection)
 
 export default model

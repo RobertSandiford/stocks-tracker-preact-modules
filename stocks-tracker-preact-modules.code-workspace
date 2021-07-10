@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\..\\..\\NodePackages\\ccino"
+		},
+		{
+			"path": "..\\..\\..\\NodePackages\\graphql-entities"
+		}
+	],
+	"settings": {}
+}

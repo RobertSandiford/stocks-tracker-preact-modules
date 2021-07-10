@@ -69,9 +69,6 @@ describe("The getHolding query", () => {
             `holdingId : "60decb7ad4c2c861dcc9dd6d"`
         )
         expect( response.holding ).to.not.be.undefined
-
-
-        
     })
 
     /*

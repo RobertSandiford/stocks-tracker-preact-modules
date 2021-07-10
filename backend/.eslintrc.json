@@ -45,7 +45,9 @@
         "no-case-declarations" : "warn",
         "no-multi-spaces" : ["warn", { "exceptions": { 
             "VariableDeclarator": true,
-            "ImportDeclaration": true 
+            "ImportDeclaration": true,
+            "AssignmentExpression" : true,
+            "AssignmentPattern": true
         } }],
         "one-var" : "off",
         "prefer-arrow-callback" : "warn"
@@ -72,9 +74,12 @@
         "requestError": "readonly",
         "test": "readonly"
     },
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaVersion": 2020,
-        "sourceType": "module"
+        "sourceType": "module",
+        "babelOptions": { "configFile": "./babel.config.default.json" },
+        "babelOptions": { "rootMode": "upward-optional", "babelrcRoots": [".", "../.."] }
     },
     "env": {
         "es6": true

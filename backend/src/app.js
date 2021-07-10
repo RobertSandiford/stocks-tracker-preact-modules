@@ -10,7 +10,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import { ApolloServer } from 'apollo-server-express'
-import * as models from './models'
+import models from './models'
 import { typeDefs, resolvers } from './graph'
 import routes from './routes'
 

@@ -1,11 +1,8 @@
-// db
-import mongoose from 'mongoose'
 
 // date-times
-
 import { Luxon } from './luxon'
 
-// alpha vantage API manager
+// alpha vantage API smanager
 import * as av from './av'
 
 // funds API manager

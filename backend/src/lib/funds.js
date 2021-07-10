@@ -29,7 +29,7 @@ export const loadFundData = async function (isin, baseCurrency, success, failure
                 'x-rapidapi-host': apiHost
             }
         })
-        .then(function (response) {
+        .then( (response) => {
             const data = response.data
             // data.price
             // data.market
@@ -54,7 +54,7 @@ export const loadFundData = async function (isin, baseCurrency, success, failure
             })
 
         })
-        .catch(function (error) {
+        .catch((error) => {
             console.error(error)
             funcs.callFuncIfExists(failure, error)
         })

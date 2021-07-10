@@ -158,7 +158,10 @@ export default reduxConnect(
     
     validateHolding = (holding) => {
         if ( holding.type === "" ) { console.log('no asset type'); return false }
-        if ( holding.ticker === "" && ! holding.type == "custom" && ! holding.type == "pot" ) { console.log('no ticker'); return false }
+        if ( holding.ticker === "" && ! holding.type == "custom" && ! holding.type == "pot" ) {
+            console.log('no ticker')
+            return false
+        }
         if ( holding.priceCurrency === "" ) { console.log('no price currency'); return false }
         if ( ! this.numberBiggerThan0(holding.quantity) ) { console.log('no quantity'); return false }
         if ( ! this.numberBiggerThan0(holding.buyUnitPrice) ) { console.log('no unit price'); return false }

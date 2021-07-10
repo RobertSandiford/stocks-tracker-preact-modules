@@ -26,7 +26,9 @@ export default {
                 quantity,
                 buyUnitPrice,
                 buyTotalPrice,
-                buyDate
+                buyDate,
+                buyRate,
+                fees
             }
 
             //console.log("saving holding open graphql", holdingId, open)

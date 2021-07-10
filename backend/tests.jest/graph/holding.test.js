@@ -1,16 +1,16 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import { GraphQLClient as GraphqlClient, gql } from 'graphql-request'
+import { gql } from 'graphql-request'
 import supertest from 'supertest'
 
 //const graphqlRequests = require('../../src/graph/requests')
 //const { requests : graphqlRequests } = require('../../src/graph')
 
 import setup from '../setup'
-
 import teardown from '../teardown'
-import { createApp } from '../../src/app'
+
+//import { createApp } from '../../src/app'
 
 
 let app
@@ -25,7 +25,7 @@ let graphqlRequests
 beforeAll( async () => {
 
     const res = await setup()
-    app = res.app
+    app             = res.app
     graphqlRequests = res.graphqlRequests
     //;({ app, graphqlRequests } = setup())
 
@@ -189,7 +189,7 @@ describe("The removeHolding mutation", () => {
 
 
 afterAll( async () => {
-    app.stop()
+    teardown(app)
     //app.destroy()
 })
 

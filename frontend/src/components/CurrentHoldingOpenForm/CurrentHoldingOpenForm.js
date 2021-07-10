@@ -105,11 +105,11 @@ export default reduxConnect(
             this.upload()
         }
         this.upload = function() {
-            const data = {
+            /*const data = {
                 _id : this.holding._id,
                 ticker : this.holding.ticker,
                 close : this.form
-            }
+            }*/
             //console.log(data)
 
             const mutation =`mutation AddHoldingOpen {
