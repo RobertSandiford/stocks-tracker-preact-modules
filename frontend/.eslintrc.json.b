@@ -1,5 +1,6 @@
 {
-    "extends" : ["google"],
+    "plugins" : ["babel", "react"],
+    "extends" : ["google", "plugin:react/recommended", "preact"],
     "rules" : {
         "no-undef" : "error",
         "semi" : ["warn", "never"],
@@ -33,7 +34,7 @@
         "object-shorthand" : ["warn", "always"],
         "prefer-spread" : "warn",
         "space-before-function-paren" : ["warn", {
-            "anonymous": "always",
+            "anonymous": "never",
             "named": "never",
             "asyncArrow": "always"
         }],
@@ -45,27 +46,31 @@
         "no-case-declarations" : "warn",
         "no-multi-spaces" : ["warn", { "exceptions": { 
             "VariableDeclarator": true,
-            "ImportDeclaration": true,
-            "AssignmentExpression" : true,
-            "AssignmentPattern": true
+            "ImportDeclaration": true 
         } }],
         "one-var" : "off",
         "prefer-arrow-callback" : "warn",
-        "quote-props" : "off"
+
+        "no-lonely-if" : "off",
+
+        "no-invalid-this" : "off",
+        "babel/no-invalid-this" : "warn",
+
+        "react/prefer-stateless-function" : "off",
+        "react/self-closing-comp" : "off"
     },
     "globals": {
         "global": "readonly",
         "Object": "readonly",
         "Array": "readonly",
+        "module": "readonly",
+        "require": "readonly",
         "process": "readonly",
         "console": "readonly",
-        "require": "readonly",
         "__dirname": "readonly",
         "setTimeout": "readonly",
         "before": "readonly",
         "after": "readonly",
-        "beforeAll": "readonly",
-        "afterAll": "readonly",
         "describe": "readonly",
         "it": "readonly",
         "expect": "readonly",
@@ -73,20 +78,21 @@
         "log": "readonly",
         "error": "readonly",
         "requestError": "readonly",
-        "test": "readonly",
-        "dirname": "readonly"
+        "test": "readonly"
     },
     "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module",
-        "babelOptions": { 
-            "rootMode": "upward-optional",
-            "babelrcRoots": [".", "../.."],
-            "plugins": [ "@babel/plugin-syntax-top-level-await" ]
-        }
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "babelOptions": { "rootMode": "upward-optional", "babelrcRoots": [".", "../.."] }
     },
     "env": {
         "es6": true
-    }
+    },
+    "ignorePatterns": [
+      "build/"
+    ]
 }

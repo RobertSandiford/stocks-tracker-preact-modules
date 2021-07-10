@@ -1,6 +1,6 @@
 {
-    "plugins" : ["babel"],
-    "extends" : ["google", "preact"],
+    "extends": ["preact", "google"],
+    "plugins": ["babel", "import"],
     "rules" : {
         "no-undef" : "error",
         "semi" : ["warn", "never"],
@@ -50,6 +50,7 @@
         } }],
         "one-var" : "off",
         "prefer-arrow-callback" : "warn",
+        "quote-props" : "off",
 
         "no-lonely-if" : "off",
 
@@ -58,35 +59,6 @@
 
         "react/prefer-stateless-function" : "off",
         "react/self-closing-comp" : "off"
-    },
-    "globals": {
-        "global": "readonly",
-        "Object": "readonly",
-        "Array": "readonly",
-        "module": "readonly",
-        "require": "readonly",
-        "process": "readonly",
-        "console": "readonly",
-        "__dirname": "readonly",
-        "setTimeout": "readonly",
-        "before": "readonly",
-        "after": "readonly",
-        "describe": "readonly",
-        "it": "readonly",
-        "expect": "readonly",
-        
-        "log": "readonly",
-        "error": "readonly",
-        "requestError": "readonly",
-        "test": "readonly"
-    },
-    "parser": "@babel/eslint-parser",
-    "parserOptions": {
-        "ecmaVersion": 2020,
-        "sourceType": "module"
-    },
-    "env": {
-        "es6": true
     },
     "ignorePatterns": [
       "build/"
